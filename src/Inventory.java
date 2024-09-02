@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 
+// Inventory class for storing items like items, fruits and weapons
+// implement OOP concept of inheritance
 public class Inventory {
     private ArrayList<Item> items;
 
