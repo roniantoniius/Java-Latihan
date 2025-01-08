@@ -1,0 +1,64 @@
+Resource:
+1. https://java-programming.mooc.fi/ : Belajar Java Fundamental berdasarkan docs
+
+	- aantoniusron@gmail.com
+	- Java@2804
+
+
+
+bAy7MxOytp5bZfbOllEijQ0kMe6NEtCtH2C5pcwh
+
+
+Habis itu?
+- Belajar Spring Framework: Springboot, dll
+
+
+https://bit.ly/KonfirmasiMagangMandiri-VINIX7-2
+
+
+
+======================================================================================
+Java Programming I
+
+A. Part 1
+
+3. Materi Part 1 tentang Reading Input as a String:
+
+Fundamentals of Strings
+As you might have noticed, in programming we refer to "strings" rather than "text". The term "string" is shorthand for "string of characters" which describes how the computer sees text on a more fundamental level: as a sequence of individual characters.
+
+In practice, variables are named containers that contain information of some specified type and have a name. A string variable is declared in a program by stating the type of the variable (String) and its name (myString, for instance). Typically a variable is also assigned a value during its declaration. You can assign a value by following the declaration with an equals sign followed by the value and a semicolon.
+
+
+The reader.nextLine(); command reads the user's input and returns a string. If we then want to use the string in the program, it must be saved to a string variable — String message = scanner.nextLine();. A value saved to a variable can be used repeatedly. In the example below, the user input is printed tw
+
+The Type of the Variable Informs of Possible Values
+A variable's type is specified when it's initally declared. For example, a variable containing the string "text" is declared with the statement String string = "text";, and an integer having the value 42 is declared with the statement int value = 42;. —>
+
+A variable's type determines the types of values that can be assigned to it. String types hold text, int types whole numbers, double floating-point numbers, and boolean types are either true or false.
+
+As such, the possible values of a given variable type are limited. For example, a string cannot contain an integer, nor can a double contain a boolean value.
+
+- int [int value = 4;]
+An integer can contain whole numbers whose values lie between -2147483648 and 2147483647.
+
+- double [double value = 4.2;]
+Floating-point numbers contain decimal numbers, with the greatest possible value being approximately 21023. When a decimal number is represented with a floating-point number, the value can be inaccurate as floating-points are incapable of representing all decimal numbers. The reasons behind this are explored in the Computer organization course.
+
+
+
+
+Reading Integers
+The Integer.valueOf command converts a string to an integer. It takes the string containing the value to be converted as a parameter.
+
+
+
+5. Calculating with Numbers:
+
+
+
+6. Conditional statements and conditional operation:
+
+
+
+7. Programming in our society
