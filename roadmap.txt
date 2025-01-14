@@ -259,3 +259,19 @@ Cara runnya jadi java <direktori>/<namaClass>. Tapi haris dikompile dulu
 
 Programming exercise:
 Song
+
+
+The getName method returns the instance variable name to the caller. The name of this method is somewhat strange. It is the convention in Java to name a method that returns an instance variable exactly this way, i.e., getVariableName. Such methods are often referred to as "getters".
+
+
+We are guilty of programming in a somewhat poor style by creating a method for printing the object, i.e., the printPerson method. A preferred way is to define a method for the object that returns a "string representation" of the object. The method returning the string representation is always toString in Java. Let's define this method for the person in the following example:
+
+The toString functions as printPerson does. However, it doesn't itself print anything but instead returns a string representation, which the calling method can execute for printing as needed.
+
+System.out.println(antti);
+
+In principle, the System.out.println method requests the object's string representation and prints it. The call to the toString method returning the string representation does not have to be written explicitly, as Java adds it automatically. When a programmer writes:
+
+Calling an internal method
+The object may also call its methods. For example, if we wanted the string representation returned by toString to also tell of a person's body mass index, the object's own bodyMassIndex method should be called in the toString method:
+

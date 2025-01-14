@@ -14,17 +14,23 @@ public class NewClass {
         Product belanja2 = new Product("Gula", 5000.0, 3);
         Product belanja3 = new Product("Minyak", 15000.0, 1);
 
-        orangKe1.printOrang();
+        for (int i = 0; i < 30; i++){
+            orangKe2.makinTua();
+        }
+
+        orangKe1.setBerat(70);
+        orangKe1.setTinggi(170);
+        System.out.println(orangKe1);
         System.out.println("");
         orangKe1.makinTua();
         orangKe1.makinTua();
         orangKe1.ambilUmur();
-        orangKe1.printOrang();
-        orangKe2.printOrang();
-        orangKe3.printOrang();
-        orangKe4.printOrang();
-        orangKe5.printOrang();
-        orangKe6.printOrang();
+        System.out.println(orangKe1);
+        System.out.println(orangKe2);
+        System.out.println(orangKe3);
+        System.out.println(orangKe4);
+        System.out.println(orangKe5);
+        System.out.println(orangKe6);
         suaraBulbul.suaraApa();
         pintu.ketukPintu();
         belanja1.cetakProduk();

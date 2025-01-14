@@ -8,4 +8,8 @@ public class Room {
         this.code = classCode;
         this.numberOfSeats = numberOfSeats;
     }
+
+    public String toString(){
+        return this.code + ", seats: " + this.numberOfSeats;
+    }
 }
