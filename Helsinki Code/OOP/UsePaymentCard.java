@@ -13,6 +13,6 @@ public class UsePaymentCard {
         System.out.println(card1);
 
         card1.addMoney(2000.0);
-        System.out.println(card1);
+        System.out.println(card1);  
     }
 }
