@@ -16,6 +16,9 @@ public class ReadFile {
             try (Scanner scanner = new Scanner(Paths.get(folder + file))) {
                 while (scanner.hasNextLine()){
                     String isi = scanner.nextLine();
+                    if (isi.isEmpty()) {
+                        continue;
+                    }
                     System.out.println(isi);
                 }
             } catch (Exception e){
