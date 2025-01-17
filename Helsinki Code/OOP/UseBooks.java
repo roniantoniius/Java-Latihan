@@ -7,17 +7,18 @@ public class UseBooks {
         ArrayList<Books> bukuBuku = new ArrayList<>();
         Scanner scanner = new Scanner(System.in);
         while (true){
-            System.out.println("Masukkan judul, halaman, dan tahun terbit yang dipisah dengan koma ok.");
-            System.out.println("Masukkan judul, halaman, dan tahun terbit: ");
+            System.out.println("Masukkan judul, penulis, halaman, dan tahun terbit yang dipisah dengan koma ok.");
+            System.out.println("Masukkan judul, penulis, halaman, dan tahun terbit: ");
             String judulHalamanTahun = scanner.nextLine();
             if (judulHalamanTahun.isEmpty()){
                 break;
             }
             String[] list = judulHalamanTahun.split(",");
             String judul = list[0];
-            int halaman = Integer.valueOf(list[1]);
-            int tahunTerbit = Integer.valueOf(list[2]);
-            Books baru = new Books(judul, halaman, tahunTerbit);
+            String penulis = list[1];
+            int halaman = Integer.valueOf(list[2]);
+            int tahunTerbit = Integer.valueOf(list[3]);
+            Books baru = new Books(judul, penulis, halaman, tahunTerbit);
             bukuBuku.add(baru);
         }
 
