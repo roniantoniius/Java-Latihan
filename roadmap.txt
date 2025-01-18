@@ -13,6 +13,7 @@ Habis itu?
 
 https://bit.ly/KonfirmasiMagangMandiri-VINIX7-2
 
+javac dulu baru java
 
 
 ====================================================================================
@@ -275,3 +276,415 @@ In principle, the System.out.println method requests the object's string represe
 Calling an internal method
 The object may also call its methods. For example, if we wanted the string representation returned by toString to also tell of a person's body mass index, the object's own bodyMassIndex method should be called in the toString method:
 
+
+
+
+2. Object in a List
+
+Handling objects in a list is not really different in any way from the previous experience we have with lists. The essential difference is only to define the type for the stored elements when you create the list.
+
+In the example below we first create a list meant for storing Person type object, after which we add persons to it. Finally the person objects are printed one by one.
+
+ArrayList<Person> persons = new ArrayList<>();
+
+// a person object can be created first
+Person john = new Person("John");
+// and then added to the list
+persons.add(john);
+
+// person objects can also be created "in the same sentence" that they are added to the list
+persons.add(new Person("Matthew"));
+persons.add(new Person("Martin"));
+
+for (Person person: persons) {
+    System.out.println(person);
+}
+
+
+
+Multiple constructor parameters
+If the constructor demands more than one parameter, you can query the user for more information.
+
+
+Scanner scanner = new Scanner(System.in);
+ArrayList<Person> persons = new ArrayList<>();
+
+// Read person information from the user
+while (true) {
+    System.out.print("Enter name, empty will end: ");
+    String name = scanner.nextLine();
+    if (name.isEmpty()) {
+        break;
+    }
+
+    System.out.print("Enter the age of the person " + name + ": ");
+
+    int age = Integer.valueOf(scanner.nextLine());
+
+    // We add a new person to the list.
+    // The person's name and age were decided by the user
+    persons.add(new Person(name, age));
+}
+
+// We'll print the number of the inputted persons, and the persons themselves
+System.out.println();
+System.out.println("Total number of persons: " + persons.size());
+System.out.println("Persons: ");
+
+for (Person person: persons) {
+    System.out.println(person);
+}
+
+
+
+
+
+Files and reading data
+
+We've been using the Scanner-class since the beginning of this course to read user input. The block in which data is read has been a while-true loop where the reading ends at a specific input.
+
+Scanner scanner = new Scanner(System.in);
+
+while (true) {
+    String line = scanner.nextLine();
+
+In the example above, we pass system input (System.in) as a parameter to the constructor of the Scanner-class. In text-based user interfaces, the input of the user is directed into the input stream one line at a time, which means that the information is sent to be handled every time the user enters a new line.
+
+
+
+
+Files and the Filesystem
+Files are collections of data that live in computers. These files can contain, among other things, text, images, music, or any combination of these. The file format determines the content of the file as well as the program required to read the file. For example, PDF files are read with a program suited for reading PDF files, and music files are read with a program suited for reading music files. Each of these programs is made by humans, and the creators of these programs — i.e., programmers — also specify the file format as part of the work.
+
+Computers have several different programs for browsing files. These programs are specific to the operating system. All programs used for browsing files make use of the filesystem of the computer in one way or another.
+
+
+
+The Concrete File Storage Format
+Files exist on the hard drive of a computer, which is, in reality, a large set of ones and zeros, i.e., bits. Information is made up of these bits, e.g., one variable of type int takes up 32 bits (i.e., 32 ones or zeros). Modern terabyte-sized hard drives hold about 8 trillion bits (written out the number is 8,000,000,000,000). On this scale, a single integer is very small.
+
+Files can exist practically anywhere on a hard drive, even separated into multiple pieces. The computer's filesystem has the responsibility of keeping track of the locations of files on the hard drive as well as providing the ability to create new files and modify them. The filesystem's main responsibility is abstracting the true structure of the hard drive; a user or a program using a file doesn't need to care about how, or where, the file is actually stored.
+
+
+
+
+
+5. Learning Object-Oriented Program
+
+Object-oriented programming is primarily about isolating concepts into their own entities or, in other words, creating abstractions. Despite the previous example, one might deem it pointless to create an object containing only a number since the same could be done directly with int variables. However, that is not always the case.
+
+
+
+
+
+Object:
+An Object refers to an independent entity that contains both data (instance variables) and behavior (methods). Objects may come in lots of different forms: some may describe problem-domain concepts, others are used to coordinate the interaction that happens between objects. Objects interact with one another through method calls — these method calls are used to both request information from objects and give instructions to them.
+
+Generally, each object has clearly defined boundaries and behaviors and is only aware of the objects that it needs to perform its task. In other words, the object hides its internal operations, providing access to its functionality through clearly defined methods. Moreover, the object is independent of any other object that it doesn't require to accomplish its task.
+
+In the previous section, we dealt with objects that represented people whose structure was defined in a "Person" class. It's a good idea to remind ourselves of what a class does: a class contains the blueprint needed to create objects, and also defines the objects' variables and methods. An object is created on the basis of the class constructor.
+
+Our person objects had a name, age, weight and height property, along with a few methods. If we were to think about the structure of our person object some more, we could surely come up with more variables related to a person, such as a personal ID number, telephone number, address and eye color.
+
+In reality, we can relate all kinds of different information and things to a person. However, when building an application that deals with people, the functionality and features related to a person are gathered based on the application's use case. For example, an application focused on personal health and well-being would probably keep track of the variables mentioned earlier, such as age, weight, and height, and also provide the ability to calculate a body mass index and a maximum heart rate. On the other hand, an application focused on communication could store people's email addresses and phone numbers, but would have no need for information such as weight or height.
+
+
+
+
+Class
+A class defines the types of objects that can be created from it. It contains instance variables describing the object's data, a constructor or constructors used to create it, and methods that define its behavior. A rectangle class is detailed below which defines the functionality of a rectangle.
+
+
+
+
+Removing repetitive code (overloading methods and constructors) [Constructor Overloading]:
+
+
+Let's make an alternative constructor. The old constructor can remain in place.
+
+public Person(String name) {
+        this.name = name;
+        this.age = 0;
+        this.weight = 0;
+        this.height = 0;
+    }
+
+public Person(String name, int age) {
+    this.name = name;
+    this.age = age;
+    this.weight = 0;
+    this.height = 0;
+}
+
+We now have two alternative ways to create objects:
+
+public static void main(String[] args) {
+    Person paul = new Person("Paul", 24);
+    Person ada = new Person("Ada");
+
+    System.out.println(paul);
+    System.out.println(ada);
+}
+
+
+The technique of having two (or more) constructors in a class is known as constructor overloading. A class can have multiple constructors that differ in the number and/or type of their parameters. It's not, however, possible to have two constructors with the exact same parameters.
+
+We cannot, for example, add a public Person(String name, int weight) constructor since it would be impossible for Java to differentiate between this and the one that has two parameters where int parameter is used for age.
+
+
+
+Calling Your Constructor
+Hold on a moment. We'd previously concluded that "copy-paste" code is not a good idea. When you look at the overloaded constructors above, however, they have a lot in common. We're not happy with this.
+
+The first constructor - the one that receives a name as a parameter - is in fact a special case of the second constructor - the one that's given both name and age. What if the first constructor could call the second constructor?
+
+This is possible. A constructor can be called from another constructor using the this keyword, which refers to this object in question!
+
+Let's modify the first constructor so that it does not do anything by itself, but instead calls the second constructor and asks it to set the age to 0.
+
+public Person(String name) {
+    this(name, 0);
+    //here the code of the second constructor is run, and the age is set to 0
+}
+
+public Person(String name, int age) {
+    this.name = name;
+    this.age = age;
+    this.weight = 0;
+    this.height = 0;
+}
+
+The constructor call this(name, 0); might seem a bit weird. A way to think about it is to imagine that the call is automatically replaced with "copy-paste" of the second constructor in such a way that the age parameter is set to 0. NB! If a constructor calls another constructor, the constructor call must be the first command in the constructor.
+
+New objects can be created just as before:
+
+public static void main(String[] args) {
+    Person paul = new Person("Paul", 24);
+    Person eve = new Person("Eve");
+
+    System.out.println(paul);
+    System.out.println(eve);
+}
+
+
+Method Overloading
+Methods can be overloaded in the same way as constructors, i.e., multiple versions of a given method can be created. Once again, the parameters of the different versions must be different. Let's make another version of the growOlder method that ages the person by the amount of years given to it as a parameter.
+
+public void growOlder() {
+    this.age = this.age + 1;
+}
+
+public void growOlder(int years) {
+    this.age = this.age + years;
+}
+In the example below, "Paul" is born 24 years old, ages by a year and then by 10 years:
+
+public static void main(String[] args) {
+    Person paul = new Person("Paul", 24);
+    System.out.println(paul);
+
+    paul.growOlder();
+    System.out.println(paul);
+
+    paul.growOlder(10);
+    System.out.println(paul);
+}
+
+
+
+Primitive and reference variables
+Variables in Java are classified into primitive and reference variables. From the programmer's perspective, a primitive variable's information is stored as the value of that variable, whereas a reference variable holds a reference to information related to that variable. reference variables are practically always objects in Java. Let's take a look at both of these types with the help of two examples.
+
+Primitive:
+int value = 10;
+System.out.println(value);
+
+Sample output
+10
+
+Reference:
+public class Name {
+    private String name;
+
+    public Name(String name) {
+        this.name = name;
+    }
+}
+Name luke = new Name("Luke");
+System.out.println(luke);
+
+Sample output
+Name@4aa298b7
+
+
+In the first example, we create a primitive int variable, and the number 10 is stored as its value. When we pass the variable to the System.out.println method, the number 10 is printed. In the second example, we create a reference variable called luke. A reference to an object is returned by the constructor of the Name class when we call it, and this reference is stored as the value of the variable. When we print the variable, we get Name@4aa298b7 as output. What is causing this?
+
+The method call System.out.println prints the value of the variable. The value of a primitive variable is concrete, whereas the value of a reference variable is a reference. When we attempt to print the value of a reference variable, the output contains the type of the variable and an identifier created for it by Java: the string Name@4aa298b7 tells us that the given variable is of type Name and its identifier is 4aa298b7.
+
+The previous example applies whenever the programmer has not altered an object's default print format. You can modify the default print by defining the toString method within the class of the given object, where you specify what the objects print should look like. In the example below, we've defined the public String toString() method within the Name class, which returns the instance variable name. Now, when we print any object that is an instance of the Name class with the System.out.println command, the string returned by the toString method is what gets printed.
+
+public class Name {
+    private String name;
+
+    public Name(String name) {
+        this.name = name;
+    }
+
+    public String toString() {
+        return this.name;
+    }
+}
+Name luke = new Name("Luke");
+System.out.println(luke); // equal to System.out.println(luke.toString());
+
+Sample output
+Luke
+
+
+1. Primitive Variables
+Java has eight different primitive variables. These are: boolean (a truth value: either true or false), byte (a byte containing 8 bits, between the values -128 and 127), char (a 16-bit value representing a single character), short (a 16-bit value that represents a small integer, between the values -32768 and 32767), int (a 32-bit value that represents a medium-sized integer, between the values -231 and 231-1), long (a 64-bit value that represents a large integer, between values -263 and 263-1), float (a floating-point number that uses 32 bits), and double (a floating-point number that uses 64 bits).
+
+Out of all of these, we've mainly been using the truth value (boolean), integer (int) and floating-point variables (double).
+
+Declaring a primitive variable causes the computer to reserve some memory where the value assigned to the variable can be stored. The size of the storage container reserved depends on type of the primitive. In the example below, we create three variables. Each one has its own memory location to which the value that is assigned is copied.
+
+
+int first = 10;
+int second = first;
+int third = second;
+System.out.println(first + " " + second + " " + third);
+second = 5;
+System.out.println(first + " " + second + " " + third);
+
+10 10 10
+10 5 10
+
+
+
+The name of the variable tells the memory location where its value is stored. When you assign a value to a primitive variable with an equality sign, the value on the right side is copied to the memory location indicated by the name of the variable. For example, the statement int first = 10 reserves a location called first for the variable, and then copies the value 10 into it.
+
+Similarly, the statement int second = first; reserves in memory a location called second for the variable being created and then copies into it the value stored in the location of variable first.
+
+The values of variables are also copied whenever they're used in method calls. What this means in practice is that the value of a variable that's passed as a parameter during a method call is not mutated in the calling method by the method called. In the example below, we declare a 'number' variable in the main method whose value is copied as the method call's parameter. In the method being called, the value that comes through the parameter is printed, its value is then incremented by one. The value of the variable is then printed once more, and the program execution finally returns to the main method. The value of the 'number' variable in the main method remains unaltered because it has nothing to do with the 'number' variable defined as the parameter of the method that's called.
+
+
+
+2. Reference Variables:
+All of the variables provided by Java (other than the eight primitive variables mentioned above) are reference type. A programmer is also free to create their own variable types by defining new classes. In practice, any object instanced from a class is a reference variable.
+
+
+
+The call has the following parts:
+
+Whenever a new variable is declared, its type must be stated first. We declare a variable of type Name below. For the program to execute successfully, there must be a Name class available for the program to use.
+
+Name ...
+
+We state the name of the variable as its declared. You can reference the value of the variable later on by its name. Below, the variable name is defined as leevi.
+
+Name leevi...
+
+Values can be assigned to variables. Objects are created from classes by calling the class constructor. This constructor defines the values assigned to the instance variables of the object being created. We're assuming in the example below that the class Name has a constructor that takes a string as parameter.
+
+... new Name("Leevi");
+
+The constructor call returns a value that is a reference to the newly-created object. The equality sign tells the program that the value of the right-hand side expression is to be copied as the value of the variable on the left-hand side. The reference to the newly-created object, returned by the constructor call, is copied as the value of the variable leevi.
+
+Name leevi = new Name("Leevi");
+
+"The most significant difference between primitive and reference variables is that primitives (usually numbers) are immutable." Perbedaan antara variabel primitive dan reference adalah primitive biasanya imutable atau tidak bisa diubah. Sedangkan reference variabel bisa diubah atau can be mutated. 
+
+Hal ini terjadi karena nilai primitive variabel itu disimpan directly secara langsung ke variabel itu sendiri, berbeda dengan reference variabel yang nilainya dijadikan sebagai referensi dari variabel data atau internal state.
+
+
+Arithmetic operations, such as addition, subtraction, and multiplication can be used with primitive variables — these operations do not change the original values of the variables. Arithmetic operations create new values that can be stored in variables as needed. Conversely, the values of reference variables cannot be changed by these arithmetic expressions.
+
+The value of a reference variable — i.e., the reference — points to a location that contains information relating to the given variable. Let's assume that we have a Person class available to us, containing an instance variable 'age'. If we've instantiated a person object from the class, we can get our hands on the age variable by following the object's reference. The value of this age variable can then be changed as needed.
+
+Instansiasi adalah proses pembuatan objek unik menggunakan templat modul. Instansiasi dapat terjadi dalam pemrograman komputer, terutama dalam object-oriented programming (OOP). 
+
+Dalam OOP, instansiasi adalah proses mengubah class menjadi objek. Class merupakan blueprint atau cetakan untuk membuat objek dengan karakteristik dan perilaku tertentu. 
+
+
+
+
+Primitive and Reference Variable as Method Parameters
+We mentioned earlier that the value of a primitive variable is directly stored in the variable, whereas the value of a reference variable holds a reference to an object. We also mentioned that assigning a value with the equality sign copies the value (possibly of some variable) on the right-hand side and stores it as the value of the left-hand side variable.
+
+A similar kind of copying occurs during a method call. Regardless of whether the variable is primitive or reference type, the value passed to the method as an argument is copied for the called method to use. With primitive variables, the value of the variable is conveyed to the method. With reference variables, it's a reference.
+
+Let's look at this in practice and assume that we have the following Person class available to us.
+
+public class Person {
+    private String name;
+    private int birthYear;
+
+    public Person(String name) {
+        this.name = name;
+        this.birthYear = 1970;
+    }
+
+    public int getBirthYear() {
+        return this.birthYear;
+    }
+
+    public void setBirthYear(int birthYear) {
+        this.birthYear = birthYear;
+    }
+
+    public String toString() {
+        return this.name + " (" + this.birthYear + ")";
+    }
+}
+We'll inspect the execution of the program step by step.
+
+public class Example {
+    public static void main(String[] args) {
+        Person first = new Person("First");
+
+        System.out.println(first);
+        youthen(first);
+        System.out.println(first);
+
+        Person second = first;
+        youthen(second);
+
+        System.out.println(first);
+    }
+
+    public static void youthen(Person person) {
+        person.setBirthYear(person.getBirthYear() + 1);
+    }
+}
+
+First (1970)
+First (1971)
+First (1972)
+
+The program's execution starts off from the first line of the main method. A variable of type Person is declared on its first line, and the value returned by the Person class constructor is copied as its value. The constructor creates an object whose birth year is set to 1970 and whose name is set to the value received as a parameter. The constructor returns a reference. Once the row has been executed, the program's state is the following — a Person object has been created in memory and the first variable defined in the main method contains a reference to it.
+
+*In the illustrations below, the call stack is on the left-hand side, and the memory of the program on the right.
+
+
+On the third row of the main method, we print the value of the variable first. The method call System.out.println searches for the toString method on the reference variable that has been given to it as the parameter. The Person class has the toString method, so this method is called on the object referenced by the first variable. The value of the name variable in that object is "First", and the value of the birthYear variable is 1970. The output becomes "First (1970)".
+
+On the fourth row, the program calls the youthen method, to which we pass the variable first as an argument. When the method youthen is called, the value of the parameter variable is copied to be used by the youthen method. The execution of the main method remains waiting in the call stack. As the variable first is a reference type, the reference that was created earlier is copied for the method's use. At the end of the method execution, the situation is as follows — the method increments the birth year of the object it receives as a parameter by one.
+
+When the execution of the method makeYounger ends, we return back to the main method. The information related to the execution of the makeYounger disappears from the call stack.
+
+Once we've returned from the method call, we once again print the value of the variable first. The object referenced by the variable first has been mutated during the youthen method call: the birthYear variable of the object has been incremented by one. The final value printed is "First (1971)".
+
+A new Person-type variable called second is then declared in the program. The value of the variable first is copied to the variable second, i.e., the value of the variable second becomes a reference to the already-existing Person object.
+
+The program calls the youthen method after this, which is given the second variable as a parameter. The value of the variable passed during the method call is copied as a value for the method, i.e., the method receives the reference contained in the second variable for its use. After the method's execution, the birth year of the object referenced by the method has increased by one.
+
+
+
+Variables and Computer Memory
+In the course's material, concrete details related to variables and computer memory are simplified. Topics related to memory are dealt with on a level of abstraction that's suitable for learning programming. As an example, the description that the statement int number = 5 reserves a location for the variable number in the memory, and copies the value 5 into it, is sufficient with regard to the learning objectives of this course.
+
+From the perspective of the operating system, a lot more happens when the statement int number = 5 is executed. A locker of size 32-bits is reserved in memory for the value 5, and another one for the number variable. The size of the location is determined by the type of variable in question. Once this is done, the contents of the memory location storing the value 5 are copied into the memory location of the number variable.
+
+To add to the above, the number variable is technically not a memory location or a container. The value of the variable number is an address in memory — information attached to the variable about its type specifies how much data should be retrieved from its address. As an example, this is 32 bits for an integer.
+
+We'll return to this briefly in the advanced programming course. The topic is dealt with in depth in the Computer Organization course.

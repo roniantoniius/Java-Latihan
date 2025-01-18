@@ -1,1 +1,8 @@
 Create an ASCII animation of Boat Sailing
+
+Project Based Java: https://github.com/practical-tutorials/project-based-learning?tab=readme-ov-file#java
+
+- Build an Interpreter (Chapter 4-13 is written in Java)
+- Build a Simple HTTP Server with Java
+- Build an Android Flashlight App (video)
+- Build a Spring Boot App with User Authentication
