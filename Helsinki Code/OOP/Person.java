@@ -9,18 +9,22 @@ public class Person {
 
     // bikin constructor untuk variabel yang akan kita pass (bisa digunakan) ketika cclass dipanggil. Kalau pake private di variabel, harus pake constructor
     // penggunaan this adalah untuk membedakan variabel yang ada di class dengan variabel yang di pass
-    public Person(String namaAwal){
-        this.name = namaAwal;
-        this.age = 0;
+    public Person(String name, int age){ // ini adalah construcor
+        this.name = name;
+        this.age = age;
         this.height = 0;
         this.weight = 0;
     }
+    public Person(String name){
+        this(name, 0);
+    }
+
 
     public String toString(){
         return this.getName() + " sekarang berumur " + this.ambilUmur() + " tahun" + " dengan tinggi " + this.height + " cm dan berat " + this.weight + " kg. Sehingga BMI nya adalah " + this.BMI();
     }
 
-    public void makinTua(){
+    public void makinTua(){ // ini adalah method
         if (this.age <= 60){
             this.age = this.age + 1;
         }
