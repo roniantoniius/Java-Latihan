@@ -3,7 +3,7 @@ package OOP;
 public class PaymentCard {
     private Double balance;
 
-    public PaymentCard (Double openingBalance){
+    public PaymentCard (double openingBalance){
         this.balance = openingBalance;
     }
 

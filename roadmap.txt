@@ -688,3 +688,142 @@ From the perspective of the operating system, a lot more happens when the statem
 To add to the above, the number variable is technically not a memory location or a container. The value of the variable number is an address in memory — information attached to the variable about its type specifies how much data should be retrieved from its address. As an example, this is 32 bits for an integer.
 
 We'll return to this briefly in the advanced programming course. The topic is dealt with in depth in the Computer Organization course.
+
+
+
+Part 5: Object and Reference:
+
+Calling a constructor with the command new causes several things to happen. First, space is reserved in the computer memory for storing object variables. Then default or initial values are set to object variables (e.g. an int type variable receives an initial value of 0). Lastly, the source code in the constructor is executed.
+
+A constructor call returns a reference to an object. A reference is information about the location of object data.
+
+
+
+
+Assigning a reference type variable copies the reference
+
+Let's add a Person type variable called ball into the program, and assign joan as its initial value. What happens then?
+
+Person joan = new Person("Joan Ball");
+System.out.println(joan);
+
+Person ball = joan;
+The statement Person ball = joan; creates a new Person variable ball, and copies the value of the variable joan as its value. As a result, ball refers to the same object as joan.
+
+
+Let's inspect the same example a little more thoroughly.
+
+Person joan = new Person("Joan Ball");
+System.out.println(joan);
+
+Person ball = joan;
+ball.growOlder();
+ball.growOlder();
+
+System.out.println(joan);
+
+Sample output
+Joan Ball, age 0 years
+Joan Ball, age 2 years
+
+
+Kenapa bisa gitu? Karena nilai atau value yang ditampung oleh `ball` itu adalah reference dari lokasi dimana nilai `joan` berada. Jadi dengan nilai lokasi yang sama yaitu `joan` maka apapun yang dilakukan pada `ball` maka akan terjadi juga terhadap `joan`.
+
+Joan Ball — i.e. the Person object that the reference in the joan variable points at — starts as 0 years old. After this the value of the joan variable is assigned (so copied) to the ball variable. The Person object ball is aged by two years, and Joan Ball ages as a consequence!
+
+An object's internal state is not copied when a variable's value is assigned. A new object is not being created in the statement Person ball = joan; — the value of the variable ball is assigned to be the copy of joan's value, i.e. a reference to an object.
+
+Next, the example is continued so that a new object is created for the joan variable, and a reference to it is assigned as the value of the variable. The variable ball still refers to the object that we created earlier.
+
+erson joan = new Person("Joan Ball");
+System.out.println(joan);
+
+Person ball = joan;
+ball.growOlder();
+ball.growOlder();
+
+System.out.println(joan);
+
+joan = new Person("Joan B.");
+System.out.println(joan);
+
+The following is printed:
+
+Sample output
+Joan Ball, age 0 years
+Joan Ball, age 2 years
+Joan B., age 0 years
+
+
+null value of a reference variable
+Let's extend the example further by setting the value of the reference variable ball to null, i.e. a reference "to nothing". The null reference can be set as the value of any reference type variable.
+
+Person joan = new Person("Joan Ball");
+System.out.println(joan);
+
+Person ball = joan;
+ball.growOlder();
+ball.growOlder();
+
+System.out.println(joan);
+
+joan = new Person("Joan B.");
+System.out.println(joan);
+
+ball = null;
+
+The object whose name is Joan Ball is referred to by nobody. In other words, the object has become "garbage". In the Java programming language the programmer need not worry about the program's memory use. From time to time, the automatic garbage collector of the Java language cleans up the objects that have become garbage. If the garbage collection did not happen, the garbage objects would reserve a memory location until the end of the program execution.
+
+Let's see what happens when we try to print a variable that references "nothing" i.e. null.
+
+Person joan = new Person("Joan Ball");
+System.out.println(joan);
+
+Person ball = joan;
+ball.growOlder();
+ball.growOlder();
+
+System.out.println(joan);
+
+joan = new Person("Joan B.");
+System.out.println(joan);
+
+ball = null;
+System.out.println(ball);
+
+Sample output
+Joan Ball, age 0 years
+Joan Ball, age 2 years
+Joan B., age 0 years
+null
+
+Printing a null reference prints "null". How about if we were to try and call a method, say growOlder, on an object that refers to nothing:
+
+Person joan = new Person("Joan Ball");
+System.out.println(joan);
+
+joan = null;
+joan.growOlder();
+
+The result:
+
+Sample output
+Joan Ball, age 0 years
+Exception in thread "main" java.lang.NullPointerException
+at Main.main(Main.java:(row))
+Java Result: 1
+
+
+
+
+Object as a method parameter
+
+Jadi pada suatu method itu menerima parameter sebuah objek dari class baru, nah disitu kita bisa gunakan method dari objek class baru tersebut.
+
+We have seen both primitive and reference variables act as method parameters. Since objects are reference variables, any type of object can be defined to be a method parameter. Let's take a look at a practical demonstration.
+
+Amusement park rides only permit people who are taller than a certain height. The limit is not the same for all attractions. Let's create a class representing an amusement park ride. When creating a new object, the constructor receives as parameters the name of the ride, and the smallest height that permits entry to the ride.
+
+
+
+Object as object variable

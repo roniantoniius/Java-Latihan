@@ -3,7 +3,7 @@ package OOP;
 public class UsePerson {
     public static void main(String[] args){
         Person roni = new Person("Roni");
-        Person yuli = new Person("yuli");
+        Person yuli = new Person("yuli"); // ini adalah object
         for (int i = 0; i < 30; i++){
             roni.makinTua();
         }

@@ -1,7 +1,7 @@
 package OOP;
 
 public class Person {
-    // variabel di dalam class adalah Instance Variabel / object attributes
+    // Object variabel di dalam class adalah Instance Variabel / object attributes
     private String name; 
     private int age;
     private int height;
@@ -9,22 +9,22 @@ public class Person {
 
     // bikin constructor untuk variabel yang akan kita pass (bisa digunakan) ketika cclass dipanggil. Kalau pake private di variabel, harus pake constructor
     // penggunaan this adalah untuk membedakan variabel yang ada di class dengan variabel yang di pass
-    public Person(String name, int age){ // ini adalah construcor
+    public Person(String name, int age, int height, int weight){ // ini adalah construcor
         this.name = name;
         this.age = age;
-        this.height = 0;
-        this.weight = 0;
+        this.height = height;
+        this.weight = weight;
     }
     public Person(String name){
-        this(name, 0);
+        this(name, 0, 0, 0);
     }
 
-
-    public String toString(){
+    @Override
+    public String toString(){ // ini adalah method, namun method khusus untuk print
         return this.getName() + " sekarang berumur " + this.ambilUmur() + " tahun" + " dengan tinggi " + this.height + " cm dan berat " + this.weight + " kg. Sehingga BMI nya adalah " + this.BMI();
     }
 
-    public void makinTua(){ // ini adalah method
+    public void makinTua(){ // ini adalah method yang memilki suatu tugas.
         if (this.age <= 60){
             this.age = this.age + 1;
         }
@@ -34,6 +34,9 @@ public class Person {
         return this.age;
     }
 
+    public int getHeight(){
+        return this.height;
+    }
     public Boolean isLegal(){
         return this.age >= 21;
     }
