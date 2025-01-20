@@ -826,4 +826,196 @@ Amusement park rides only permit people who are taller than a certain height. Th
 
 
 
-Object as object variable
+Object as object variable [Pada file PersonDate, dan UsePersonDate.java]
+Menggunakan object sebagai instance variabel (input default bersamaan dengan private variabel lainnya)a
+
+
+Object of same type as method parameter [Aparment.java dan UseAparmen.java]
+Jadi menggunakan variabel object (new Aparment) sebagai input dari suatu method atau sebagai parameter, artinya fungsi dari object dengan class yang beda atau sama itu bisa dipakai
+
+
+Comparing the equality of objects (equals)
+While working with strings, we learned that strings must be compared using the `equals` method. This is how it's done.
+
+With primitive variables such as int, comparing two variables can be done with two equality signs. This is because the value of a primitive variable is stored directly in the "variable's box". The value of reference variables, in contrast, is an address of the object that is referenced; so the "box" contains a reference to the memory location. Using two equality signs compares the equality of the values stored in the "boxes of the variables" — with reference variables, such comparisons would examine the equality of the memory references.
+
+The method equals is similar to the method toString in the respect that it is available for use even if it has not been defined in the class. The default implementation of this method compares the equality of the references. Let's observe this with the help of the previously written SimpleDate class.
+
+
+
+SimpleDate first = new SimpleDate(1, 1, 2000);
+SimpleDate second = new SimpleDate(1, 1, 2000);
+SimpleDate third = new SimpleDate(12, 12, 2012);
+SimpleDate fourth = first;
+
+if (first.equals(first)) {
+    System.out.println("Variables first and first are equal");
+} else {
+    System.out.println("Variables first and first are not equal");
+}
+
+if (first.equals(second)) {
+    System.out.println("Variables first and second are equal");
+} else {
+    System.out.println("Variables first and second are not equal");
+}
+
+if (first.equals(third)) {
+    System.out.println("Variables first and third are equal");
+} else {
+    System.out.println("Variables first and third are not equal");
+}
+
+if (first.equals(fourth)) {
+    System.out.println("Variables first and fourth are equal");
+} else {
+    System.out.println("Variables first and fourth are not equal");
+}
+
+Sample output
+Variables first and first are equal
+Variables first and second are not equal
+Variables first and third are not equal
+Variables first and fourth are equal
+
+
+There is a problem with the program above. Even though two dates (first and second) have exactly the same values for object variables, they are different from each other from the point of view of the default `equals` method.
+
+If we want to be able to compare two objects of our own design with the equals method, that method must be defined in the class. The method equals is defined as a method that returns a boolean type value — the return value indicates whether the objects are equal.
+
+The equals method is implemented in such a way that it can be used to compare the current object with any other object. The method receives an Object-type object as its single parameter — all objects are Object-type, in addition to their own type. The equals method first compares if the addresses are equal: if so, the objects are equal. After this, we examine if the types of the objects are the same: if not, the objects are not equal. Next, the Object-type object passed as the parameter is converted to the type of the object that is being examined by using a type cast, so that the values of the object variables can be compared. Below the equality comparison has been implemented for the SimpleDate class.
+
+
+
+What is Object?
+Every class we create (and every ready-made Java class) inherits the class Object, even though it is not specially visible in the program code. This is why an instance of any class can be passed as a parameter to a method that receives an Object type variable as its parameter. Inheriting the Object can be seen elsewhere, too: for instance, the toString method exists even if you have not implemented it yourself, just as the equals method does.
+
+To illustrate, the following source code compiles successfully: equals method can be found in the Object class inherited by all classes.
+
+
+
+Object equality and lists
+Let's examine how the equals method is used with lists. Let's assume we have the previously described class Bird without any equals method.
+
+public class Bird {
+    private String name;
+
+    public Bird(String name) {
+        this.name = name;
+    }
+}
+Let's create a list and add a bird to it. After this we'll check if that bird is contained in it.
+
+ArrayList<Bird> birds = new ArrayList<>()
+Bird red = new Bird("Red");
+
+if (birds.contains(red)) {
+    System.out.println("Red is on the list.");
+} else {
+    System.out.println("Red is not on the list.");
+}
+
+birds.add(red);
+if (birds.contains(red)) {
+    System.out.println("Red is on the list.");
+} else {
+    System.out.println("Red is not on the list.");
+}
+
+
+System.out.println("However!");
+
+red = new Bird("Red");
+if (birds.contains(red)) {
+    System.out.println("Red is on the list.");
+} else {
+    System.out.println("Red is not on the list.");
+}
+
+Sample output
+Red is not on the list.
+Red is on the list.
+However!
+Red is not on the list.
+
+
+We can notice in the example above that we can search a list for our own objects. First, when the bird had not been added to the list, it is not found — and after adding it is found. When the program switches the red object into a new object, with exactly the same contents as before, it is no longer equal to the object on the list, and therefore cannot be found on the list.
+
+The contains method of a list uses the equals method that is defined for the objects in its search for objects. In the example above, the Bird class has no definition for that method, so a bird with exactly the same contents — but a different reference — cannot be found on the list.
+
+Let's implement the equals method for the class Bird. The method examines if the names of the objects are equal — if the names match, the birds are thought to be equal.
+
+public class Bird {
+    private String name;
+
+    public Bird(String name) {
+        this.name = name;
+    }
+
+    public boolean equals(Object compared) {
+        // if the variables are located in the same position, they are equal
+        if (this == compared) {
+            return true;
+        }
+
+        // if the compared object is not of type Bird, the objects are not equal
+        if (!(compared instanceof Bird)) {
+            return false;
+        }
+
+        // convert the object to a Bird object
+        Bird comparedBird = (Bird) compared;
+
+        // if the values of the object variables are equal, the objects are, too
+        return this.name.equals(comparedBird.name);
+
+        /*
+        // the comparison of names above is equal to
+        // the following code
+
+        if (this.name.equals(comparedBird.name)) {
+            return true;
+        }
+
+        // otherwise the objects are not equal
+        return false;
+        */
+    }
+}
+Now the contains list method recognizes birds with identical contents.
+
+ArrayList<Bird> birds = new ArrayList<>()
+Bird red = new Bird("Red");
+
+if (birds.contains(red)) {
+    System.out.println("Red is on the list.");
+} else {
+    System.out.println("Red is not on the list.");
+}
+
+birds.add(red);
+if (birds.contains(red)) {
+    System.out.println("Red is on the list.");
+} else {
+    System.out.println("Red is not on the list.");
+}
+
+
+System.out.println("However!");
+
+red = new Bird("Red");
+if (birds.contains(red)) {
+    System.out.println("Red is on the list.");
+} else {
+    System.out.println("Red is not on the list.");
+}
+
+Sample output
+Red is not on the list.
+Red is on the list.
+However!
+Red is on the list.
+
+
+Programming exercise:
+Books
