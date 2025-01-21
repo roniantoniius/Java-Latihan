@@ -1149,3 +1149,125 @@ The word final used in the definition of object variables catches attention. The
 ====================================================================================
 Part 6: Objects on a list and a list as part of an object
 
+Next, let's have a look at objects that contain a list. Examples of objects like these include objects that describe sets, for example playlists.
+
+In the following example, we have made a class for the concept of a playlist. The playlist contains songs: songs can be added, songs can be removed, and the songs that the playlist contains can be printed.
+
+// imports
+
+public class Playlist {
+    private ArrayList<String> songs;
+
+    public Playlist() {
+        this.songs = new ArrayList<>();
+    }
+
+    public void addSong(String song) {
+        this.songs.add(song);
+    }
+
+    public void removeSong(String song) {
+        this.songs.remove(song);
+    }
+
+    public void printSongs() {
+        for (String song: this.songs) {
+            System.out.println(song);
+        }
+    }
+}
+Creating playlists is easy with the help of the class above.
+
+Playlist list = new Playlist();
+list.addSong("Sorateiden kuningas");
+list.addSong("Teuvo, maanteiden kuningas");
+list.printSongs();
+
+Sample output
+Sorateiden kuningas
+Teuvo, maanteiden kuningas
+
+
+
+
+Objects in an Instance Variable List:
+A list that is an object's instance variable can contain objects other than strings as long as the type of objects in the list is specified when defining the list.
+
+In the previous section, we created a class called AmusementParkRide, which was used to check whether or not a person was eligible to get on a particular ride. The Amusement park class looks like the following.
+
+Jadi sebuah instance variabel dengan tipe List pada suatu class yang akan digunakan pada suatu objek itu bisa saja dimasukkan sebuah objek baru asalkan tipe datanya disesuaikan dan dispesifikasikan.
+
+
+
+Programming exercise:
+MessagingService (belum)
+
+
+Printing an Object from a List:
+Let's now modify the toString method so that the string returned by the method contains the name of each and every person on the ride.
+
+public class AmusementParkRide {
+    private String name;
+    private int minimumHeight;
+    private int visitors;
+    private ArrayList<Person> riding;
+
+    // ...
+
+    public String toString() {
+        // let's form a string from all the people on the list
+        String onTheRide = "";
+        for (Person person: riding) {
+            onTheRide = onTheRide + person.getName() + "\n";
+        }
+
+        // we return a string describing the object
+        // including the names of those on the ride
+        return this.name + ", minimum height requirement: " + this.minimumHeight +
+            ", visitors: " + this.visitors + "\n" +
+            "riding:\n" + onTheRide;
+    }
+}
+Let's test out the extended amusement park ride:
+
+Person matti = new Person("Matti");
+matti.setWeigth(86);
+matti.setHeight(180);
+
+Person juhana = new Person("Juhana");
+juhana.setWeigth(34);
+juhana.setHeight(132);
+
+AmusementParkRide hurjakuru = new AmusementParkRide("Hurjakuru", 140);
+System.out.println(hurjakuru);
+
+System.out.println();
+
+if (hurjakuru.isAllowedOn(matti)) {
+    System.out.println(matti.getNimi() + " is allowed on the ride");
+} else {
+    System.out.println(matti.getNimi() + " is not allowed on the ride");
+}
+
+if (hurjakuru.isAllowedOn(juhana)) {
+    System.out.println(juhana.getNimi() + " is allowed on the ride");
+} else {
+    System.out.println(juhana.getNimi() + " is not allowed on the ride");
+}
+
+System.out.println(hurjakuru);
+
+The program's output is:
+
+Sample output
+Hurjakuru, minimum height requirement: 140, visitors: 0
+riding:
+
+Matti is allowed on the ride
+Juhana is not allowed on the ride
+Hurjakuru, minimum height requirement: 140, visitors: 1
+riding:
+Matti
+
+
+Clearing an Object's List
