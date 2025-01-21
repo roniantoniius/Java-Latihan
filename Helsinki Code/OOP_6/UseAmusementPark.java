@@ -16,9 +16,9 @@ public class UseAmusementPark {
 
         AmusementParkRide gundala = new AmusementParkRide("Gundala", 155);
         System.out.println(gundala);
-
+        
         System.out.println();
-
+        
         if (gundala.isAllowedOn(yuli)){
             System.out.println(yuli.getName() + " is allowed on " + gundala);
         } else {
@@ -30,13 +30,19 @@ public class UseAmusementPark {
         } else {
             System.out.println(roni.getName() + " is not allowed on " + gundala);
         }
-
+        
         if (gundala.isAllowedOn(aku)){
             System.out.println(aku.getName() + " is allowed on " + gundala);
         } else {
             System.out.println(aku.getName() + " is not allowed on " + gundala);
         }
+        
+        System.out.println(gundala);
+        System.out.println("Rata-rata tinggi dari pengunjung pada wahana " + gundala + " adalah " + gundala.hitungRataTinggi() + "cm.");
+        System.out.println("ORang paling tinggi adalah " + gundala.getTallest().getName());
 
+        gundala.removeAmusement();
+        System.out.println();
         System.out.println(gundala);
     }
 }

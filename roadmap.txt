@@ -1270,4 +1270,9 @@ riding:
 Matti
 
 
-Clearing an Object's List
+Clearing an Object's List menggunakan .clear dengan input object dan inputnya adalah list objectnya.
+
+Calculating a Sum from Objects on a List:
+Caranya dengan bikin variabel kosong lalu bikin object yang mengembalikan nilai. Lalu list object tersebut di jumlahkan dengan for terhadap list object
+
+Retrieving a Specific Object from a List:

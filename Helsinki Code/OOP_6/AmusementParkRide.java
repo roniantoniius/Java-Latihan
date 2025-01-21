@@ -13,6 +13,10 @@ public class AmusementParkRide {
         this.daftarBoleh = new ArrayList<>();
     }
 
+    public String getName(){
+        return this.name;
+    }
+
     public boolean isAllowedOn(Person person) {
         if (person.getHeight() < this.minimumHeight) {
             return false;
@@ -23,6 +27,36 @@ public class AmusementParkRide {
         return true;
     }
 
+    public double hitungRataTinggi(){
+        if (daftarBoleh.isEmpty()){
+            return -1;
+        }
+
+        int jumlah = 0;
+        for (Person orang: daftarBoleh){
+            jumlah += orang.getHeight();
+        }
+
+        return 1.0 * jumlah / daftarBoleh.size();
+    }
+    public void removeAmusement(){
+        this.daftarBoleh.clear();
+    }
+    public Person getTallest(){
+        if (this.daftarBoleh.isEmpty()){
+            return null;
+        }
+
+        Person orangAwal = this.daftarBoleh.get(0);
+
+        for (Person orang: this.daftarBoleh){
+            if(orangAwal.getHeight() < orang.getHeight()){
+                orangAwal = orang;
+            }
+        }
+
+        return orangAwal;
+    }
     public String toString() {
         String printOutput = this.name + ", minimum height requirement: " + this.minimumHeight + ", visitors: " + this.visitors + "\n";
 
