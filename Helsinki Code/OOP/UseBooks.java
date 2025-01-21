@@ -19,6 +19,10 @@ public class UseBooks {
             int halaman = Integer.valueOf(list[2]);
             int tahunTerbit = Integer.valueOf(list[3]);
             Books baru = new Books(judul, penulis, halaman, tahunTerbit);
+            if (bukuBuku.contains(baru)){
+                System.out.println("Buku sudah ada di dalam list.");
+                continue; // continue akan menghentikan iterasi saat ini dan melanjutkan ke iterasi berikutnya
+            }
             bukuBuku.add(baru);
         }
 

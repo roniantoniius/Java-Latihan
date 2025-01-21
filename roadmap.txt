@@ -1,3 +1,11 @@
+Tanggal 21: COMMIT DULU YANG KEMARIN BELAJAR LATIHAN BOOKS DAN ARCHIVE DALAM OBJECT EQUALITY DAN LIST
+
+Sertif Java I:
+https://github.com/LoganBain/mooc-java-programming-i
+
+Sertif Java II:
+https://github.com/LoganBain/mooc-java-programming-ii
+
 Resource:
 1. https://java-programming.mooc.fi/ : Belajar Java Fundamental berdasarkan docs
 
@@ -1019,3 +1027,125 @@ Red is on the list.
 
 Programming exercise:
 Books
+
+
+Programming exercise:
+Archive (2 parts)
+
+Part 1: Adding and listing items
+Dia sama kayak Books dan UseBooks dengan input string dan store ke list.
+
+Part 2: You only print once (per item)
+Jadi dia ada dua object variabel dari Archive yaitu identifier dan name. Nah intinya kalau indentifiernya aja yang sama maka itu dianggap sama. Walaupun identifier sama namun namanya beda, itu tetap saja sama.
+
+Makannya fungsi equals pada Class Archive hanya sampai pada memeriksa variabel identifier saja.
+
+Baru yang dipring hanyalah yang beda.
+
+
+
+
+Object as a method's return value
+We have seen methods return boolean values, numbers, and strings. Easy to guess, a method can return an object of any type.
+
+In the next example we present a simple counter that has the method clone. The method can be used to create a clone of the counter; i.e. a new counter object that has the same value at the time of its creation as the counter that is being cloned.
+
+Jadi kita bisa clone suatu object, nah yang diclone adalah nilainya atau valuenya bukan referencenya
+
+public class Counter {
+    private int value;
+
+    // example of using multiple constructors:
+    // you can call another constructor from a constructor by calling this
+    // notice that the this call must be on the first line of the constructor
+    public Counter() {
+        this(0);
+    }
+
+    public Counter(int initialValue) {
+        this.value = initialValue;
+    }
+
+    public void increase() {
+        this.value = this.value + 1;
+    }
+
+    public String toString() {
+        return "value: " + value;
+    }
+
+    public Counter clone() {
+        // create a new counter object that receives the value of the cloned counter as its initial value
+        Counter clone = new Counter(this.value);
+
+        // return the clone to the caller
+        return clone;
+    }
+}
+
+
+An example of using counters follows:
+
+Counter counter = new Counter();
+counter.increase();
+counter.increase();
+
+System.out.println(counter);         // prints 2
+
+Counter clone = counter.clone();
+
+System.out.println(counter);         // prints 2
+System.out.println(clone);          // prints 2
+
+counter.increase();
+counter.increase();
+counter.increase();
+counter.increase();
+
+System.out.println(counter);         // prints 6
+System.out.println(clone);          // prints 2
+
+clone.increase();
+
+System.out.println(counter);         // prints 6
+System.out.println(clone);          // prints 3
+
+
+
+
+Exercise Money:
+In the Payment card exercise we used a double-type object variable to store the amount of money. In real applications this is not the approach you want to take, since as we have seen, calculating with doubles is not exact. A more reasonable way to handle amounts of money is create an own class for that purpose. Here is a layout for the class:
+
+public class Money {
+
+    private final int euros;
+    private final int cents;
+
+    public Money(int euros, int cents) {
+        this.euros = euros;
+        this.cents = cents;
+    }
+
+    public int euros() {
+        return euros;
+    }
+
+    public int cents() {
+        return cents;
+    }
+
+    public String toString() {
+        String zero = "";
+        if (cents <= 10) {
+            zero = "0";
+        }
+
+        return euros + "." + zero + cents + "e";
+    }
+}
+The word final used in the definition of object variables catches attention. The result of this word is that the values of these object variables cannot be modified after they have been set in the constructor. The objects of Money class are unchangeable so immutable — if we want to e.g. increase the amount of money, we must create a new object to represent that new amount of money.
+
+
+====================================================================================
+Part 6: Objects on a list and a list as part of an object
+

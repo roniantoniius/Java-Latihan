@@ -28,19 +28,12 @@ public class SimpleDate {
             return true;
         }
 
-        if (this.year > compare.year){
-            return false;
-        }
-
-        if (this.month < compare.month){
+        if (this.year == compare.year && this.month < compare.month) {
             return true;
         }
 
-        if (this.month > compare.month){
-            return false;
-        }
-
-        if (this.day < compare.day){
+        if (this.year == compare.year && this.month == compare.month &&
+            this.day < compare.day) {
             return true;
         }
 
@@ -65,6 +58,32 @@ public class SimpleDate {
         }
 
         return false;
+    }
+
+    public void advance(){
+        if (this.day == 30){
+            this.day = 1;
+            if (this.month == 12){
+                this.month = 1;
+                this.year++;
+            } else {
+                this.month++;
+            }
+        } else {
+            this.day++;
+        }
+    }
+
+    public void advance(int howManyDays){
+        for (int i = 0; i < howManyDays; i++){
+            this.advance();
+        }
+    }
+
+    public SimpleDate afterNumberOfDays(int days){
+        SimpleDate newDate = new SimpleDate(this.day, this.month, this.year);
+        newDate.advance(days);
+        return newDate;
     }
 
     @Override
