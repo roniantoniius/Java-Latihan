@@ -18,6 +18,9 @@ public class Person {
     public Person(String name){
         this(name, 0, 0, 0);
     }
+    public Person(String name, int height){
+        this(name, 0, height, 0);
+    }
 
     @Override
     public String toString(){ // ini adalah method, namun method khusus untuk print
