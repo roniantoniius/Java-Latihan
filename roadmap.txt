@@ -1465,3 +1465,10 @@ register.addGradeBasedOnPoints(49);
 
 System.out.println("Number of students with grade 0 (should be 1): " + register.numberOfGrades(0);
 System.out.println("Number of students with grade 0 (should be 2): " + register.numberOfGrades(2);
+
+
+User interface
+Typically each program has its own user interface. We will create the class UserInterface and separate it from the main program. The user interface receives two parameters in its constructor: a grade register for storing the grades, and a Scanner object used for reading input.
+
+When we now have a separate user interface at our disposal, the main program that initializes the whole program becomes very clear.
+
