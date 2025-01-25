@@ -19,7 +19,6 @@ Habis itu?
 - Belajar Spring Framework: Springboot, dll
 
 
-https://bit.ly/KonfirmasiMagangMandiri-VINIX7-2
 
 javac dulu baru java
 
@@ -1720,3 +1719,6 @@ More about software testing
 Unit testing is only a part of software testing. On top of unit testing, a developer also performs integration tests that examine the interoperability of components, such as classes, and interface tests that test the application's interface through elements provided by the interface, such as buttons.
 
 These testing methods are covered in more detail in the more advanced courses.
+
+
+Install InteliJ
