@@ -1,4 +1,3 @@
-Tanggal 21: COMMIT DULU YANG KEMARIN BELAJAR LATIHAN BOOKS DAN ARCHIVE DALAM OBJECT EQUALITY DAN LIST
 
 Sertif Java I:
 https://github.com/LoganBain/mooc-java-programming-i
@@ -22,6 +21,7 @@ Habis itu?
 
 javac dulu baru java
 
+Kamu merupakan seorang yang memiliki kepribadian baik dalam mengajar bahasa pemrograman Java. Kali ini kamu akan mengajari atau memandu saya untuk memahami apa yang sedang saya pelajari sekarang. Jadi nanti saya akan bertanya hal-hal berkaitan dengan pemrograman dan bahasa pemrograman Java, dan kamu akan menjelaskannya kepada saya.
 
 ====================================================================================
 Java Programming I
@@ -1722,3 +1722,83 @@ These testing methods are covered in more detail in the more advanced courses.
 
 
 Install InteliJ
+
+
+Complex programs
+When you learn programming, you also develop a better eye for reading code (yours and others). In this part we understood the use of lists and practiced separating the UI from the program logic.
+
+The following is from On the role of scientific thought by Edsger W. Dijkstra .
+
+Let me try to explain to you, what to my taste is characteristic for all intelligent thinking. It is, that one is willing to study in depth an aspect of one's subject matter in isolation for the sake of its own consistency, all the time knowing that one is occupying oneself only with one of the aspects. We know that a program must be correct and we can study it from that viewpoint only; we also know that it should be efficient and we can study its efficiency on another day, so to speak. In another mood we may ask ourselves whether, and if so: why, the program is desirable. But nothing is gained - on the contrary! - by tackling these various aspects simultaneously. It is what I sometimes have called "the separation of concerns", which, even if not perfectly possible, is yet the only available technique for effective ordering of one's thoughts, that I know of. This is what I mean by "focusing one's attention upon some aspect": it does not mean ignoring the other aspects, it is just doing justice to the fact that from this aspect's point of view, the other is irrelevant. It is being one- and multiple-track minded simultaneously.
+
+The core of Dikstra's message is, that the problem areas of a program must be separated from each other — this is exactly what we have been doing with object-oriented programming and by separating the UI from the program logic. Each problem area has been separated into its own part. This can also be viewed through the lens of program responsibilities. In his blog Robert "Uncle Bob" C. Martin describes the term "single responsibility principle":
+
+When you write a software module, you want to make sure that when changes are requested, those changes can only originate from a single person, or rather, a single tightly coupled group of people representing a single narrowly defined business function. You want to isolate your modules from the complexities of the organization as a whole, and design your systems such that each module is responsible (responds to) the needs of just that one business function.
+
+[..in other words..] Gather together the things that change for the same reasons. Separate those things that change for different reasons.
+
+Proper program structure and following good naming principles leads to clean code. When you code a bit more, you'll learn that each program part can be given one clear area of responsibility.
+
+
+
+
+====================================================================================
+Part 7: Programming paradigms
+
+A programming paradigm is a way of thinking about and structuring a program's functionality. Programming paradigms differ from one another, for example in how the program's execution and control are defined and what components the programs consist of.
+
+Most programming languages ​​that are currently in use support multiple programming paradigms. Part of a programmer's growth involves the ability, through experience, to choose the appropriate programming language and paradigm; there currently is no single ubiquitous programming language and programming paradigm.
+
+The most common programming paradigms today are object-oriented programming, procedural programming, and functional programming. The first two of these are briefly discussed in what follows.
+
+Paradigma pemrograman adalah cara berpikir atau pendekatan yang digunakan untuk menyusun dan mengorganisasi fungsi-fungsi dalam sebuah program. Setiap paradigma memiliki cara yang berbeda dalam mendefinisikan bagaimana program dijalankan (execution), bagaimana alur kontrol (control flow) bekerja, dan komponen apa saja yang membangun program tersebut.
+
+- Jika kamu membuat program dengan pendekatan prosedural, kamu akan fokus pada langkah-langkah atau prosedur yang harus dijalankan.
+- Jika menggunakan pendekatan object-oriented, kamu akan fokus pada objek-objek dan interaksi antara objek tersebut.
+- Jika menggunakan pendekatan fungsional, kamu akan fokus pada fungsi-fungsi matematis dan menghindari perubahan state (keadaan).
+
+
+
+
+1. Object-Oriented Programming
+In object-oriented programming, information is represented as classes that describe the concepts of the problem domain and the logic of the application. Classes define the methods that determine how information is handled. During program execution, objects are instantiated from classes that contain runtime information and that also have an effect on program execution: program execution typically proceeds through a series of method calls related to the objects. As mentioned a few weeks ago, "the program is built from small, clear, and cooperative entities."
+
+The basic ideas of object-oriented programming, i.e., the representation of information and its processing methods with he help of classes and objects, first appeared in Simula 67, which was designed for developing simulations and the Smalltalk programming language. Its breakthrough came in the 1980s through the C++ programming language and Java has made it one of the most widely used programming paradigms in the world.
+
+One of the major benefits of object-oriented programming is how problem-domain concepts are modeled through classes and objects, which makes programs easier to understand. In addition, structuring the problem domain into classes facilitates the construction and maintenance of programs. However, object-oriented programming is not inherently suited to all problems: for example, scientific computing and statistics applications typically make use of languages, such as R and Python.
+
+OOP adalah paradigma pemrograman yang berfokus pada objek sebagai representasi dari data dan perilaku. Dalam OOP, informasi direpresentasikan dalam bentuk class dan object. Class adalah blueprint atau template yang mendefinisikan atribut (data) dan metode (perilaku), sedangkan object adalah instance (contoh nyata) dari class tersebut.
+
+
+2. Procedural programming
+Whereas in object-oriented programming, the structure of a program is formed by the data it processes, in procedural programming, the structure of the program is formed by functionality desired for the program: the program acts as a step-by-step guide for the functionality to be performed. The program is executed one step at a time, and subroutines (methods) are called whenever necessary.
+
+In procedural programming, the state of the program is maintained in variables and tables, and any methods handle only the values provided to them as parameters. The program tells the computer what should happen. As an example, the code below demonstrates the swapping of values for two variables a and b
+
+When comparing object-oriented programming with procedural programming, a few essential differences emerge. In object-oriented programming, the state of an object can, in principle, change with any object method, and that change of state can also affect the working of the methods of other objects. As a consequence, other aspects of a program's execution may also be affected since objects can be used in multiple places within the program.
+
+The difference between object-oriented programming and procedural programming are shown concretely in the clock example presented at the beginning of Part Five. The solution below depicts a procedural style where the printing of the time is transferred to a method.
+
+Procedural Programming adalah paradigma pemrograman yang berfokus pada langkah-langkah atau prosedur yang harus dijalankan oleh program. Program dijalankan secara berurutan, langkah demi langkah, dan subrutin (seperti fungsi atau metode) dipanggil ketika diperlukan.
+
+Jika kamu ingin membuat program untuk menghitung luas segitiga, kamu akan menulis langkah-langkahnya seperti:
+- Minta input alas dan tinggi.
+- Hitung luas menggunakan rumus (alas * tinggi) / 2.
+- Tampilkan hasilnya.
+
+
+Ciri-Ciri Procedural Programming
+1. Fokus pada Fungsi:
+- Program dibagi menjadi fungsi-fungsi kecil yang masing-masing melakukan tugas tertentu.
+- Contoh: Fungsi untuk menghitung luas, fungsi untuk menampilkan hasil, dll.
+
+2. State Program:
+- State (keadaan) program disimpan dalam variabel dan tabel.
+- Fungsi hanya mengolah nilai yang diberikan sebagai parameter, dan tidak menyimpan state sendiri.
+
+3. Eksekusi Berurutan:
+- Program dijalankan satu per satu dari atas ke bawah.
+- Subrutin (fungsi) dipanggil ketika diperlukan.
+
+Procedural Programming adalah paradigma yang sederhana dan mudah dipahami, terutama untuk program kecil atau yang tidak terlalu kompleks. Namun, untuk program yang lebih besar dan kompleks, OOP seringkali lebih disukai karena kemampuannya dalam mengorganisasi kode dan memodelkan dunia nyata.
+
