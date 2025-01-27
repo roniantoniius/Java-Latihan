@@ -1,4 +1,3 @@
-
 Sertif Java I:
 https://github.com/LoganBain/mooc-java-programming-i
 
@@ -1801,4 +1800,33 @@ Ciri-Ciri Procedural Programming
 - Subrutin (fungsi) dipanggil ketika diperlukan.
 
 Procedural Programming adalah paradigma yang sederhana dan mudah dipahami, terutama untuk program kecil atau yang tidak terlalu kompleks. Namun, untuk program yang lebih besar dan kompleks, OOP seringkali lebih disukai karena kemampuannya dalam mengorganisasi kode dan memodelkan dunia nyata.
+
+
+====================================================================================
+Part 7: Algorithms
+
+Algorithms, precise instructions on how to to accomplish a specific task, are at the core of computer science. In the context of programming, algorithms are typically defined using source code.
+
+The concept of efficiency is often associated with algorithms. A programs efficiency, i.e, the computation of required information fast enough, is an integral part of a programs usability. If it took two days for an algorithm designed for forecasting tomorrows weather run, the results wouldn't be very useful! Similarly, a user viewing a TVs program guide won't get any use out of it, if the tv-shows info only loads after the show already ended.
+
+In a more general sense, retrieving and displaying information quickly is an integral part of any applications function. Next let's explore algorithms associated with retrieving and sorting information. While the following examples utilize arrays, the algorithms shown will also work with other data-structures meant for storing information, such as lists.
+
+
+Perbedaan Array dengan List:
+1. Array
+- Array adalah struktur data yang menyimpan sekumpulan elemen dengan tipe data yang sama.
+- Ukuran array bersifat fixed (tetap) setelah dibuat.
+- Contoh: int[] numbers = new int[5]; (array dengan 5 elemen integer).
+
+2. List
+- List adalah bagian dari Collection Framework di Java yang menyimpan sekumpulan elemen.
+- List bersifat dinamis, artinya ukurannya bisa bertambah atau berkurang selama program berjalan.
+- Contoh: List<Integer> numbers = new ArrayList<>(); (list yang bisa menampung elemen integer).
+
+
+Sorting information:
+If the information (data) giving to a computer, doesn't follow any rules and isn't in order, retrieving that information is taxing for the computer. We need order!
+
+1. Selection sort
+Every programmer should be familiar with at least one sorting algorithm (i.e a way to sort an array). Let's familiarize ourselves with one "classic" sorting algorithm, the selection sort. We'll do so with a programing exercise.
 
