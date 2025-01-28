@@ -1885,7 +1885,6 @@ Binary search (aka half-interval search or logarithmic search )
 When the data searched is in order, searching can be implemented a lot more efficiently than in linear search. The idea behind Binary Search is to start looking for the searched value in the middle index of the array (or list), compare the value found there to the searched value, and if needed (i.e, when the value isn't found there) eliminate half of the search area. The algorithm is more thoroughly introduced in the following slideshow.
 
 
-
 Binary Search Algorithm (only work with orderd arrays / lists):
 
 Idea of binary search
@@ -1895,3 +1894,5 @@ Idea of binary search
 ●If the examined middle value is the value that is searched for, we return the index of that middle point.
 ●If the search area does not exist anymore (every index has been excluded from the list of possinilities), the value of -1 is returned. It indicates that the value in question cannot be found.
 
+Part 2: Point average for points giving a passing grade
+- caranya bikin method baru dengan input passing threshold, bikin variabel penghitung size atau jumlah dari nilai yang berada di threshold.
