@@ -1896,3 +1896,7 @@ Idea of binary search
 
 Part 2: Point average for points giving a passing grade
 - caranya bikin method baru dengan input passing threshold, bikin variabel penghitung size atau jumlah dari nilai yang berada di threshold.
+
+
+Programming exercise:
+Recipe search (4 parts)

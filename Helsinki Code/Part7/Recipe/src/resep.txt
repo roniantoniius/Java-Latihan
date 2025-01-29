@@ -1,0 +1,88 @@
+Nasi Goreng
+15
+Nasi
+Minyak Goreng
+Bawang Merah
+Bawang Putih
+Kecap Manis
+Telur
+Ayam
+Garam
+
+Sate Ayam
+30
+Daging Ayam
+Tusuk Sate
+Kecap Manis
+Bawang Merah
+Bawang Putih
+Garam
+Merica
+
+Rendang
+120
+Daging Sapi
+Santan
+Bawang Merah
+Bawang Putih
+Jahe
+Lengkuas
+Daun Salam
+Cabe
+
+Gado-Gado
+20
+Kacang Panjang
+Tahu
+Tempe
+Saus Kacang
+Telur Rebus
+Lemon
+
+Soto Ayam
+60
+Daging Ayam
+Santan
+Bawang Merah
+Bawang Putih
+Jahe
+Daun Seledri
+Garam
+
+Bakso
+90
+Daging Sapi
+Tepung Tapioka
+Bawang Putih
+Garam
+Merica
+
+Nasi Uduk
+45
+Nasi
+Santan
+Daun Pandan
+Garam
+
+Pecel Lele
+30
+Ikan Lele
+Minyak Goreng
+Sambal
+Nasi
+
+Ayam Penyet
+45
+Daging Ayam
+Minyak Goreng
+Sambal
+Nasi
+
+Martabak
+60
+Tepung Terigu
+Telur
+Daging Cincang
+Bawang Merah
+Bawang Putih
+Garam
