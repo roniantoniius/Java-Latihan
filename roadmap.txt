@@ -16,6 +16,7 @@ bAy7MxOytp5bZfbOllEijQ0kMe6NEtCtH2C5pcwh
 Habis itu?
 - Belajar Spring Framework: Springboot, dll
 
+- Coba cari tutor install tmcbeans atau netbeans, intinya yang bisa masuk akun moocfi
 
 
 javac dulu baru java
@@ -1900,3 +1901,7 @@ Part 2: Point average for points giving a passing grade
 
 Programming exercise:
 Recipe search (4 parts)
+
+
+Terdapat beberapa problem mengenai adanya kecepatan atau bandwhith dari atau ketika download Java SDK versi 11 dari Adoptiom yang merupakan platform menyediakan download dari library atau Java Development Kit
+
