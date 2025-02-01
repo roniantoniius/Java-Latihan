@@ -21,7 +21,7 @@ Habis itu?
 
 javac dulu baru java
 
-Kamu merupakan seorang yang memiliki kepribadian baik dalam mengajar bahasa pemrograman Java. Kali ini kamu akan mengajari atau memandu saya untuk memahami apa yang sedang saya pelajari sekarang. Jadi nanti saya akan bertanya hal-hal berkaitan dengan pemrograman dan bahasa pemrograman Java, dan kamu akan menjelaskannya kepada saya.
+Kamu merupakan seorang instruktur berpengalaman dalam mengajarkan bahasa pemrograman Java di Google. Nah saya ingin kamu mendampingi saya seterusnya ok untuk menjelasakn catatan yang saya buat tentang java dalam konteks yang lebih mudah dippahami dan tetap mempertahankan term seputar teknologi.
 
 ====================================================================================
 Java Programming I
@@ -2388,4 +2388,194 @@ public class registerSightingCounter {
         return this.allSightings.getOrDefault(sighted, 0);
     }
 }
+
+------------------------------------------------------------------------------------
+Part 8: Part 2 Similarity of objects
+
+Method to Test For Equality - "equals"
+The internal structure of the book objects (i.e., the values of their instance variables ) in the previous example is the same, but only the first comparison prints "The books are the same". This is because the references are the same in the first case, i.e., the object is compared to itself. The second comparison is about two different entities, even though the variables have the same values.
+
+For strings, equals works as expected in that it declares two strings identical in content to be 'equal' even if they are two separate objects. The String class has replaced the default equals with its own implementation.
+
+
+The ArrayList also uses the equals method in its internal implementation. If we don't define the equals method in our objects, the contains method of the ArrayList does not work properly. If you try out the code below with two Book classes, one with the equals method defined and another without it, you'll see the difference.
+
+
+ArrayList<Book> books = new ArrayList<>();
+Book bookObject = new Book("Book Object", 2000, "...");
+books.add(bookObject);
+
+if (books.contains(bookObject)) {
+    System.out.println("Book Object was found.");
+}
+
+bookObject = new Book("Book Object", 2000, "...");
+
+if (!books.contains(bookObject)) {
+    System.out.println("Book Object was not found.");
+}
+
+This reliance on default methods such as equals is actually the reason why Java demands that variables added to ArrayList and HashMap are of reference type. Each reference type variable comes with default methods, such as equals, which means that you don't need to change the internal implementation of the ArrayList class when adding variables of different types. Primitive variables do not have such default methods.
+
+
+Approximate Comparison With HashMap
+In addition to equals, the hashCode method can also be used for approximate comparison of objects. The method creates from the object a "hash code", i.e, a number, that tells a bit about the object's content. If two objects have the same hash value, they may be equal. On the other hand, if two objects have different hash values, they are certainly unequal.
+
+Hash codes are used in HashMaps, for instance. HashMap's internal behavior is based on the fact that key-value pairs are stored in an array of lists based on the key's hash value. Each array index points to a list. The hash value identifies the array index, whereby the list located at the array index is traversed. The value associated with the key will be returned if, and only if, the exact same value is found in the list (equality comparison is done using the equals method). This way, the search only needs to consider a fraction of the keys stored in the hash map.
+
+So far, we've only used String and Integer-type objects as HashMap keys, which have conveniently had ready-made hashCode methods implemented. Let's create an example where this is not the case: we'll continue with the books and keep track of the books that are on loan. We'll implement the book keeping with a HashMap. The key is the book and the value attached to the book is a string that tells the borrower's name:
+
+HashMap<Book, String> borrowers = new HashMap<>();
+
+Book bookObject = new Book("Book Object", 2000, "...");
+borrowers.put(bookObject, "Pekka");
+borrowers.put(new Book("Test Driven Development", 1999, "..."), "Arto");
+
+System.out.println(borrowers.get(bookObject));
+System.out.println(borrowers.get(new Book("Book Object", 2000, "...")));
+System.out.println(borrowers.get(new Book("Test Driven Development", 1999, "...")));
+
+Sample output
+Pekka
+null
+null
+
+We find the borrower when searching for the same object that was given as a key to the hash map's put method. However, when searching by the exact same book but with a different object, a borrower isn't found, and we get the null reference instead. The reason lies in the default implementation of the hashCode method in the Object class. The default implementation creates a hashCode value based on the object's reference, which means that books having the same content that are nonetheless different objects get different results from the hashCode method. As such, the object is not being searched for in the right place.
+
+Jadi untuk sout kedua itu memang ada dan berhasil, tapi valuenya aja belum di definisiin.
+
+For the HashMap to work in the way we want it to, that is, to return the borrower when given an object with the correct content (not necessarily the same object as the original key), the class that the key belongs to must overwrite the hashCode method in addition to the equals method. The method must be overwritten so that it gives the same numerical result for all objects with the same content. Also, some objects with different contents may get the same result from the hashCode method. However, with the HashMap's performance in mind, it is essential that objects with different contents get the same hash value as rarely as possible.
+
+We've previously used String objects as HashMap keys, so we can deduce that the String class has a well-functioning hashCode implementation of its own. We'll delegate, i.e., transfer the computational responsibility to the String object.
+
+public int hashCode() {
+    return this.name.hashCode();
+}
+
+The above solution is quite good. However, if name is null, we see a NullPointerException error. Let's fix this by defining a condition: if the value of the name variable is null, we'll return the year of publication as the hash value.
+
+public int hashCode() {
+    if (this.name == null) {
+        return this.published;
+    }
+
+    return this.name.hashCode();
+}
+
+Now, all of the books that share a name are bundled into one group. Let's improve it further so that the year of publication is also taken into account in the hash value calculation that's based on the book title.
+
+public int hashCode() {
+    if (this.name == null) {
+        return this.published;
+    }
+
+    return this.published + this.name.hashCode();
+}
+
+It's now possible to use the book as the hash map's key. This way the problem we faced earlier gets solved and the book borrowers are found:
+
+HashMap<Book, String> borrowers = new HashMap<>();
+
+Book bookObject = new Book("Book Object", 2000, "...");
+borrowers.put(bookObject, "Pekka");
+borrowers.put(new Book("Test Driven Development",1999, "..."), "Arto");
+
+System.out.println(borrowers.get(bookObject));
+System.out.println(borrowers.get(new Book("Book Object", 2000, "...")));
+System.out.println(borrowers.get(new Book("Test Driven Development", 1999)));
+
+Output:
+Pekka
+Pekka
+Arto
+
+Let's review the ideas once more: for a class to be used as a HashMap's key, we need to define for it:
+- the equals method, so that all equal or approximately equal objects cause the comparison to return true and all false for all the rest
+- the hashCode method, so that as few objects as possible end up with the same hash value
+
+
+Jadi lets review this far:
+- HashMap adalah sebuah struktur data yang digunakan untuk menyimpan pasangan kunci-nilai (key-value pairs).
+- HashMap merupakan implementasi dari interface Map dalam Java dan merupakan bagian dari Java Collections Framework.
+- Kunci (key) dalam HashMap harus unik, sedangkan nilai (value) bisa duplikat.
+
+Cara kerja HashMap:
+- HashMap menggunakan teknik hashing untuk menyimpan dan mengakses data. Setiap kunci yang dimasukkan ke dalam HashMap akan diolah menggunakan metode hashCode() untuk menghasilkan nilai hash.
+- Nilai hash ini digunakan untuk menentukan indeks dalam array yang menyimpan pasangan kunci-nilai.
+- Jika dua kunci memiliki nilai hash yang sama, mereka akan disimpan dalam daftar yang sama (collision handling).
+
+Metode Utama dalam HashMap Berikut adalah beberapa metode penting yang sering digunakan dalam HashMap:
+- put(K key, V value): Menambahkan pasangan kunci-nilai ke dalam HashMap.
+- get(Object key): Mengambil nilai yang terkait dengan kunci yang diberikan.
+- remove(Object key): Menghapus pasangan kunci-nilai berdasarkan kunci.
+- containsKey(Object key): Memeriksa apakah kunci tertentu ada dalam HashMap.
+- containsValue(Object value): Memeriksa apakah nilai tertentu ada dalam HashMap.
+- keySet(): Mengembalikan set dari semua kunci yang ada dalam HashMap.
+- values(): Mengembalikan koleksi dari semua nilai yang ada dalam HashMap.
+- size(): Mengembalikan jumlah pasangan kunci-nilai yang ada dalam HashMap.
+- clear(): Menghapus semua pasangan kunci-nilai dari HashMap.
+
+- Dengan menggunakan metode hashCode() dan equals(), kita dapat memastikan bahwa objek yang digunakan sebagai kunci berfungsi dengan baik dalam HashMap.
+
+3. Pentingnya Metode equals() dan hashCode()
+- Untuk objek yang digunakan sebagai kunci dalam HashMap, penting untuk mengoverride kedua metode ini agar HashMap dapat berfungsi dengan baik.
+- equals(Object obj): Digunakan untuk membandingkan dua objek untuk kesetaraan logis.
+- hashCode(): Mengembalikan nilai hash integer untuk objek, yang digunakan dalam koleksi berbasis hashing untuk menemukan objek dengan cepat.
+
+4. Contoh Implementasi
+- Misalkan kita memiliki kelas Book yang ingin kita gunakan sebagai kunci dalam HashMap. Kita perlu mengoverride metode equals() dan hashCode() agar objek dengan konten yang sama dapat ditemukan dengan benar.
+```
+public class Book {
+    private String name;
+    private int published;
+
+    public Book(String name, int published) {
+        this.name = name;
+        this.published = published;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Book)) return false;
+        Book other = (Book) obj;
+        return this.name.equals(other.name) && this.published == other.published;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.published + (this.name != null ? this.name.hashCode() : 0);
+    }
+}
+```
+
+5. Contoh Penggunaan HashMap
+- Dengan implementasi di atas, kita dapat menggunakan objek Book sebagai kunci dalam HashMap:
+
+HashMap<Book, String> borrowers = new HashMap<>();
+Book bookObject = new Book("Book Object", 2000);
+borrowers.put(bookObject, "Pekka");
+borrowers.put(new Book("Test Driven Development", 1999), "Arto");
+
+System.out.println(borrowers.get(bookObject)); // Output: Pekka
+System.out.println(borrowers.get(new Book("Book Object", 2000))); // Output: Pekka
+System.out.println(borrowers.get(new Book("Test Driven Development", 1999))); // Output: Arto
+
+Jadi:
+- Untuk menggunakan objek sebagai kunci dalam HashMap, kita perlu mengoverride metode equals() dan hashCode() agar objek dengan konten yang sama dapat ditemukan dengan benar.
+
+
+So apa itu method hashCode()?
+- Metode hashCode() adalah metode yang didefinisikan dalam kelas Object di Java. Metode ini mengembalikan nilai hash integer untuk objek, yang digunakan dalam koleksi berbasis hashing seperti HashMap, HashSet, dan Hashtable.
+- Nilai hash ini berfungsi sebagai identifikasi unik untuk objek, yang memungkinkan pencarian dan pengambilan data yang lebih cepat dalam koleksi.
+
+
+- Konsistensi: Setiap kali hashCode() dipanggil pada objek yang sama selama eksekusi aplikasi, metode ini harus mengembalikan nilai yang sama, asalkan tidak ada informasi yang digunakan dalam perbandingan equals() objek tersebut yang diubah.
+- Kesetaraan: Jika dua objek dianggap sama menurut metode equals(), maka memanggil hashCode() pada kedua objek tersebut harus menghasilkan nilai yang sama.
+
+@Override
+    public int hashCode() {
+        // Menggunakan tahun terbit dan nama buku untuk menghasilkan nilai hash
+        return this.published + (this.name != null ? this.name.hashCode() : 0);
+    }
 
