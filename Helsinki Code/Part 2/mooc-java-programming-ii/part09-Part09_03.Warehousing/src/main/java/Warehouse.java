@@ -1,5 +1,3 @@
-
-
 public class Warehouse {
 
     private double capacity;
