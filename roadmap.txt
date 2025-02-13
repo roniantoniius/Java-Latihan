@@ -3929,3 +3929,114 @@ persons.stream()
 The distinct-method described above uses the equals-method that is in all objects for comparing whether two strings are the same. The sorted-method on the other hand is able to sort objects that contain some kind of order — examples of this kind of objects are for example numbers and strings.
 
 
+
+
+Objects and Stream
+Handling objects using stream methods is natural. Each stream method that deals with the stream's values ​​also enables you to call methods related to values. Let's look at an example where we have books with authors. The classes Person and Book are provided below.
+
+public class Person {
+    private String name;
+    private int birthYear;
+
+    public Person(String name, int birthYear) {
+        this.name = name;
+        this.birthYear = birthYear;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public int getBirthYear() {
+        return this.birthYear;
+    }
+
+    public String toString() {
+        return this.name + " (" + this.birthYear + ")";
+    }
+}
+public class Book {
+    private Person author;
+    private String name;
+    private int pages;
+
+    public Book(Person author, String name, int pages) {
+        this.author = author;
+        this.name = name;
+        this.pages = pages;
+    }
+
+    public Person getAuthor() {
+        return this.author;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public int getPages() {
+        return this.pages;
+    }
+}
+
+Say we have a list of books. Calculating the average of the authors' birth years can be done using stream methods in a way that feels natural. First, we convert the stream of books to a stream of persons, and then we convert the stream of person to a stream of birth years. Finally, we ask the (integer) stream for an average.
+
+// let's assume that we have a list of books
+// List<Book> books = new ArrayList<>();
+
+double average = books.stream()
+    .map(book -> book.getAuthor())
+    .mapToInt(author -> author.getBirthYear())
+    .average()
+    .getAsDouble();
+
+System.out.println("Average of the authors' birth years: " + average);
+
+// the mapping of a book to an author could also be done with a single map call
+// double average = books.stream()
+//     .mapToInt(book -> book.getAuthor().getBirthYear())
+//     ...
+
+Similarly, the names of the authors of books with the word "Potter" in their titles are outputted the following way.
+
+// let's assume that we have a list of books
+// List<Book> books = new ArrayList<>();
+
+books.stream()
+    .filter(book -> book.getName().contains("Potter"))
+    .map(book -> book.getAuthor())
+    .forEach(author -> System.out.println(author));
+
+
+Streams can also be used to build more complex string representations. In the example below, we print "Author Name: Book" pairs arranged in alphabetical order.
+
+// let's assume that we have a list of books at our disposal
+// ArrayList<Book> books = new ArrayList<>();
+
+books.stream()
+    .map(book -> book.getAuthor().getName() + ": " + book.getName())
+    .sorted()
+    .forEach(name -> System.out.println(name));
+
+
+
+Files and Streams
+Streams are also very handy in handling files. The file is read in stream form using Java's ready-made Files class. The lines method in the files class allows you to create an input stream from a file, allowing you to process the rows one by one. The lines method gets a path as its parameter, which is created using the get method in the Paths class. The get method is provided a string describing the file path.
+
+The example below reads all the lines in "file.txt" and adds them to the list.
+
+List<String> rows = new ArrayList<>();
+
+try {
+    Files.lines(Paths.get("file.txt")).forEach(row -> rows.add(row));
+} catch (Exception e) {
+    System.out.println("Error: " + e.getMessage());
+}
+
+// do something with the read lines
+
+If the file is both found and read successfully, the lines of the "file.txt" file will be in the rows list variable at the end of the program. However, if a file cannot be found or read, an error message will be displayed. Below is one possibility:
+
+Sample output
+Error: file.txt (No such file or directory)
+
