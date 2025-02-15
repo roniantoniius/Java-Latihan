@@ -4040,3 +4040,349 @@ If the file is both found and read successfully, the lines of the "file.txt" fil
 Sample output
 Error: file.txt (No such file or directory)
 
+
+====================================================================================
+Part 10: The Comparable Interface
+
+In the previous section, we looked at interfaces in more general terms - let's now familiarize ourselves with one of Java's ready-made interfaces. The Comparable interface defines the compareTo method used to compare objects. If a class implements the Comparable interface, objects created from that class can be sorted using Java's sorting algorithms.
+
+The compareTo method required by the Comparable interface receives as its parameter the object to which the "this" object is compared. If the "this" object comes before the object received as a parameter in terms of sorting order, the method should return a negative number. If, on the other hand, the "this" object comes after the object received as a parameter, the method should return a positive number. Otherwise, 0 is returned. The sorting resulting from the compareTo method is called natural ordering.
+
+Let's take a look at this with the help of a Member class that represents a child or youth who belongs to a club. Each club member has a name and height. The club members should go to eat in order of height, so the Member class should implement the Comparable interface. The Comparable interface takes as its type parameter the class that is the subject of the comparison. We'll use the same Member class as the type parameter.
+
+public class Member implements Comparable<Member> {
+    private String name;
+    private int height;
+
+    public Member(String name, int height) {
+        this.name = name;
+        this.height = height;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public int getHeight() {
+        return this.height;
+    }
+
+    @Override
+    public String toString() {
+        return this.getName() + " (" + this.getHeight() + ")";
+    }
+
+    @Override
+    public int compareTo(Member member) {
+        if (this.height == member.getHeight()) {
+            return 0;
+        } else if (this.height > member.getHeight()) {
+            return 1;
+        } else {
+            return -1;
+        }
+    }
+}
+
+The compareTo method required by the interface returns an integer that informs us of the order of comparison.
+
+As returning a negative number from compareTo() is enough if the this object is smaller than the parameter object, and returning zero is sufficient when the lengths are the same, the compareTo method described above can also be implemented as follows.
+
+@Override
+public int compareTo(Member member) {
+    return this.height - member.getHeight();
+}
+
+Since the Member class implements the Comparable interface, it is possible to sort the list by using the sorted method. In fact, objects of any class that implement the Comparable interface can be sorted using the sorted method. Be aware, however, that a stream does not sort the original list - only the items in the stream are sorted.
+
+If a programmer wants to organize the original list, the sort method of the Collections class should be used. This, of course, assumes that the objects on the list implement the Comparable interface.
+
+Sorting club members is straightforward now.
+
+List<Member> member = new ArrayList<>();
+member.add(new Member("mikael", 182));
+member.add(new Member("matti", 187));
+member.add(new Member("ada", 184));
+
+member.stream().forEach(m -> System.out.println(m));
+System.out.println();
+// sorting the stream that is to be printed using the sorted method
+member.stream().sorted().forEach(m -> System.out.println(m));
+member.stream().forEach(m -> System.out.println(m));
+// sorting a list with the sort-method of the Collections class
+Collections.sort(member);
+member.stream().forEach(m -> System.out.println(m));
+
+mikael (182)
+matti (187)
+ada (184)
+
+mikael (182)
+ada (184)
+matti (187)
+
+mikael (182)
+matti (187)
+ada (184)
+
+mikael (182)
+ada (184)
+matti (187)
+
+
+**Penjelasan tentang Interface Comparable dalam Java**  
+Halo! Mari kita bahas materi tentang **Interface Comparable** dengan bahasa yang santai dan mudah dipahami. Yuk, simak baik-baik! 😊
+
+---
+
+### **Apa itu Interface Comparable?**
+**Comparable** adalah interface bawaan Java yang digunakan untuk menentukan cara **mengurutkan objek**. Jika suatu kelas mengimplementasikan interface ini, objek dari kelas tersebut bisa diurutkan menggunakan algoritma sorting di Java (seperti `Collections.sort()` atau `stream().sorted()`).
+
+**Analoginya:** Bayangkan kamu punya daftar nama siswa yang ingin diurutkan berdasarkan abjad, atau daftar angka yang diurutkan dari terkecil ke terbesar. Nah, `Comparable` inilah yang memberi tahu Java: *"Hei, ini cara mengurutkan objek-objek dari kelas ini!"*
+
+---
+
+### **Bagaimana Cara Kerja Comparable?**
+Interface `Comparable` mengharuskan kita mengimplementasikan **method `compareTo()`**. Method inilah yang menentukan aturan pengurutan.
+
+#### **Aturan Return Value `compareTo()`:**
+- Jika **objek ini** (`this`) **lebih kecil** dari objek pembanding, return **bilangan negatif**.
+- Jika **objek ini** **lebih besar** dari objek pembanding, return **bilangan positif**.
+- Jika **sama**, return **0**.
+
+**Contoh Praktis:**  
+Misal kita punya kelas `Member` dengan atribut `tinggiBadan`. Kita ingin mengurutkan member berdasarkan tinggi badan dari yang terpendek ke tertinggi.
+
+---
+
+### **Implementasi Comparable pada Kelas Member**
+Berikut contoh implementasi `Comparable` pada kelas `Member`:
+
+```java
+public class Member implements Comparable<Member> {
+    private String nama;
+    private int tinggiBadan;
+
+    // Constructor, getter, dan toString() 
+
+    @Override
+    public int compareTo(Member lain) {
+        return this.tinggiBadan - lain.tinggiBadan;
+    }
+}
+```
+
+#### **Penjelasan Kode:**
+- `implements Comparable<Member>`: Artinya kelas `Member` bisa dibandingkan dengan objek `Member` lain.
+- `compareTo(Member lain)`: Method yang membandingkan tinggi badan member ini (`this`) dengan member lain.
+  - Jika `this.tinggiBadan > lain.tinggiBadan` → return positif (artinya `this` lebih "besar" dan akan ditempatkan **setelah** objek lain).
+  - Jika `this.tinggiBadan < lain.tinggiBadan` → return negatif (`this` lebih "kecil", ditempatkan **sebelum**).
+  - Jika sama → return 0.
+
+**Catatan:**  
+Kita bisa menulis `compareTo()` dengan cara yang lebih sederhana seperti di atas karena operasi pengurangan (`this.tinggiBadan - lain.tinggiBadan`) sudah memenuhi aturan return value.
+
+---
+
+### **Mengurutkan Daftar Objek**
+Setelah kelas mengimplementasikan `Comparable`, kita bisa mengurutkan objek dengan dua cara:
+
+#### **1. Menggunakan `stream().sorted()`**
+```java
+member.stream()
+     .sorted() // Mengurutkan di dalam stream
+     .forEach(m -> System.out.println(m));
+```
+**Catatan:**  
+Stream **tidak mengubah** daftar asli. Ini hanya mengurutkan data di dalam stream.
+
+#### **2. Menggunakan `Collections.sort()`**
+```java
+Collections.sort(member); // Mengurutkan daftar asli
+member.forEach(m -> System.out.println(m));
+```
+**Catatan:**  
+Ini akan **mengubah urutan asli** dari daftar `member`.
+
+---
+
+### **Contoh Hasil Pengurutan**
+Dari kode di catatanmu, outputnya adalah:
+```
+mikael (182)
+matti (187)
+ada (184)
+
+// Hasil stream().sorted()
+mikael (182)
+ada (184)
+matti (187)
+
+// Daftar asli tetap
+mikael (182)
+matti (187)
+ada (184)
+
+// Setelah Collections.sort()
+mikael (182)
+ada (184)
+matti (187)
+```
+
+**Penjelasan Output:**
+- Setelah `stream().sorted()`, urutan asli tetap karena stream tidak memodifikasi daftar.
+- Setelah `Collections.sort()`, urutan asli berubah.
+
+---
+
+### **Kesimpulan**
+- **Comparable Interface** digunakan untuk menentukan **pengurutan alami (natural ordering)** objek.
+- Method `compareTo()` adalah kunci yang menentukan bagaimana objek dibandingkan.
+- Pengurutan bisa dilakukan **tanpa mengubah daftar asli** (dengan stream) atau **mengubah daftar asli** (dengan `Collections.sort()`).
+
+---
+
+**Tips Tambahan:**  
+- Jika ingin mengurutkan objek dengan cara yang berbeda (misalnya berdasarkan nama), kamu bisa menggunakan `Comparator`. Tapi itu cerita lain ya! 😄
+
+Semoga penjelasan ini membantu! Kalau masih ada yang bingung.
+
+
+
+
+
+
+
+Implementing Multiple Interfaces
+A class can implement multiple interfaces. Multiple interfaces are implemented by separating the implemented interfaces with commas (public class ... implements *FirstInterface*, *SecondInterface* ...). Implementing multiple interfaces requires us to implement all of the methods for which implementations are required by the interfaces.
+
+Say we have the following Identifiable interface.
+
+public interface Identifiable {
+    String getId();
+}
+
+We want to create a Person who is both identifiable and sortable. This can be achieved by implementing both of the interfaces. An example is provided below.
+
+public class Person implements Identifiable, Comparable<Person> {
+    private String name;
+    private String socialSecurityNumber;
+
+    public Person(String name, String socialSecurityNumber) {
+        this.name = name;
+        this.socialSecurityNumber = socialSecurityNumber;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public String getSocialSecurityNumber() {
+        return this.socialSecurityNumber;
+    }
+
+    @Override
+    public String getId() {
+        return getSocialSecurityNumber();
+    }
+
+    @Override
+    public int compareTo(Person another) {
+        return this.getId().compareTo(another.getId());
+    }
+}
+
+
+
+
+Sorting Method as a Lambda Expression
+
+Let's assume that we have the following Person class for use.
+
+public class Person {
+
+    private String name;
+    private int birthYear;
+
+    public Person(String name, int birthYear) {
+        this.name = name;
+        this.birthYear = birthYear;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getBirthYear() {
+        return birthYear;
+    }
+}
+
+And person objects on a list.
+
+ArrayList<Person> persons = new ArrayList<>();
+persons.add(new Person("Ada Lovelace", 1815));
+persons.add(new Person("Irma Wyman", 1928));
+persons.add(new Person("Grace Hopper", 1906));
+persons.add(new Person("Mary Coombs", 1929));
+
+We want to sort the list without having to implement the Comparable interface.
+
+Both the sort method of the Collections class and the stream's sorted method accept a lambda expression as a parameter that defines the sorting criteria. More specifically, both methods can be provided with an object that implements the Comparator interface, which defines the desired order - the lambda expression is used to create this object.
+
+ArrayList<Person> persons = new ArrayList<>();
+persons.add(new Person("Ada Lovelace", 1815));
+persons.add(new Person("Irma Wyman", 1928));
+persons.add(new Person("Grace Hopper", 1906));
+persons.add(new Person("Mary Coombs", 1929));
+
+persons.stream().sorted((p1, p2) -> {
+    return p1.getBirthYear() - p2.getBirthYear();
+}).forEach(p -> System.out.println(p.getName()));
+
+System.out.println();
+
+persons.stream().forEach(p -> System.out.println(p.getName()));
+
+System.out.println();
+
+Collections.sort(persons, (p1, p2) -> p1.getBirthYear() - p2.getBirthYear());
+
+persons.stream().forEach(p -> System.out.println(p.getName()));
+
+Sample output
+Ada Lovelace
+Grace Hopper
+Irma Wyman
+Mary Coombs
+
+Ada Lovelace
+Irma Wyman
+Grace Hopper
+Mary Coombs
+
+Ada Lovelace
+Grace Hopper
+Irma Wyman
+Mary Coombs
+
+
+When comparing strings, we can use the compareTo method provided by the String class. The method returns an integer that describes the order of both the string given to it as a parameter and the string that's calling it.
+
+
+ArrayList<Person> persons = new ArrayList<>();
+persons.add(new Person("Ada Lovelace", 1815));
+persons.add(new Person("Irma Wyman", 1928));
+persons.add(new Person("Grace Hopper", 1906));
+persons.add(new Person("Mary Coombs", 1929));
+
+persons.stream().sorted((p1, p2) -> {
+    return p1.getName().compareTo(p2.getName());
+}).forEach(p -> System.out.println(p.getName()));
+Sample output
+Ada Lovelace
+Grace Hopper
+Irma Wyman
+Mary Coombs
+
+
