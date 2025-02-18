@@ -11,6 +11,7 @@
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Collections;
 public class Hand implements Comparable<Hand> {
     private List<Card> tangan;
     public Hand(){
@@ -39,6 +40,10 @@ public class Hand implements Comparable<Hand> {
                     return sekarang.compareTo(nanti);
                 })
                 .forEach(System.out::println);
+    }
+    
+    public void sortBySuit(){
+        Collections.sort(this.tangan, new BySuitInValueOrder());
     }
 
     @Override
