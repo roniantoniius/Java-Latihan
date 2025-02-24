@@ -17,15 +17,53 @@ public class MagicSquare {
 
     // implement these three methods
     public ArrayList<Integer> sumsOfRows() {
-        return new ArrayList<>();
+        ArrayList<Integer> daftarJumlah = new ArrayList<>();
+        for (int i = 0; i < this.square.length; i++){
+            int jumlah = 0;
+            for (int j = 0; j < this.square[i].length; i++){
+                jumlah += this.square[i][j];
+            }
+            daftarJumlah.add(jumlah);
+        }
+        return daftarJumlah;
     }
 
     public ArrayList<Integer> sumsOfColumns() {
-        return new ArrayList<>();
+        ArrayList<Integer> daftarJumlahKolom = new ArrayList<>();
+        int jumlahKolom = this.square[0].length;
+        for (int k = 0; k < jumlahKolom; k++){
+            daftarJumlahKolom.add(0);
+        }
+        for (int i = 0; i < this.square.length; i++) {
+            for (int j = 0; j < jumlahKolom; j++) {
+                daftarJumlahKolom.set(j, daftarJumlahKolom.get(j) + this.square[i][j]);
+            }
+        }
+        return daftarJumlahKolom;
     }
 
     public ArrayList<Integer> sumsOfDiagonals() {
-        return new ArrayList<>();
+        ArrayList<Integer> daftarJumlahKolom = new ArrayList<>();
+        int awal = 0;
+        int akhir = 0;
+        for (int i = 0; i < this.square.length; i++){
+            for (int j = 0; j < this.square[i].length; j++){
+                if (i == j){
+                    awal += this.square[i][j];
+                }
+            }
+        }
+        
+        for (int i = this.square.length - 1; i >= 0; i--){
+            for (int j = 0; j < this.square[i].length; j++){
+                if (i + j == this.square.length - 1){
+                    akhir += this.square[i][j];
+                }
+            }
+        }
+        daftarJumlahKolom.add(awal);
+        daftarJumlahKolom.add(akhir);
+        return daftarJumlahKolom;
     }
 
     // ready-made helper methods -- don't touch these
@@ -72,7 +110,6 @@ public class MagicSquare {
                 return false;
             }
         }
-
         return true;
     }
 

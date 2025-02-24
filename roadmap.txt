@@ -6904,5 +6904,35 @@ row, column, value
 0, 2, 0
 1, 0, 0
 1, 1, 0
-1, 2, 0s
+1, 2, 0
+
+We can see that the default value of variables type int is 0.
+
+We can change the values in the array just like before. Below we set new values to three elements of the array.
+
+int rows = 2;
+int columns = 3;
+int[][] twoDimensionalArray = new int[rows][columns];
+
+twoDimensionalArray[0][1] = 4;
+twoDimensionalArray[1][1] = 1;
+twoDimensionalArray[1][0] = 8;
+
+System.out.println("row, column, value");
+for (int row = 0; row < twoDimensionalArray.length; row++) {
+    for (int column = 0; column < twoDimensionalArray[row].length; column++) {
+        int value = twoDimensionalArray[row][column];
+        System.out.println("" + row + ", " + column + ", " + value);
+    }
+}
+The program output is as follows:
+
+Sample output
+row, column, value
+0, 0, 0
+1, 0, 4
+2, 0, 0
+0, 1, 8
+1, 1, 1
+2, 1, 0
 
