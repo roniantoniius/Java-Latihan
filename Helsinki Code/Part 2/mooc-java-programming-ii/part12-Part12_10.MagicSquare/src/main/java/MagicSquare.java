@@ -20,7 +20,7 @@ public class MagicSquare {
         ArrayList<Integer> daftarJumlah = new ArrayList<>();
         for (int i = 0; i < this.square.length; i++){
             int jumlah = 0;
-            for (int j = 0; j < this.square[i].length; i++){
+            for (int j = 0; j < this.square[i].length; j++){
                 jumlah += this.square[i][j];
             }
             daftarJumlah.add(jumlah);
