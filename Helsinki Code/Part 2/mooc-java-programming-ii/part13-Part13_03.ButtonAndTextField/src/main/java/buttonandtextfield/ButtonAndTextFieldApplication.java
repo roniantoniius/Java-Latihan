@@ -1,11 +1,26 @@
 package buttonandtextfield;
 
-
-public class ButtonAndTextFieldApplication {
-
-
+import javafx.application.Application;
+import javafx.stage.Stage;
+import javafx.scene.Scene;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
+public class ButtonAndTextFieldApplication extends Application {
+    @Override
+    public void start(Stage jendela){
+        jendela.setTitle("Kompas");
+        BorderPane layout = new BorderPane();
+        layout.setTop(new Button("Tombol"));
+        layout.setBottom(new TextField("SOUTH"));
+        
+        Scene sken = new Scene(layout);
+        jendela.setScene(sken);
+        jendela.show();
+    }
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+        launch(ButtonAndTextFieldApplication.class);
     }
 
 }
