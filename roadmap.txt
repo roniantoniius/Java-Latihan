@@ -26,10 +26,12 @@ Kamu merupakan seorang instruktur berpengalaman dalam mengajarkan bahasa pemrogr
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 ====================================================================================
 Java Programming I
 
@@ -7408,3 +7410,77 @@ leftText.textProperty().addListener((change, oldValue, newValue) -> {
 
     // set values of text elements
 });
+
+
+Programming exercise:
+Text statistics, part II
+
+
+-----------------------------------------------------------------------------------
+Part 13: Application's launch parameters
+
+The JavaFx applications in the examples have so far been launched by the main method of the class that inherits the Application class. Let's take a brief look at launching applications from outside of the Application class. Let's assume that we have the following simple JavaFx for our use.
+
+package application;
+
+import javafx.application.Application;
+import javafx.stage.Stage;
+
+public class JavaFxApplication extends Application {
+
+    @Override
+    public void start(Stage window) {
+        window.setTitle("Hello World!");
+        window.show();
+    }
+}
+The application can be launched from outside the class by using the launch method provided by the Application class. A separate class Main launches the application in the example below.
+
+package application;
+
+import javafx.application.Application;
+
+public class Main {
+
+  public static void main(String[] args) {
+      Application.launch(JavaFxApplication.class);
+  }
+}
+When the main method of the class above is executed, the user interface defined by the class JavaFxApplication is launched.
+
+The getParameters method returns a [Parameters] (https://docs.oracle.com/javase/8/javafx/api/javafx/application/Application.Parameters.html) type object whose method getNamed can access a hash table containing key-value pairs. The key-value pairs are given to the launch method in the form --key = value. In the example below, the title is made up of two parameters: organization and course.
+
+package application;
+
+import javafx.application.Application;
+import javafx.application.Application.Parameters;
+import javafx.stage.Stage;
+
+public class JavaFxApplication extends Application {
+
+    @Override
+    public void start(Stage window) {
+        Parameters params = getParameters();
+        String organization = params.getNamed().get("organization");
+        String course = params.getNamed().get("course");
+
+        window.setTitle(organization + ": " + course);
+        window.show();
+    }
+}
+
+Launching an application now with the following class sets the application's title to "Once upon a time: Title".
+
+package application;
+
+import javafx.application.Application;
+
+public class Main {
+
+    public static void main(String[] args) {
+        Application.launch(JavaFxApplication.class,
+            "--organization=Once upon a time",
+            "--course=Title");
+    }
+}
+Parameters could be used to tell the program, for instance, the name of the file used to store and load persons, or even a web address.
