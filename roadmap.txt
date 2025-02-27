@@ -7484,3 +7484,134 @@ public class Main {
     }
 }
 Parameters could be used to tell the program, for instance, the name of the file used to store and load persons, or even a web address.
+
+
+
+-----------------------------------------------------------------------------------
+Part 13: Multiple Views
+
+Thus far our graphical interfaces have always included only one view. Next, we'll become familiar with user interfaces containing multiple views.
+
+Generally the views are created as Scene-objects and the transitioning between them happens with events bound to the application. The example below has two Scene objects which both have their own content and an event related to the content. Instead of having an object for laying out components (such as BorderPane) in the example Scene objects, both objects have just one user interface component.
+
+package application;
+
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.stage.Stage;
+
+public class BackAndForthApplication extends Application {
+
+  @Override
+  public void start(Stage window) {
+
+      Button back = new Button("Back ..");
+      Button forth = new Button(".. forth.");
+
+      Scene first = new Scene(back);
+      Scene second = new Scene(forth);
+
+      back.setOnAction((event) -> {
+          window.setScene(second);
+      });
+
+      forth.setOnAction((event) -> {
+          window.setScene(first);
+      });
+
+      window.setScene(first);
+      window.show();
+  }
+
+  public static void main(String[] args) {
+      launch(BackAndForthApplication.class);
+  }
+}
+Starting the application above creates a user interface where one can transition from a view to another with the press of a button.
+
+
+
+Own layout for each view
+Let's get familiar with an example containing two different views. In the first view user is asked to input a password. If the user types a wrong password, the application informs the user about the mistake. If the user types the correct password, the application switches to the next view. The program functions as follows:
+
+Switching between views happens like in the previous example. The concrete switching event has been bound to the login button. When pressing the button, the application checks the password typed to the password field — here we're hoping that the user writes "password". If the password is correct, the view of the window is changed. In our example the view only includes the text "Welcome, this is the beginning!".
+
+
+package application;
+
+import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
+
+public class PasswordProtectedApplication extends Application {
+
+  @Override
+  public void start(Stage window) throws Exception {
+
+      // 1. Creating the view for asking a password
+
+      // 1.1 Creating components to be used
+      Label instructionText = new Label("Write the password and press Log in");
+      PasswordField passwordField = new PasswordField();
+      Button startButton = new Button("Log in");
+      Label errorMessage = new Label("");
+
+      // 1.2 creating layout and adding components to it
+      GridPane layout = new GridPane();
+
+      layout.add(instructionText, 0, 0);
+      layout.add(passwordField, 0, 1);
+      layout.add(startButton, 0, 2);
+      layout.add(errorMessage, 0, 3);
+
+      // 1.3 styling the layout
+      layout.setPrefSize(300, 180);
+      layout.setAlignment(Pos.CENTER);
+      layout.setVgap(10);
+      layout.setHgap(10);
+      layout.setPadding(new Insets(20, 20, 20, 20));
+
+      // 1.4 creating the view itself and setting it to use the layout
+      Scene passwordView = new Scene(layout);
+
+      // 2. Creating a view for showing the welcome message
+      Label welcomeText = new Label("Welcome, this is the beginning!");
+
+      StackPane welcomeLayout = new StackPane();
+      welcomeLayout.setPrefSize(300, 180);
+      welcomeLayout.getChildren().add(welcomeText);
+      welcomeLayout.setAlignment(Pos.CENTER);
+
+      Scene welcomeView = new Scene(welcomeLayout);
+
+      // 3. Adding an event handler to the login button.
+      // The view is changed if the password is right.
+      startButton.setOnAction((event) -> {
+          if (!passwordField.getText().trim().equals("password")) {
+              errorMessage.setText("Unknown password!");
+              return;
+          }
+
+          window.setScene(welcomeView);
+      });
+
+      window.setScene(passwordView);
+      window.show();
+  }
+
+  public static void main(String[] args) {
+      launch(PasswordProtectedApplication.class);
+  }
+}
+
+
+The example takes advantage of GridPane's and StackPane's built in setPrefSize and setAlignment methods for layout. Method setPrefSize takes the preferred size of the layout as an argument and the setAlignment method is used to define how the content of the layout should be aligned. The parameter Pos.CENTER is used to place the content in the center of the application
+
