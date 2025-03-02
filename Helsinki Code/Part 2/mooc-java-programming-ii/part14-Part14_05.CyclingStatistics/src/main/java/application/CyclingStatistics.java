@@ -50,6 +50,7 @@ public class CyclingStatistics {
                     monthlyValues.putIfAbsent(month, new ArrayList<>());
 
                     int count = 0;
+                    // ini kita kan loop di array rows (per baris di csv), nah kita ke [index] lokasi yang pas sama string Lokasi
                     if (!array[index].isEmpty()) {
                         count = Integer.parseInt(array[index]);
                     }
