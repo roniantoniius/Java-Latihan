@@ -8642,3 +8642,309 @@ public class HurraaSovellus extends Application {
     }
 }
 
+
+------------------------------------------------------------------------------------
+Part 14: Larger Application of Asteroids
+
+Asteroids developed by Atari and self published in the year 1979 is a video game classic. The gameplay consists of the player steering a triangular spaceship, with the goal of destroying asteroids by shooting them.
+
+What follows is a larger scale example, where we create a part of the Asteroids game. The game is also an exercise in the course — write the game into the provided template (at the end of the example) by following the example.
+
+The game is constructed in multiple parts, which are the following:
+
+Creating the game window
+Creating the ship
+Turning the ship
+Moving the ship
+Creating an asteroid
+The collision between the ship and an asteroid
+Multiple asteroids
+Staying within the window
+Projectiles
+Adding points
+Continuous adding of asteroids
+Let's begin making the application by creating the game window
+
+Creating the game window
+We will build the application such that the game window may contain an arbitrary amount of elements, the positions of which will be ignored by the layout used. This task fits the Pane class. The Pane class contains a list of type ObservableList containing child elements. The list can be accessed using the getChildren method of the Pane class.
+
+The program shown below creates a window that is 300 pixels wide and 200 pixels tall. At the point 30, 50 in the window is a circle with a radius of 10 pixels. In computer programs it is typical for the origin of the coordinate system is placed at the top left corner of the window. Additionally the value of the y-coordinate increases when moving down.
+
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
+import javafx.scene.shape.Circle;
+import javafx.stage.Stage;
+
+public class PaneExample extends Application {
+
+    @Override
+    public void start(Stage stage) throws Exception {
+        Pane pane = new Pane();
+        pane.setPrefSize(300, 200);
+        pane.getChildren().add(new Circle(30, 50, 10));
+
+        Scene scene = new Scene(pane);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}
+
+We call our application AsteroidsApplication. AsteroidsApplication applies the above example. The application does not add a circle to the window, but we have provided a title for the application. The width of the window is 600 pixels and the height is 400 pixels.
+
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
+
+public class AsteroidsApplication extends Application {
+
+    @Override
+    public void start(Stage stage) throws Exception {
+        Pane pane = new Pane();
+        pane.setPrefSize(600, 400);
+
+        Scene scene = new Scene(pane);
+        stage.setTitle("Asteroids!");
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}
+
+Creating the ship
+Next we create the ship. In Asteroids the ship is a triangle. The display of the triangle is possible using the Polygon class, which is used to represent polygons. The corners of the polygon are set for the Polygon object, either as parameters of the constructor or into the list contained within the Polygon class.
+
+In the example below we have added a parallelogram that is 100 pixels wide and 50 pixels tall using the Polygon class.
+
+@Override
+public void start(Stage stage) throws Exception {
+    Pane pane = new Pane();
+    pane.setPrefSize(300, 200);
+
+    Polygon parallelogram = new Polygon(0, 0, 100, 0, 100, 50, 0, 50);
+    pane.getChildren().add(parallelogram);
+
+    Scene scene = new Scene(pane);
+    stage.setScene(scene);
+    stage.show();
+}
+Suunnikas ikkunassa.
+Moving the polygon into a more fitting position can be done with the provided methods setTranslateX and setTranslateY of the Polygon class. In the example below we create a parallelogram just like before, but now the parallelogram has been moved 100 pixels to the right and 20 pixels down.
+
+@Override
+public void start(Stage stage) throws Exception {
+    Pane pane = new Pane();
+    pane.setPrefSize(300, 200);
+
+    Polygon parallelogram = new Polygon(0, 0, 100, 0, 100, 50, 0, 50);
+    parallelogram.setTranslateX(100);
+    parallelogram.setTranslateY(20);
+
+    pane.getChildren().add(parallelogram);
+
+    Scene scene = new Scene(pane);
+    stage.setScene(scene);
+    stage.show();
+}
+Suunnikas ikkunassa. Suunnikasta on siirretty 100 pikseliä oikealle ja 20 pikseliä alas.
+Let's create a triangle representing the ship and add it to our AsteroidsApplication. We set the triangle at the center of the screen — because the width of the screen is 600 pixels and the height is 400 pixels, we move the triangle 300 pixels to the right and 200 pixels down.
+
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
+import javafx.scene.shape.Polygon;
+import javafx.stage.Stage;
+
+public class AsteroidsApplication extends Application {
+
+    @Override
+    public void start(Stage stage) throws Exception {
+        Pane pane = new Pane();
+        pane.setPrefSize(600, 400);
+
+        Polygon ship = new Polygon(-5, -5, 10, 0, -5, 5);
+        ship.setTranslateX(300);
+        ship.setTranslateY(200);
+
+        pane.getChildren().add(ship);
+
+        Scene scene = new Scene(pane);
+        stage.setTitle("Asteroids!");
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}
+
+Turning the ship: Keyboard listener, part 1
+Classes like Polygon and Circle inherit the Node class of JavaFx. The Node class has a variable rotate, which describes the rotation of the node in degrees. Turning any object inheriting the Node class is therefore quite straightforward — you just use the existing method setRotate. The method is given the amount to turn in degrees as its parameter.
+
+
+In the example below we have modified a previous example such that the parallelogram is rotated 30 degrees.
+
+@Override
+public void start(Stage stage) throws Exception {
+    Pane pane = new Pane();
+    pane.setPrefSize(600, 400);
+
+    Polygon ship = new Polygon(-5, -5, 10, 0, -5, 5);
+    ship.setTranslateX(300);
+    ship.setTranslateY(200);
+    ship.setRotate(30);
+
+    pane.getChildren().add(ship);
+
+    Scene scene = new Scene(pane);
+    stage.setScene(scene);
+    stage.show();
+}
+In reality we don't want a situation where the ship only turns once, but one in which we can steer the ship while the game is running.
+
+The Scene object describing the content of the window provides a method setOnKeyPressed, which can be given an object for handling events as its parameter. Let's create an event handler, which reacts to events on the keyboard. Keyboard events have an enumerated variable KeyCode, which tells us the key that was pressed. We are interested in the keys left (LEFT) and right (RIGHT).
+
+First we make a test version, in which the turning of the ship is simple. If the user presses the left arrow, the degrees are set to -30. Then again, if the user presses the right key, then the degrees are set to 30.
+
+scene.setOnKeyPressed(event -> {
+    if (event.getCode() == KeyCode.LEFT) {
+        ship.setRotate(-30);
+    }
+
+    if (event.getCode() == KeyCode.RIGHT) {
+        ship.setRotate(30);
+    }
+});
+If the ship was a parallelogram the functionality would look as follows:
+
+Suunnikasta voi kääntää vasemmalle tai oikealle.
+The turning can be made smoother by utilizing existing information about the rotation. In the next example the ship turns five degrees at a time.
+
+scene.setOnKeyPressed(event -> {
+    if (event.getCode() == KeyCode.LEFT) {
+        ship.setRotate(ship.getRotate() - 5);
+    }
+
+    if (event.getCode() == KeyCode.RIGHT) {
+        ship.setRotate(ship.getRotate() + 5);
+    }
+});
+Below is pictured an equivalent example, where instead of rotating the ship we rotate a parallelogram.
+
+
+Turning the ship: Keyboard listener, part 2
+The previous approach enables a "kind of OK"-way to turn a node. There is an issue with the approach — the movement is not smooth. When the key is pressed, the ship rotates, then takes a short break, after which it continues rotating.
+
+This is related to how programs handle keyboard events by default. If the program would handle the keypress as multiple events immediately as the key is pressed, then, for example, writing text would become quite difficult, since even slightly longer keypresses would immediately generate multiple characters.
+
+Let's change the handling of keyboard event, such that we keep a record of pressed keys. This can be done, for example, using a hash table. The hash table contains the KeyCode object, i.e. the object representing the key, as the key and a Boolean variable as the value. If the value of the boolean variable of a particular key is true, then the key is pressed, otherwise the key is not pressed.
+
+Now we also consider depressing the key, i.e. the onKeyReleased event.
+
+Map<KeyCode, Boolean> pressedKeys = new HashMap<>();
+
+scene.setOnKeyPressed(event -> {
+    pressedKeys.put(event.getCode(), Boolean.TRUE);
+});
+
+scene.setOnKeyReleased(event -> {
+    pressedKeys.put(event.getCode(), Boolean.FALSE);
+});
+But! Nothing is currently turning the ship.
+
+Indeed. We still need functionality for rotation. We will start using the AnimationTimer class, which is meant for creating animations, and assign it the responsibility of turning the the ship in case the left or right key is pressed.
+
+Map<KeyCode, Boolean> pressedKeys = new HashMap<>();
+
+scene.setOnKeyPressed(event -> {
+    pressedKeys.put(event.getCode(), Boolean.TRUE);
+});
+
+scene.setOnKeyReleased(event -> {
+    pressedKeys.put(event.getCode(), Boolean.FALSE);
+});
+
+new AnimationTimer() {
+
+    @Override
+    public void handle(long now) {
+        if(pressedKeys.getOrDefault(KeyCode.LEFT, false)) {
+            ship.setRotate(ship.getRotate() - 5);
+        }
+
+        if(pressedKeys.getOrDefault(KeyCode.RIGHT, false)) {
+            ship.setRotate(ship.getRotate() + 5);
+        }
+    }
+}.start();
+The handle method of the AnimationTimer class is called approximately 60 times per second. Now the rotation is much smoother (however, it is not very apparent in the gif below...).
+
+
+Moving the ship: Refactoring
+Let's create a class called Ship, which contains a Polygon object and a Point2D object. The Polygon object represents the ship, and the Point2D object represents the movement of the ship. The ship receives the x and y coordinates of the ship as its constructor parameters. The ship can be rotated left or right.
+
+import javafx.geometry.Point2D;
+import javafx.scene.shape.Polygon;
+
+public class Ship {
+
+    private Polygon character;
+    private Point2D movement;
+
+    public Ship(int x, int y) {
+        this.character = new Polygon(-5, -5, 10, 0, -5, 5);
+        this.character.setTranslateX(x);
+        this.character.setTranslateY(y);
+
+        this.movement = new Point2D(0, 0);
+    }
+
+    public Polygon getCharacter() {
+        return character;
+    }
+
+    public void turnLeft() {
+        this.character.setRotate(this.character.getRotate() - 5);
+    }
+
+    public void turnRight() {
+        this.character.setRotate(this.character.getRotate() + 5);
+    }
+
+    public void move() {
+        this.character.setTranslateX(this.character.getTranslateX() + this.movement.getX());
+        this.character.setTranslateY(this.character.getTranslateY() + this.movement.getY());
+    }
+}
+This refactoring leads to changes in the program in a couple of places. Instead of the point to represent movement and a polygon to represent the ship, we will create a Ship. In addition, the Pane object is given the Polygon object of the ship, but not the Ship object itself.
+
+Ship ship = new Ship(150, 100);
+
+pane.getChildren().add(ship.getCharacter());
+The method in the AnimationTimer object should also be updated to use the methods of the ship.
+
+new AnimationTimer() {
+
+    @Override
+    public void handle(long now) {
+        if(pressedKeys.getOrDefault(KeyCode.LEFT, false)) {
+            ship.turnLeft();
+        }
+
+        if(pressedKeys.getOrDefault(KeyCode.RIGHT, false)) {
+            ship.turnRight();
+        }
+
+        ship.move();
+    }
+
+}.start();
