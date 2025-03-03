@@ -28,26 +28,46 @@ public class CollageApplication extends Application {
 
         WritableImage targetImage = new WritableImage(width, height);
         PixelWriter imageWriter = targetImage.getPixelWriter();
-
-        int yCoordinate = 0;
-        while (yCoordinate < height) {
-            int xCoordinate = 0;
-            while (xCoordinate < width) {
-
-                Color color = imageReader.getColor(xCoordinate, yCoordinate);
-                double red = color.getRed();
-                double green = color.getGreen();
-                double blue = color.getBlue();
-                double opacity = color.getOpacity();
-
-                Color newColor = new Color(red, green, blue, opacity);
-
-                imageWriter.setColor(xCoordinate, yCoordinate, newColor);
-
-                xCoordinate++;
+        
+        for (int i = 0; i < width / 2; i++){
+            for (int j = 0; j < height / 2; j++){
+                Color warnaBaru = imageReader.getColor(i * 2, j * 2);
+                imageWriter.setColor(i, j, warnaBaru);
             }
-
-            yCoordinate++;
+        }
+        
+        for (int i = 0; i < width / 2; i++){
+            for (int j = 0; j < height / 2; j++){
+                Color warnaBaru = imageReader.getColor(i*2, j*2);
+                imageWriter.setColor(i + width / 2, j, warnaBaru);
+            }
+        }
+        
+        for (int i = 0; i < width / 2; i++){
+            for (int j = 0; j < height / 2; j++){
+                Color warnaBaru = imageReader.getColor(i*2, j*2);
+                imageWriter.setColor(i, j + height / 2, warnaBaru);
+            }
+        }
+        
+        for (int i = 0; i < width / 2; i++){
+            for (int j = 0; j < height / 2; j++){
+                Color warnaBaru = imageReader.getColor(i*2, j*2);
+                imageWriter.setColor(i + width / 2, j + height / 2, warnaBaru);
+            }
+        }
+        imageReader = targetImage.getPixelReader();
+        for (int i = 0; i < height; i ++){
+            for (int j = 0; j < width; j++){
+                Color warnaPiksel = imageReader.getColor(j, i);
+                double red = 1 - warnaPiksel.getRed();
+                double biru = 1 - warnaPiksel.getBlue();
+                double hijau = 1 - warnaPiksel.getGreen();
+                double opacity = warnaPiksel.getOpacity();
+                
+                Color warnaBaru = new Color(red, hijau, biru, opacity);
+                imageWriter.setColor(j, i, warnaBaru);
+            }
         }
 
         ImageView image = new ImageView(targetImage);
@@ -60,7 +80,7 @@ public class CollageApplication extends Application {
     }
 
     public static void main(String[] args) {
-        launch(args);
+        launch(CollageApplication.class);
     }
 
 }
