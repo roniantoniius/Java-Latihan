@@ -5,15 +5,13 @@
  */
 package asteroids;
 
-import javafx.geometry.Point2D;
-import javafx.scene.shape.Polygon;
-
 /**
  *
  * @author ASUS
  */
-public class Ship extends Character{
-    public Ship(int x, int y){
-        super(new Polygon(-5, -5, 10, 0, -5, 5), x, y);
+import javafx.scene.shape.Polygon;
+public class Projectile extends Character{
+    public Projectile(int x, int y){
+        super(new Polygon(2, -2, 2, 2, -2, 2, -2, -2), x, y);
     }
 }

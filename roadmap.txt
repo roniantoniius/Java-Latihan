@@ -8948,3 +8948,557 @@ new AnimationTimer() {
     }
 
 }.start();
+
+
+Creating an asteroid:
+
+Next up, we are going to create an asteroid. An asteroid has a shape, position, and movement.
+
+Hmm..
+
+Come to think of it, these are almost exactly the same things that a ship needs — the only difference is in the shape. This is a good moment to generalize. We'll create an abstract class called Character, which receives a polygon and position as its constructor parameters. Notice that the functionality is almost entirely copied from the class Ship.
+
+import javafx.geometry.Point2D;
+import javafx.scene.shape.Polygon;
+
+public abstract class Character {
+
+    private Polygon character;
+    private Point2D movement;
+
+    public Character(Polygon polygon, int x, int y) {
+        this.character = polygon;
+        this.character.setTranslateX(x);
+        this.character.setTranslateY(y);
+
+        this.movement = new Point2D(0, 0);
+    }
+
+    public Polygon getCharacter() {
+        return character;
+    }
+
+    public void turnLeft() {
+        this.character.setRotate(this.character.getRotate() - 5);
+    }
+
+    public void turnRight() {
+        this.character.setRotate(this.character.getRotate() + 5);
+    }
+
+    public void move() {
+        this.character.setTranslateX(this.character.getTranslateX() + this.movement.getX());
+        this.character.setTranslateY(this.character.getTranslateY() + this.movement.getY());
+    }
+
+    public void accelerate() {
+        double changeX = Math.cos(Math.toRadians(this.character.getRotate()));
+        double changeY = Math.sin(Math.toRadians(this.character.getRotate()));
+
+        changeX *= 0.05;
+        changeY *= 0.05;
+
+        this.movement = this.movement.add(changeX, changeY);
+    }
+}
+Then let's change the class Ship to inherit from the Character class.
+
+import javafx.scene.shape.Polygon;
+
+public class Ship extends Character {
+
+    public Ship(int x, int y) {
+        super(new Polygon(-5, -5, 10, 0, -5, 5), x, y);
+    }
+}
+Pretty straighforward stuff.
+
+Then let's create the Asteroid class. The first draft is going to be a rectangle — we'll return to worry about the shape of the asteroid at a later stage.
+
+import javafx.scene.shape.Polygon;
+
+public class Asteroid extends Character {
+
+    public Asteroid(int x, int y) {
+        super(new Polygon(20, -20, 20, 20, -20, 20, -20, -20), x, y);
+    }
+}
+
+
+Describe in your own words how the classes Ship and Asteroid, which are described above, work. Pay attention to the inheritance hierarchy of the classes in your explanation.
+
+
+Both ship and asteroid is an inheritance class from the super class which is Character an abstract class. Constructor on super class which is Character accept Polygon object parameter and integer of position like x and y. The parameter Polygon is what will be the different of sub class which is ship and asteroid class. So each those class able to use the default method from super class, or overiding the existing method.
+
+Then let's make sure that you can also add an asteroid to the application.
+
+Pane pane = new Pane();
+// setting the size ..
+
+Ship ship = new Ship(150, 100);
+Asteroid asteroid = new Asteroid(50, 50);
+
+pane.getChildren().add(ship.getCharacter());
+pane.getChildren().add(asteroid.getCharacter());
+
+asteroid.turnRight();
+asteroid.turnRight();
+asteroid.accelerate();
+asteroid.accelerate();
+In order for an asteroid to move, the related move method must be called in the animation.
+
+new AnimationTimer() {
+
+    @Override
+    public void handle(long now) {
+        if (pressedKeys.getOrDefault(KeyCode.LEFT, false)) {
+            ship.turnLeft();
+        }
+
+        if (pressedKeys.getOrDefault(KeyCode.RIGHT, false)) {
+            ship.turnRight();
+        }
+
+        if (pressedKeys.getOrDefault(KeyCode.UP, false)) {
+            ship.accelerate();
+        }
+
+        ship.move();
+        asteroid.move();
+    }
+}.start();
+Now the application contains both a ship and an asteroid.
+
+The collision between the ship and an asteroid
+Next we will implement collision between a ship and an asteroid. If a ship collides with an asteroid, the stop method of an AnimationTimer -object is called, and the animation stops.
+
+Both a ship and an asteroid are characters. Add a method for checking if two characters collide to the Character class. For now two characters never collide.
+
+public boolean collide(Character other) {
+    return false;
+}
+The Shape class, which the Polygon class inherits, has a handy method for checking for collision. The method public static Shape intersect(Shape shape1, Shape shape2) returns the intersection of two Shape objects.
+
+If the intersection is zero, there is no collision.
+Let's modify the collide method so, that it uses the intersect method.
+
+public boolean collide(Character other) {
+    Shape collisionArea = Shape.intersect(this.character, other.getCharacter());
+    return collisionArea.getBoundsInLocal().getWidth() != -1;
+}
+Let's also add functionality that stops the application if a collision happens.
+
+new AnimationTimer() {
+
+    @Override
+    public void handle(long now) {
+        if (pressedKeys.getOrDefault(KeyCode.LEFT, false)) {
+            ship.turnLeft();
+        }
+
+        if (pressedKeys.getOrDefault(KeyCode.RIGHT, false)) {
+            ship.turnRight();
+        }
+
+        if (pressedKeys.getOrDefault(KeyCode.UP, false)) {
+            ship.accelerate();
+        }
+
+        ship.move();
+        asteroid.move();
+
+        if (ship.collide(asteroid)) {
+            stop();
+        }
+    }
+}.start();
+Now the application stops if a ship and an asteroid collide.
+
+Multiple asteroids
+Now we will add more asteroids. We can represent the asteroids as a list. In the example below we first create a ship and then add five asteroids.
+
+Ship ship = new Ship(150, 100);
+List<Asteroid> asteroids = new ArrayList<>();
+for (int i = 0; i < 5; i++) {
+    Random rnd = new Random();
+    Asteroid asteroid = new Asteroid(rnd.nextInt(100), rnd.nextInt(100));
+    asteroids.add(asteroid);
+}
+
+pane.getChildren().add(ship.getCharacter());
+asteroids.forEach(asteroid -> pane.getChildren().add(asteroid.getCharacter()));
+Let's modify drawing asteroids and checking for collision so that they work with multiple asteroids.
+
+new AnimationTimer() {
+
+    @Override
+    public void handle(long now) {
+        if (pressedKeys.getOrDefault(KeyCode.LEFT, false)) {
+            ship.turnLeft();
+        }
+
+        if (pressedKeys.getOrDefault(KeyCode.RIGHT, false)) {
+            ship.turnRight();
+        }
+
+        if (pressedKeys.getOrDefault(KeyCode.UP, false)) {
+            ship.accelerate();
+        }
+
+        ship.move();
+        asteroids.forEach(asteroid -> asteroid.move());
+
+        asteroids.forEach(asteroid -> {
+            if (ship.collide(asteroid)) {
+                stop();
+            }
+        });
+
+    }
+}.start();
+Now when the application starts we see multiple asteroids.
+
+
+At the moment every asteroid looks the same and moves the same way. It would be nice if there was some variance between the asteroids. Let's modify the Asteroid -class so, that it has a method for randomly assigning attributes to asteroids. We can decide that asteroids always have five corners, and their basic shape is always a pentagon. We can add variance to their shapes by moving the locations of the corners a little.
+
+You can find the formula for calculating the angles of the corners of a pentagon from http://mathworld.wolfram.com/Pentagon.html. Below we have used the formula, and added some variance to the size of the asteroids and the locations of an asteroids corners.
+
+import java.util.Random;
+import javafx.scene.shape.Polygon;
+
+public class PolygonFactory {
+
+    public Polygon createPolygon() {
+        Random rnd = new Random();
+
+        double size = 10 + rnd.nextInt(10);
+
+        Polygon polygon = new Polygon();
+        double c1 = Math.cos(Math.PI * 2 / 5);
+        double c2 = Math.cos(Math.PI / 5);
+        double s1 = Math.sin(Math.PI * 2 / 5);
+        double s2 = Math.sin(Math.PI * 4 / 5);
+
+        polygon.getPoints().addAll(
+            size, 0.0,
+            size * c1, -1 * size * s1,
+            -1 * size * c2, -1 * size * s2,
+            -1 * size * c2, size * s2,
+            size * c1, size * s1);
+
+        for (int i = 0; i < polygon.getPoints().size(); i++) {
+            int change = rnd.nextInt(5) - 2;
+            polygon.getPoints().set(i, polygon.getPoints().get(i) + change);
+        }
+
+        return polygon;
+    }
+}
+Let's modify the Asteroid class so that it uses the PolygonFactory class to create polygons.
+
+public class Asteroid extends Character {
+
+    public Asteroid(int x, int y) {
+        super(new PolygonFactory().createPolygon(), x, y);
+    }
+
+}
+Now the asteroids look a bit more varied.
+
+
+We will also add movement and direction to the asteroids. Movement and direction have been partially defined in the Character class, but we want to add some randomness to the movement. When an asteroid is created, it's direction should be a random number between [0, 360]. Asteroids also move a little — the movement is defined as a random number of acceleration calls when the character is created. Finally an asteroid also rotates. Each time an asteroid moves, it also rotates a little.
+
+import java.util.Random;
+
+public class Asteroid extends Character {
+
+    private double rotationalMovement;
+
+    public Asteroid(int x, int y) {
+        super(new PolygonFactory().createPolygon(), x, y);
+
+        Random rnd = new Random();
+
+        super.getCharacter().setRotate(rnd.nextInt(360));
+
+        int accelerationAmount = 1 + rnd.nextInt(10);
+        for (int i = 0; i < accelerationAmount; i++) {
+            accelerate();
+        }
+
+        this.rotationalMovement = 0.5 - rnd.nextDouble();
+    }
+
+    @Override
+    public void move() {
+        super.move();
+        super.getCharacter().setRotate(super.getCharacter().getRotate() + rotationalMovement);
+    }
+}
+In the example below we use inheritance in the move method. When the move method is called, it first calls the move method from the Character class. Then the character is rotated. The final product is an asteroid with some rotational movement.
+
+
+
+Staying within the window
+The application is a bit boring, because the asteroids and the ship can leave the screen. Let's modify it so, that the characters stay on screen.
+
+We will define constants width and height for the AsteroidsApplication. Each class can have class specific values using the keyword static. Below we define variables WIDTH and HEIGHT, which can be referenced elsewhere in the program code.
+
+public class AsteroidsApplication extends Application {
+
+    public static int WIDTH = 300;
+    public static int HEIGHT = 200;
+
+    @Override
+    public void start(Stage stage) throws Exception {
+        Pane pane = new Pane();
+        pane.setPrefSize(WIDTH, HEIGHT);
+
+        Ship ship = new Ship(WIDTH / 2, HEIGHT / 2);
+        List<Asteroid> asteroids = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            Random rnd = new Random();
+            Asteroid asteroid = new Asteroid(rnd.nextInt(WIDTH / 3), rnd.nextInt(HEIGHT));
+            asteroids.add(asteroid);
+        }
+
+        pane.getChildren().add(ship.getCharacter());
+        asteroids.forEach(asteroid -> pane.getChildren().add(asteroid.getCharacter()));
+
+    // ...
+Variables with the keyword static are not part of objects made from the class. If a static variable is also public —like above — the variable can be referenced by other classes. Let's modify the move method of the Character class so that it uses the static variables of the AsteroidApplication, the class variables WIDTH and HEIGHT. The move method below checks that the character stays on screen.
+
+public void move() {
+    this.character.setTranslateX(this.character.getTranslateX() + this.movement.getX());
+    this.character.setTranslateY(this.character.getTranslateY() + this.movement.getY());
+
+    if (this.character.getTranslateX() < 0) {
+        this.character.setTranslateX(this.character.getTranslateX() + AsteroidsApplication.LEVEYS);
+    }
+
+    if (this.character.getTranslateX() > AsteroidsApplication.LEVEYS) {
+        this.character.setTranslateX(this.character.getTranslateX() % AsteroidsApplication.LEVEYS);
+    }
+
+    if (this.character.getTranslateY() < 0) {
+        this.character.setTranslateY(this.character.getTranslateY() + AsteroidsApplication.KORKEUS);
+    }
+
+    if (this.character.getTranslateY() > AsteroidsApplication.KORKEUS) {
+        this.character.setTranslateY(this.character.getTranslateY() % AsteroidsApplication.KORKEUS);
+    }
+}
+Now the characters stay on screen.
+
+We are not quite satisfied with this version of the application, because characters sometimes "jump" from one side of the screen to the other. The size of the character is not taken into account, so its x- or y -coordinates can be outside of the screen, even if part of the character stays visible. We can —probably— solve this problem with the getBoundsInParent-method of the Node -class. However we will not go more into it here.
+
+
+Projectiles
+
+Playing asteroids without projectiles would be just dodging asteroids. Next we will add projectiles. Projectiles have a shape, a direction and movement. We can use the Character class for creating projectiles. Let's create the first version of the Projectile-class. For now all projectiles are squares.
+
+import javafx.scene.shape.Polygon;
+
+public class Projectile extends Character {
+
+    public Projectile(int x, int y) {
+        super(new Polygon(2, -2, 2, 2, -2, 2, -2, -2), x, y);
+    }
+
+}
+Contrary to ships and asteroids, we don't want any projectiles on screen when the application starts. We will declare a list for projectiles, but leave it empty for now.
+
+List<Projectile> projectiles = new ArrayList<>();
+A projectile is created when the user presses the spacebar. When a projectile is created its direction is the same as the ship's direction. Let's make the first version of shooting projectiles.
+
+if (pressedKeys.getOrDefault(KeyCode.SPACE, false)) {
+    // we shoot
+    Projectile projectile = new Projectile((int) ship.getCharacter().getTranslateX(), (int) ship.getCharacter().getTranslateY());
+    projectile.getCharacter().setRotate(ship.getCharacter().getRotate());
+    projectiles.add(projectile);
+
+    pane.getChildren().add(projectile.getCharacter());
+}
+Now the ship shoots a projectile when the user presses the spacebar, but the projectiles do not move. The projectiles do not hit other characters either.
+
+
+We want to be able to modify the movement of a projectile. However, currently the move method of a Character is private, and we have to access to it through other methods. Let's add getMovement and setMovement to the Character class.
+
+Now setting the speed of a projectile is straightforwards. We accelerate the speed of a projectile a bit (so it never stays put) and normalize the speed (in practice we handle the speed as a vector with the length of 1). Here the speed is multiplied by three.
+
+if (pressedKeys.getOrDefault(KeyCode.SPACE, false)) {
+    // we shoot
+    Projectile projectile = new Projectile((int) ship.getCharacter().getTranslateX(), (int) ship.getCharacter().getTranslateY());
+    projectile.getCharacter().setRotate(ship.getCharacter().getRotate());
+    projectiles.add(projectile);
+
+    projectile.accelerate();
+    projectile.setMovement(projectile.getMovement().normalize().multiply(3));
+
+    pane.getChildren().add(projectile.getCharacter());
+}
+Finally we add moving the projectiles to moving all other characters.
+
+ship.move();
+asteroids.forEach(asteroid -> asteroid.move());
+projectiles.forEach(projectile -> projectile.move());
+Now the projectiles move. They do not yet hit anything, and there are quite a lot of them... Let's limit the number of projectiles a bit — we can decide that there can only be 3 projectiles at once.
+
+if (pressedKeys.getOrDefault(KeyCode.SPACE, false) && projectiles.size() < 3) {
+    // we shoot
+    Projectile projectile = new Projectile((int) ship.getCharacter().getTranslateX(), (int) ship.getCharacter().getTranslateY());
+    projectile.getCharacter().setRotate(ship.getCharacter().getRotate());
+    projectiles.add(projectile);
+
+    projectile.accelerate();
+    projectile.setMovement(projectile.getMovement().normalize().multiply(3));
+
+    pane.getChildren().add(projectile.getCharacter());
+}
+Let's also add functionality for hitting asteroids. Projectiles can hit asteroids. If a projectile hits an asteroid, the asteroid is removed from the asteroid list and is not drawn.
+
+projectiles.forEach(projectile -> {
+    List<Asteroid> collisions = asteroids.stream()
+                                                .filter(asteroid -> asteroid.collide(projectile))
+                                                .collect(Collectors.toList());
+
+    collisions.stream().forEach(collided -> {
+        asteroids.remove(collided);
+        pane.getChildren().remove(collided.getCharacter());
+    });
+});
+
+The projectiles do not however disappear when they hit an asteroid. One way to remove the projectiles after a hit is described below.
+
+List<Projectile> projectilesToRemove = projectiles.stream().filter(projectile -> {
+    List<Asteroidi> collisions = asteroids.stream()
+                                                .filter(asteroid -> asteroid.collide(projectile))
+                                                .collect(Collectors.toList());
+
+    if(collisions.isEmpty()) {
+        return false;
+    }
+
+    collisions.stream().forEach(collided -> {
+        asteroids.remove(collided);
+        pane.getChildren().remove(collided.getCharacter());
+    });
+
+    return true;
+}).collect(Collectors.toList());
+
+projectilesToRemove.forEach(projectile -> {
+    pane.getChildren().remove(projectile.getCharacter());
+    projectiles.remove(projectile);
+});
+
+It works, but we can improve it a bit. In practice this is declaring wether a Character is "in the game" or not. We could for example add an attribute "alive", which we could use to make things clearer. Using this attribute the code improves a bit.
+
+projectiles.forEach(projectile -> {
+    asteroids.forEach(asteroid -> {
+        if(projectile.collide(asteroid)) {
+            projectile.setAlive(false);
+            asteroid.setAlive(false);
+        }
+    });
+});
+
+projectiles.stream()
+    .filter(projectile -> !projectile.isAlive())
+    .forEach(projectile -> pane.getChildren().remove(projectile.getCharacter()));
+projectiles.removeAll(projectiles.stream()
+                        .filter(projectile -> !projectile.isAlive())
+                        .collect(Collectors.toList()));
+
+asteroids.stream()
+        .filter(asteroid -> !asteroid.isAlive())
+        .forEach(asteroid -> pane.getChildren().remove(asteroid.getCharacter()));
+asteroids.removeAll(asteroids.stream()
+                            .filter(asteroid -> !asteroid.isAlive())
+                            .collect(Collectors.toList()));
+The lines at the end are almost identical — both are handling characters. Maybe we could refactor this a bit.
+
+
+Adding points
+Asteroids games almost always have a some sort of a points system. The points are displayed as text-objects, value of which changes when the number of points changes. We can decide that a player gets 1000 points every time they destroy an asteroid.
+
+The Java Text -class is great for this purpose. A Text object has coordinates and content. In the example below the player always has 0 points.
+
+@Override
+public void start(Stage stage) throws Exception {
+    Pane pane = new Pane();
+    Text text = new Text(10, 20, "Points: 0");
+    pane.getChildren().add(text);
+
+    Scene scene = new Scene(pane);
+    stage.setTitle("Asteroids!");
+    stage.setScene(scene);
+    stage.show();
+}
+
+However we want to be able to increase the number of points. One handy tool for this is the AtomicInteger-class, which offers integers as encapsulated objects. AtomicInteger also enables us to increase the points when a method is called.
+
+
+Adding points
+Asteroids games almost always have a some sort of a points system. The points are displayed as text-objects, value of which changes when the number of points changes. We can decide that a player gets 1000 points every time they destroy an asteroid.
+
+The Java Text -class is great for this purpose. A Text object has coordinates and content. In the example below the player always has 0 points.
+
+@Override
+public void start(Stage stage) throws Exception {
+    Pane pane = new Pane();
+    Text text = new Text(10, 20, "Points: 0");
+    pane.getChildren().add(text);
+
+    Scene scene = new Scene(pane);
+    stage.setTitle("Asteroids!");
+    stage.setScene(scene);
+    stage.show();
+}
+Ikkuna, jossa on teksti pisteet. Pisteet on nollassa.
+However we want to be able to increase the number of points. One handy tool for this is the AtomicInteger-class, which offers integers as encapsulated objects. AtomicInteger also enables us to increase the points when a method is called.
+
+@Override
+public void start(Stage stage) throws Exception {
+    Pane pane = new Pane();
+    Text text = new Text(10, 20, "Points: 0");
+    pane.getChildren().add(text);
+
+    AtomicInteger points = new AtomicInteger();
+
+    Scene scene = new Scene(pane);
+    stage.setTitle("Asteroids!");
+    stage.setScene(scene);
+    stage.show();
+
+
+    new AnimationTimer() {
+
+        @Override
+        public void handle(long now) {
+            text.setText("Points: " + points.incrementAndGet());
+        }
+    }.start();
+}
+Ikkuna, jossa on teksti pisteet. Pisteet kasvavat.
+Now we can display the number of points and increase it. Let's connect the points to the game so, that the number of points increases every time player's projectile hits an asteroid.
+
+This can be done as a part of collision between a projectile and an asteroid.
+
+projectiles.forEach(projectile -> {
+    asteroids.forEach(asteroid -> {
+        if(projectile.collide(asteroid)) {
+            projectile.setAlive(false);
+            asteroid.setAlive(false);
+        }
+    });
+
+    if(!projectile.isAlive()) {
+        text.setText("Points: " + points.addAndGet(1000));
+    }
+});
+Now, if the increasing of points has been removed from the start of the animation timer, player gets points when they hit an asteroid.
+
+
+
+Aku pengen gem asteroid yang fast attack speed dan nggak bisa keluar area.
