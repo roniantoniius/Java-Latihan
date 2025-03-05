@@ -1,10 +1,11 @@
 package application;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
+import java.sql.Connection; 
+import java.sql.DriverManager; // untuk koneksi ke db dengan method getConnection, butuh path, "sa", dan pwd
+import java.sql.PreparedStatement; // untuk query di koneksi db. Di akhir pakai execute() dan executeUpdate(jika sudah ada
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,11 +55,11 @@ public class TodoDao {
     }
 
     private Connection createConnectionAndEnsureDatabase() throws SQLException {
+        // parameter 'sa' adalah System Administrator, sedangkan yang string kosong adalah password koneksi db H2
         Connection conn = DriverManager.getConnection(this.databasePath, "sa", "");
         try {
             conn.prepareStatement("CREATE TABLE Todo (id int auto_increment primary key, name varchar(255), description varchar(10000), done boolean)").execute();
-        } catch (SQLException t) {
-        }
+        } catch (SQLException t) {}
 
         return conn;
     }

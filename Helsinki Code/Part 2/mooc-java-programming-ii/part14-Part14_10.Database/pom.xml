@@ -29,11 +29,16 @@
             <version>0.4.2</version>
             <scope>test</scope>
         </dependency>
-
+<!--        this is our default database api-->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>1.4.197</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>17.0.1</version>
         </dependency>
     </dependencies>
    
