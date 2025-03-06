@@ -1,0 +1,14 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.4.3'
+}
+
+apply plugin: 'io.spring.dependency-management'
+group = 'com.example.helloworld'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+repositories {
+    mavenCentral()
+}
+dependencies {
+}
