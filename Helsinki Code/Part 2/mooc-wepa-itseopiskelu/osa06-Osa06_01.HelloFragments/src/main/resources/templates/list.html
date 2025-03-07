@@ -1,0 +1,33 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Supersite</title>
+    </head>
+    <body>
+        <header>
+            <a th:href="@{/index}">Main page</a> | 
+            <a th:href="@{/list}">List</a> |
+            <a th:href="@{/form}">Form</a>
+        </header>
+
+        <section>
+            <h1>Super site!</h1>
+            <p>Super site is one of the best sites on the internet now!</p>
+        </section>
+
+
+        <main>
+            <p>See more cool sites!</p>
+
+            <ul>
+                <li><a href="https://www.coolsiteoftheday.com">https://www.coolsiteoftheday.com</a></li>
+                <li><a href="https://unsplash.com/">https://unsplash.com/</a></li>
+            </ul>
+        </main>
+
+        <footer>
+            &copy; Epic web developers paid by the hour!
+        </footer>
+    </body>
+</html>

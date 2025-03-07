@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Title</title>
+    </head>
+    <body>
+        <header th:fragment="header">
+            <nav>
+                <ul>
+                    <li>
+                        <a th:href="@{/}">Main page</a>
+                    </li>
+                    <li>
+                        <a th:href="@{/tracks}">Tracks</a>
+                    </li>
+                    <li>
+                        <a th:href="@{/playlists}">Playlists</a>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+
+
+
+    </body>
+</html>

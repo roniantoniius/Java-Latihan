@@ -1,0 +1,10 @@
+https://www.youtube.com/watch?v=VM3rwdMBORY&list=PL-CtdCApEFH8bV3sla0QfmMnJQ4YX_wR1&index=1
+
+Slide: https://docs.google.com/presentation/d/1I50ccViLOjUh9oMipLfPpsWWqKuoszhN4tDJ4xBJw5U/edit#slide=id.p
+
+Source Code: https://github.com/ProgrammerZamanNow/belajar-spring-dasar
+
+
+About course
+Web server programming Java is open to everyone at the University of Helsinki free web server programming basics instructive web course. The course introduces you to the basic ideas of web applications and their implementing. Taking the course requires programming the courses fundamentals (TKT10002), Programming Advanced (TKT10003) and Basics of databases (TKT10004) knowledge and Java programming language skills or enthusiasm to learn it during the course.
+
