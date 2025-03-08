@@ -4,6 +4,11 @@ Slide: https://docs.google.com/presentation/d/1I50ccViLOjUh9oMipLfPpsWWqKuoszhN4
 
 Source Code: https://github.com/ProgrammerZamanNow/belajar-spring-dasar
 
+Refresh Java:
+1. Reload atau Restart VSCode:
+Terkadang, masalah sementara dapat teratasi hanya dengan me-reload window VSCode (Ctrl+Shift+P, lalu pilih "Reload Window").
+
+2. 
 
 ====================================================================================
 
@@ -267,21 +272,156 @@ dan di Spring, nama bean itu unik, tidak boleh sama
 ● Jika kita ingin mengubah nama bean, kita bisa menggunakan method value() milik annotation
 @Bean
 
+[54;56] mulai Dependency Injection jadi sejauh ini gunanya untuk otomatisasi membuat objek baru ketika kita memanggil objek itu sebagai constructor pada suatu objek. Ini katanya fitur dari Spring
+
+Dependency Injection
+● Saat kita membuat object, sudah pasti kita sering membuat object yang tergantung dengan object
+lain
+● Dependency Injection (DI) adalah teknik dimana kita bisa mengotomatisasi proses pembuatan
+object yang tergantung dengan object lain, atau kita sebut dependencies
+● Dependencies akan secara otomatis di-inject (dimasukkan) kedalam object yang membutuhkannya
+● Spring Framework sejak awal dibilang sebuah framework IoC yang memang cara kerjanya
+menggunakan Dependency Injection
+
+Tanpa Dependency Injection
+● Sebenarnya tanpa Dependency Injection pun, kita tetap bisa membuat aplikasi
+● Namun ketika relasi antar dependencies sangat kompleks, agak ribet untuk kita melakukannya jika
+harus manual
+● Oleh karena itu, penggunaan Dependency Injection framework seperti Spring sangat membantu
+sekali
 
 
 
+Spring Dependency Injection
+● Spring sejak awal dikenal dengan framework untuk Dependency Injection
+● Ketika kita membuat method untuk bean di Spring, kita bisa menambahkan parameter
+● Secara otomatis Spring akan mencarikan bean lain yang sesuai dengan tipe parameter tersebut
+● Jika ternyata tidak ada bean yang cocok, maka secara otomatis akan terjadi error
+● Dan jika ternyata terdapat bean lebih dari satu, secara otomatis akan terjadi error, kecuali terdapat
+primary bean
+
+
+Memilih Dependency
+● Kadang saat menggunakan DI, kita ingin memilih object mana yang ingin kita gunakan
+● Saat terdapat duplicate bean dengan tipe data yang sama, secara otomatis Spring akan memilih
+bean yang primary
+● Namun kita juga bisa memilih secara manual jika memang kita inginkan
+● Kita bisa menggunakan annotation @Qualifier(value=”namaBean”) pada parameter di method nya
 
 
 
+Circular Dependencies
+● Hati-hati dengan curcular dependencies
+● Circular dependencies adalah kasus dimana sebuah lingkaran dependency terjadi, misal bean A
+membutuhkan bean B, bean B membutuhkan bean C, dan ternyata bean C membutuhkan A
+● Jika terjadi cyclic seperti ini, secara otomatis Spring bisa mendeteksinya, dan akan mengganggap
+bahwa itu adalah error
+
+
+Depends On
+● Saat sebuah bean membutuhkan bean lain, secara otomatis bean tersebut akan dibuat setelah
+bean yang dibutuhkan dibuat
+● Namun bagaimana jika bean tersebut tidak membutuhkan bean lain, namun kita ingin sebuah bean
+dibuat setelah bean lain dibuat?
+● Jika ada kasus seperti itu, kita bisa menggunakan annotation @DependsOn(value={”namaBean”})
+● Secara otomatis, Spring akan memprioritaskan pembuatan bean yang terdapat di DependsOn
+terlebih dahulu
+
+
+Lazy Bean
+● Secara default, bean di Spring akan dibuat ketika aplikasi Spring pertama kali berjalan
+● Oleh karena itu, kadang ketika aplikasi Spring pertama berjalan akan sedikit lambat, hal ini
+dikarenakan semua bean akan dibuat di awal
+● Namun jika kita mau, kita juga bisa membuat sebuah bean menjadi lazy (malas), dimana bean tidak
+akan dibuat, sampai memang diakses atau dibutuhkan
+● Untuk membuat sebuah bean menjadi lazy, kita bisa tambahkan annotation @Lazy pada bean
+tersebut
+
+
+Scope
+● Scope merupakan strategy cara sebuah object dibuat
+● Secara default strategy object di Spring adalah singleton, artinya hanya dibuat sekali, dan ketika
+kita akses, akan mengembalikan object yang sama
+● Namun kita juga bisa mengubah scope bean yang kita mau di Spring
+● Untuk mengubah scope sebuah bean, kita bisa tambahkan annotation
+@Scope(value=”namaScope”)
+
+
+Bean Scope
+1. singleton: (Default) Hanya dibuat sekali dalam Spring IoC
+2. prototype: Selalu dibuat object baru setiap kali bean diakses
+3. request: Dibuat baru per HTTP Request (hanya untuk Web App)
+4. session: Dibuat baru per HTTP Session (hanya untuk Web App)
+5. application: Dibuat baru per ServletContext (hanya untuk Web App)
+6. websocket: Dibuat baru per WebSocket (hanya untuk WebSocket App)
 
 
 
+Membuat Scope
+● Jika scope yang disediakan oleh Spring tidak bisa memenuhi kebutuhan kita, kita juga bisa
+membuat scope sendiri
+● Caranya dengan membuat class yang implement interface Scope
+● https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/f
+actory/config/Scope.html
+● Selanjutnya untuk meregistrasikannya, kita bisa membuat bean CustomScopeConfigurer
+● https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/f
+actory/config/CustomScopeConfigurer.html
 
 
+Life Cycle
+● Spring Container memiliki alur hidup, dan jika kita ingin berinteraksi dengan alur hidup nya Spring,
+kita juga bisa lakukan
+● Saat pertama kali Spring berjalan dan sudah selesai membuat bean, Spring akan memberitahu bean
+tersebut bahwa bean tersebut sudah siap, artinya semua dependencies sudah dimasukkan.
+● Dan ketika aplikasi Spring akan mati, Spring juga akan memberitahu semua bean bahwa bean
+tersebut akan dihancurkan
 
 
+Life Cycle Callback
+● Secara default, bean tidak bisa tahu alur hidup Spring ketika selesai membuat bean dan ketika akan
+menghancurkan bean
+● Jika kita tertarik untuk bereaksi ketika alur hidup Spring terjadi, maka kita bisa implements
+interface InitializingBean dan DisposableBean
+● InitializingBean digunakan jika kita ingin bereaksi ketika Spring selesai membuat bean
+● https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/f
+actory/InitializingBean.html
+● DisposableBean digunakan jika kita ingin bereaksi ketika Spring akan menghancurkan bean
+● https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/f
+actory/DisposableBean.html
 
 
+Life Cycle Annotation
+● Selain menggunakan interface InitializingBean dan DisposableBean, kita juga bisa menggunakan
+annotation untuk mendaftarkan callback method untuk lifecycle
+● Pada annotation @Bean, terdapat method initMethod() dan destoyMethod()
+● initMethod() digunakan untuk meregistrasikan method yang akan dipanggil ketika bean selesai
+dibuat
+● destroyMethod() digunakan untuk meregistrasikan method yang akan dipanggil ketika bean akan
+dihancurkan
+● Methodnya harus tanpa parameter, dan return value nya tidak akan dipedulikan, jadi sebaiknya
+gunakan void saja
+
+
+@PostConstruct dan @PreDestroy
+● Selain menggunakan annotation @Bean, untuk menandai sebuah method adalah init method dan
+destroy method, kita juga bisa menggunakan annotation pada method nya secara langsung
+● Ini bisa digunakan untuk menghindari kita lupa menyebutkan init dan destroy method ketika
+membuat @Bean
+● @PostConstruct merupakan method yang ditandai harus dipanggil ketika bean selesai dibuat
+● @PreDestroy merupakan method yang ditandai harus dipanggil ketika bean akan dihancurkan
+● Jika sudah menggunakan annotation ini, kita tidak perlu lagi menyebutkan nya di @Bean
+
+
+Import
+● Saat nanti kita membuat aplikasi, tidak mungkin kita hanya akan membuat satu Configuration
+Class
+● Biasanya kita akan membuat banyak sekali, tergantung seberapa kompleks aplikasi kita
+● Spring mendukung import Configuration Class lain jika dibutuhkan
+● Kita bisa menggunakan annotation @Import, lalu sebutkan Configuration Class mana yang ingin
+kita import
+● Ketika kita melakukan import, kita bisa import lebih dari satu class
+● https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context
+/annotation/Import.html
 
 
 
