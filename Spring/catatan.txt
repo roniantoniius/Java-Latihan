@@ -424,18 +424,406 @@ kita import
 /annotation/Import.html
 
 
+[2:29:05]
+
+Component Scan
+● Import adalah hal yang sangat menarik, karena kita bisa memecah Configuration Class menjadi
+banyak Class
+● Namun semakin lama, pasti aplikasi kita akan semakin besar, dan secara otomatis Configuration
+Class akan menjadi banyak
+● Melakukan import satu persatu sudah tidak menyenangkan lagi jika terlalu banyak
+● Spring memiliki fitur component scan, dimana kita bisa secara otomatis mengimport Configuration
+di sebuah package dan sub package nya secara otomatis
+● Untuk melakukan itu, kita bisa gunakan annotation @ComponentScan
+● https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context
+/annotation/ComponentScan.html
+
+
+Component
+● Sebelumnya kita sudah belajar membuat bean menggunakan method di configuration dengan
+annotation @Bean
+● Spring juga menyediakan cara otomatis tanpa harus kita membuat method @Bean
+● Kita bisa menandai sebuah class dengan annotation @Component, secara otomatis Spring akan
+membuatkan bean untuk class tersebut
+● @Component hanya mendukung pembuatan satu bean, jadi jika kita ingin membuat beberapa bean
+dengan tipe yang sama, kita tetap harus menggunakan @Bean method
+
+Component Bean Name
+● Saat kita menggunakan @Component, nama bean akan secara otomatis dibuat otomatis oleh
+Spring
+● Jika kita menggunakan @ComponentScan, secara otomatis bean name secara otomatis akan
+menggunakan nama class namun menjadi camelCase, misal CategoryService menjadi
+categoryService, ProductWeb menjadi productWeb
+● Jika kita menggunakan @Import, secara otomatis bean name akan menjadi
+NamaClass.class.getName()
+● Namun jika ingin membuat nama berbeda, kita juga bisa gunakan
+@Component(value=”namaBean”)
+
+
+Annotation
+● Semua annotation yang sudah kita bahas di @Bean juga didukung di @Component
+● Seperti misalnya @Scope, @PostConstruct, @PreDestroy, @Lazy, @Primary dan lain-lain
 
 
 
 
+Constructor-based Dependency Injection
+
+
+Dependency Injection
+● Sebelumnya untuk melakukan Dependency Injection di @Bean, kita bisa menambah parameter di
+method nya
+● Secara otomatis Spring akan memilih bean mana yang cocok untuk parameter tersebut
+● Bagaimana jika menggunakan @Component?
+● Untuk @Component kita bisa melakukan beberapa cara untuk Dependency Injection nya
+
+
+
+Constructor-based Dependency Injection
+● Pertama yang bisa kita lakukan untuk Dependency Injection di @Component adalah menggunakan
+constructor parameter
+● Kita bisa menambahkan constructor yang memiliki parameter jika membutuhkan bean lain
+● Secara otomatis Spring akan mencarikan bean tersebut, dan ketika membuat bean @Component,
+Spring akan menggunakan bean yang dibutuhkan di constructor
+● Constructor-based Dependency Injection hanya mendukung satu constructor, jadi pastikan kita
+hanya membuat satu constructor
+
+
+Multiple Constructor
+● Seperti di awal disebutkan bahwa Spring hanya mendukung satu constructor untuk Dependency
+Injection nya
+● Namun bagaimana jika terdapat multiple constructor?
+● Jika pada kasus seperti ini, kita harus menandai constructor mana yang akan digunakan oleh Spring
+● Caranya kita bisa menggunakan annotation @Autowired
 
 
 
 
+Setter-based Dependency Injection
+● Selain menggunakan constructor parameter, kita juga bisa menggunakan setter method jika ingin
+melakukan dependency injection
+● Namun khusus untuk setter method, kita perlu menambah annotation @Autowired pada setter
+method nya
+● Secara otomatis Spring akan mencari bean yang dibutuhkan di setter method yang memiliki
+annotation @Autowired
+● Setter-based DI juga bisa digabung dengan Constructor-based DI
 
 
 
 
+Field-based Dependency Injection
+● Selain constructor dan setter, kita juga bisa melakukan dependency injection langsung
+menggunakan field
+● Caranya sama dengan setter, kita bisa tambahkan @Autowired pada fieldnya
+● Secara otomatis Spring akan mencari bean dengan tipe data tersebut
+● Field-based DI bisa digabung sekaligus dengan Setter-based DI dan Constructor-based DI
+● Khusus Field-based DI, Spring sendiri sudah tidak merekomendasikan penggunaan cara melakukan
+DI dengan Field
 
+
+
+Qualifier
+● Seperti yang sudah dijelaskan di awal, jika terdapat bean dengan tipe data yang sama lebih dari
+satu, maka secara otomatis Spring akan bingung memilih bean yang mana yang akan digunakan
+● Kita perlu memilih salah satu menjadi primary, yang secara otomatis akan dipilih oleh Spring
+● Namun jika kita ingin memilih bean secara manual, kita juga bisa menggunakan @Qualifier
+● Kita bisa tambahkan @Qualifier di constructor parameter, di setter method atau di field
+
+
+
+Optional Dependency
+● Secara default, semua dependency itu wajib
+● Artinya jika Spring tidak bisa menemukan bean yang dibutuhkan pada saat DI, maka secara
+otomatis akan terjadi error
+● Namun jika kita memang ingin membuat sebuah dependency menjadi Optional, artinya tidak wajib
+● Kita bisa wrap dependency tersebut dengan menggunakan java.util.Optional<T>
+● Secara otomatis jika ternyata bean yang dibutuhkan tidak ada, maka tidak akan terjadi error
+● Kita bisa gunakan Optional<T> pada @Bean (method parameter) ataupun @Component
+(constructor parameter, setter method parameter, field)
+
+
+
+Object Provider
+● Selain menggunakan java.util.Optional<T>, kita juga bisa menggunakan ObjectProvider<T>
+● Yang membedakan pada ObjectProvider<T> adalah, jika ternyata bean nya lebih dari satu,
+ObjectProvider<T> bisa digunakan untuk mengambil semua bean tersebut
+● https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/f
+actory/ObjectProvider.html
+
+
+Factory Bean
+● Kadang ada kasus dimana sebuah class misal bukanlah milik kita, misal class third party library
+● Sehingga agak sulit jika kita harus menambahkan annotation pada class tersebut
+● Pada kasus seperti ini, cara terbaik untuk membuat bean nya adalah dengan menggunakan @Bean
+method
+● Atau di Spring, kita juga bisa menggunakan @Component, namun kita perlu wrap dalam class
+Factory Bean
+● https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/f
+actory/FactoryBean.html
+
+
+
+Inheritance
+● Saat kita mengakses bean, kita bisa langsung menyebutkan tipe class bean tersebut, atau bisa juga
+dengan parent class / parent interface bean
+● Misal jika kita memiliki sebuah interface bernama MerchantService, lalu kita memiliki bean
+dengan object implementasi class nya MerchantServiceImpl, maka untuk mengakses bean nya, kita
+tidak hanya bisa menggunakan tipe MerchantServiceImpl, namun juga bisa dengan
+MerchantService
+● Namun perlu berhati-hati, jika misal MerchantService memiliki banyak bean turunan, pastikan
+tidak terjadi error duplicate
+
+
+
+Bean Factory
+● ApplicationContext adalah interface turunan dari BeanFactory
+● BeanFactory merupakan kontrak untuk management bean di Spring
+● Method-method yang sebelumnya kita gunakan untuk mengambil bean, sebenarnya merupakan
+method kontrak dari interface BeanFactory
+● https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/f
+actory/BeanFactory.html
+
+
+Listable Bean Factory
+● Bean Factory hanya bisa digunakan untuk mengakses single bean, artinya jika terdapat bean
+dengan tipe yang sama, kita harus sebutkan satu per satu nama bean nya
+● Listable Bean Factory adalah turunan dari Bean Factory yang bisa kita gunakan untuk mengakses
+beberapa bean sekaligus
+● Dalam beberapa kasus, ini sangat berguna, seperti misal kita ingin mengambil semua bean dengan
+tipe tertentu
+● Application Context juga merupakan turunan dari interface Listable Bean Factory
+● https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/f
+actory/ListableBeanFactory.html
+
+
+
+Bean Post Processor
+● Bean Post Processor merupakan sebuah interface yang bisa kita gunakan untuk memodifikasi
+proses pembuatan bean di Application Context
+● Bean Post Processor mirip seperti middleware, yang diakses sebelum bean di initialized dan
+setelah bean di initialized
+● Karena sangat flexible, bahkan Bean Post Processor bisa memodifikasi hasil object bean
+● https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/f
+actory/config/BeanPostProcessor.html
+
+
+Bean Id Generator
+● Misal sekarang kita akan coba membuat id unique untuk bean
+● Dimana kita akan membuat sebuah interface bernama IdAware, lalu memiliki method setId(String)
+● Kita akan membuat Bean Post Processor, dimana jika bean nya implements IdAware, kita akan
+setId(String) nya menggunakan UUID
+
+
+
+
+Ordered
+● Saat kita membuat Bean Post Processor, kita bisa membuat lebih dari satu
+● Kadang ada kasus saat membuat beberapa Bean Post Processor, kita ingin membuat yang
+berurutan
+● Sayangnya secara default, Spring tidak menjamin urutan eksekusi nya
+● Agar kita bisa menentukan urutannya, kita bisa menggunakan interface Ordered
+● https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/core/Or
+dered.html
+
+
+
+Aware
+● Spring memiliki sebuah interface berama Aware
+● Aware adalah super interface yang digunakan untuk semua Aware interface
+● Aware ini diperuntukkan untuk penanda agar Spring melakukan injection object yang kita
+butuhkan
+● Mirip seperti yang sudah kita lakukan ketika membuat IdAware menggunakan IdGenerator Bean
+Post Processor
+● Namun untuk ini, kita tidak perlu lagi membuat Bean Post Processor secara manual
+● https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/f
+actory/Aware.html
+
+Daftar Aware
+1. ApplicationContextAware; Untuk mendapat application context
+2. BeanFactoryAware:  Untuk mendapat bean factory
+3. BeanNameAware : Untuk mendapat nama bean
+4. ApplicationEventPublisherAware : Untuk mendapat event publisher
+5. EnvironmentAware : Untuk mendapat environment
+
+
+
+Bean Factory Post Processor
+● Secara default, mungkin kita tidak akan pernah sama sekali membuat Application Context secara
+manual
+● Namun kadang ada keadaan kita ingin memodifikasi secara internal Application Context
+● Spring merekomendasikan kita untuk membuat Bean Factory Post Processor
+● https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/f
+actory/config/BeanFactoryPostProcessor.html
+● https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/f
+actory/support/BeanDefinitionRegistryPostProcessor.html
+
+
+
+Event Listener
+● Spring memiliki fitur Event Listener yang bisa kita gunakan untuk komunikasi antar class
+menggunakan Event
+● Event di Spring merupakan object turunan dari ApplicationEvent, sedangkan Listener di Spring
+merupakan turunan dari ApplicationListener
+● https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context
+/ApplicationEvent.html
+● https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context
+/ApplicationListener.html
+
+
+Application Event Publisher
+● Ketika kita ingin mengirimkan event ke listener, kita bisa menggunakan object
+ApplicationEventPublisher, dimana ApplicationEventPublisher juga merupakan super interface
+dari ApplicationContext
+● Atau kita bisa menggunakan ApplicationEventPublisherAware untuk mendapatkan object
+ApplicationEventPublisher
+● https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context
+/ApplicationEventPublisher.html
+
+
+Event Listener Annotation
+● Selain menggunakan interface ApplicationListener, kita juga bisa menggunakan Annotation untuk
+membuat Listener
+● Ini lebih flexible dibanding menggunakan interface ApplicationListener
+● Kita bisa menggunakan annotation @EventListener
+● https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context
+/event/EventListener.html
+
+
+Cara Kerja Event Listener Annotation?
+● Annotation @EventListener bekerja dengan menggunakan Bean Post Processor bernama
+EventListenerMethodProcessor
+● EventListenerMethodProcessor mendeteksi jika ada bean yang memiliki method dengan
+annotation @EventListener, maka secara otomatis akan membuat listener baru, lalu
+meregistrasikannya ke ApplicationContext.addApplicationListener(listener)
+● https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context
+/event/EventListenerMethodProcessor.html
+
+
+Spring Boot Application
+● Sebelumnya kita selalu membuat Application Context secara manual, dan kita belum menggunakan
+fitur otomatis Spring Boot
+● Hal ini sengaja saya jelaskan agar kita tidak kaget bagaimana semua itu bisa berjalan secara
+otomatis di Spring Boot
+● Pada saat membuat aplikasi Spring Boot, kita akan mengganti @Configuration utama menjadi
+@SpringBootApplication
+● Isi dari @SpringBootApplication itu sendiri sebenarnya gabungan dari @Configuration dan banyak
+hal lain, seperti contohnya @ComponentScan
+● https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/autoconfigure/Sp
+ringBootApplication.html
+
+Spring Application
+● Selain @SpringBootApplication, untuk membuat Application Context nya, kita tidak perlu
+membuat manual, kita bisa gunakan class SpringApplication
+● Secara otomatis SpringApplication akan membuat ApplicationContext dan melakukan hal-hal yang
+dibutuhkan secara otomatis
+● https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/SpringApplicatio
+n.html
+
+
+
+Spring Boot Test
+● Untuk membuat unit test di Spring Boot, kita bisa menggunakan annotation
+@SpringBootTest(classes={YourConfiguration.class})
+● Selanjutnya kita tidak perlu mengambil bean secara manual lagi menggunakan ApplicationContext,
+kita bisa menggunakan DI secara langsung di unit test nya menggunakan @Autowired
+● https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/test/context/Spri
+ngBootTest.html
+
+Startup Failure
+● Salah satu yang menarik di Spring Boot adalah, Spring Boot memiliki fitur FailureAnalyzer
+● FailureAnalyzer digunakan untuk melakukan analisa ketika terjadi error startup yang
+menyebabkan aplikasi tidak mau berjalan
+● Spring sudah menyediakan banyak sekali class implementasi FailureAnalyzer yang bisa
+mempermudah kita menganalisa kesalaha ketika terjadi startup failure
+● https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/diagnostics/Failu
+reAnalyzer.html
+
+
+Banner
+● Spring Boot memiliki fitur banner, dimana saat aplikasi Spring Boot berjalan, kita bisa menampilkan
+tulisan banner di console
+● Secara default fitur banner ini akan menyala dan akan mencari tulisan banner di classpath dengan
+nama banner.txt
+● Jika tidak ada file tersebut, maka secara otomatis akan menampilkan tulisan banner Spring Boot
+● Salah satu contoh tempat untuk membuat banner adalah http://www.bagill.com/ascii-sig.php
+
+
+
+Customizing Spring Application
+● Kadang ada kalanya kita ingin melakukan pengaturan di Spring Application sebelum Application
+Context nya dibuat
+● https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/SpringApplicatio
+n.html
+● Kita bisa menggunakan langsung SpringApplication, atau bisa juga menggunakan
+SpringApplicationBuilder
+● https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/builder/SpringAp
+plicationBuilder.html
+
+
+
+Spring Application Event
+● Sebelumnya kita sudah belajar tentang Event Listener
+● Di Spring Boot, terdapat banyak sekali Event yang dikirim ketika aplikasi Spring Boot berjalan
+● Jika kita ingin, kita bisa membuat Listener untuk menerima event tersebut
+● https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/context/event/Sp
+ringApplicationEvent.html
+
+
+Daftar Event
+1. ApplicationStartingEvent : Dikirim ketika start aplikasi
+2. ApplicationContextInitializedEvent : Dikirim ketika ApplicationContext sudah di initialisasi
+3. ApplicationStartedEvent : Dikirim ketika aplikasi sudah berjalan
+4. ApplicationFailedEvent : Dikirim ketika aplikasi gagal berjalan
+
+
+Menambah Listener
+● Beberapa Event di Spring Boot Application Event di trigger bahkan sebelum Spring membuat
+Application Context
+● Oleh karena itu, jika kita buat menggunakan bean, bisa saja beberapa listener tidak akan dipanggil,
+karena bean nya belum dibuat
+● Agar lebih aman, kita bisa menambahkan listener ketika membuat SpringApplication 
+
+
+Command Line Runner
+● Saat kita membuat aplikasi, kadang kita butuh argument yang diberikan pada main method
+● Spring Application bisa mengirim data argument tersebut secara otomatis ke bean yang kita buat
+● Kita hanya butuh membuat bean dari CommandLineRunner
+● CommandLineRunner secara otomatis akan di jalankan ketika Spring Application berjalan
+● https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/CommandLineRu
+nner.html
+
+
+Application Runner
+● Selain CommandLineRunner, Spring Boot menyediakan fitur ApplicationRunner
+● Penggunaan ApplicationRunner sama seperti CommandLineRunnnner, hanya saja argument nya
+sudah di wrap dalam object ApplicationArguments
+● Yang menarik dari ApplicationArguments adalah, memiliki fitur parsing untuk command line
+argument
+● https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/ApplicationArgu
+ments.html
+● https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/ApplicationRunn
+er.html
+
+
+Spring Boot Plugin
+● Saat kita membuat project Spring Boot, secara otomatis terdapat spring-boot-plugin di project
+maven kita
+● Plugin ini bisa digunakan untuk mempermudah saat kita menjalankan aplikasi Spring kita
+● Kita bisa gunakan perintah :
+mvn spring-boot:run
+● Untuk menjalankan aplikasi Spring Boot kita, kita harus memastikan bahwa hanya ada satu main
+class
+
+
+
+Distribution File
+● Spring Boot plugin juga sudah menyediakan cara membuat distribution file aplikasi kita
+● Plugin ini akan mendeteksi main class di project kita, lalu membundle aplikasi kita beserta
+dependency yang dibutuhkan dalam satu file jar
+● Pastikan hanya terdapat satu main class, karena jika lebih dari satu, maka spring boot plugin akan
+melakukan komplen
+● Kita cukup gunakan perintah :
+mvn package
+● Secara otomatis akan terbuat single jar application
 
 

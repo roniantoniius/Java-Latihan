@@ -1,4 +1,4 @@
-package roniantonius.spring.core;
+package roniantonius.spring.core.configuration;
 
 import org.springframework.context.annotation.Bean;
 import roniantonius.spring.core.data.Bar;
