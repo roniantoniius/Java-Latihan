@@ -12,7 +12,6 @@ public class BeanConfiguration {
     @Bean
     public Foo foo(){
         log.info("Membuat foo baru!");
-        Foo foo = new Foo();
-        return foo;
+        return new Foo();
     }
 }

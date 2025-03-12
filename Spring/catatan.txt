@@ -1,14 +1,23 @@
+Spring Tutor:
 https://www.youtube.com/watch?v=VM3rwdMBORY&list=PL-CtdCApEFH8bV3sla0QfmMnJQ4YX_wR1&index=1
+
+Spring Boot:
+https://youtu.be/Nv2DERaMx-4?si=Rmi4NhoUhl4bNNLC
+
+Next Spring Boot:
+https://youtu.be/HmRVrAT4uA0?si=N1I04vMdMCZkLHm3
 
 Slide: https://docs.google.com/presentation/d/1I50ccViLOjUh9oMipLfPpsWWqKuoszhN4tDJ4xBJw5U/edit#slide=id.p
 
 Source Code: https://github.com/ProgrammerZamanNow/belajar-spring-dasar
 
-Refresh Java:
-1. Reload atau Restart VSCode:
-Terkadang, masalah sementara dapat teratasi hanya dengan me-reload window VSCode (Ctrl+Shift+P, lalu pilih "Reload Window").
+ctr+f = ['Setting', 'Pertama', 'siap-siap']
 
-2. 
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
 
 ====================================================================================
 
@@ -277,8 +286,7 @@ dan di Spring, nama bean itu unik, tidak boleh sama
 Dependency Injection
 ● Saat kita membuat object, sudah pasti kita sering membuat object yang tergantung dengan object
 lain
-● Dependency Injection (DI) adalah teknik dimana kita bisa mengotomatisasi proses pembuatan
-object yang tergantung dengan object lain, atau kita sebut dependencies
+● Dependency Injection (DI) adalah teknik dimana kita bisa mengotomatisasi proses pembuatan object yang tergantung dengan object lain, atau kita sebut dependencies
 ● Dependencies akan secara otomatis di-inject (dimasukkan) kedalam object yang membutuhkannya
 ● Spring Framework sejak awal dibilang sebuah framework IoC yang memang cara kerjanya
 menggunakan Dependency Injection
@@ -827,3 +835,185 @@ mvn package
 ● Secara otomatis akan terbuat single jar application
 
 
+
+===================================================================================
+
+[Setting / Pertama, siap-siap]
+Apache Maven:
+Singkatnya apaache maven digunakan untuk memanage project dan semua yang berkaitan untuk membuild programs.
+
+./mvnw clean compile
+
+format perintah maven CLI
+mvnw [options] [<goal(s)>] [<phase(s)>]
+
+
+Apache Maven memliki beberapa fase dalam suatu siklus yang menjadi langkah spesifik untuk mencapai tujuan. Mulai dari fase `clean`, `default`, dan `site`.
+- clean: menghapus files sementara yang tujuannya tidak terlalu signifikan
+- default: tahap dimana sebagian besar tugas untuk mencapai tujuan seperti build dan testing
+- site: semua dokumentasi digenerate
+
+
+Tahap `clean`: mvnw clean
+- pre-clean: hook sebelum cleaning
+- clean: melakukan cleaning
+- post-clean: hook setelah cleaning
+
+
+Tahap `default`: mvnw [default]
+- compile: compiles java code into bytecode
+- test: menjalankan unit test
+- package: membuat project menjadi jar atau war file
+- verify: melakukan pemeriksaan runs dan integrasi test
+
+Maven workflow:
+biasanya compile dulu, kemudian clean test, lalu clean package, and then run the app with:
+`java -jar [nama jar]` kalau pakai kustom server = `java -jar [nama jar] --server.port=8081`
+
+
+cara run app
+
+.\mvnw spring-boot:run
+
+Jadi untuk buat rest API kita menggunakan Spring Framework yang sebagian besar mendukung proses rest api. Nah kenapa nggak Spring Boot? Karena Spring Boot sendiri dibangung di atas layer dari Spring Framework. Penggunaan Spring Framework sangat mungkin di configure namun memang butuh banyak effor.
+
+
+
+3.2. Spring App Layers
+Spring boot adalah layer yang berdiri di atas Spring framework. Nah kalau dilihat dari Spring framework ternyata berisikan beberapa Layer yang tujuannya untuk menyelesaikan masalah. Jadi anggap aja aplikasi kamu merupakan suatu layer itu sendiri.
+
+Layer dalam Spring Framework:
+
+1. Persistance Layer
+Lapisan yang akan mengatasi interaksi dengan database (H2, Postgre, dll). Biasanya menggunakan entities pada lapisan ini untuk berinteraksi dengan sebuah database menggunakan beberapa pola:
+a. Pola Entities
+
+
+b. Pola Repositories / Data Access Objects (DAOs)
+
+
+Persistance layer biasanya digunakan untuk proses CRUD (Create, Read, Update, Delete). Tujuan dari layer ini untuk berinteraksi terhadap berbagai layer yang membutuhkan akses ke database, atau menampilkan data melalui interfaces
+
+
+2. Service Layer
+Lapisan yang bertujuan untuk menggunakan semua functionality yang ditawarkan oleh Persistance layer dan menggunakannya untuk bagaimana aplikasi dibangun. Biasanya diterapkan dengan beberapa kumpulan interfaces dan mengimplementasikannya dengan clases tertentu atau Services. Kita harus menerapkan fungsionalitas Persistance layer langsung terhadap Service layer, jangan sampai komunikasi melalui Persistance ke layer Presentation secara langsung.
+
+
+3. Presentation Layer
+Lapisan yang bertujuan untuk mengambil semua data yang didapat melalui Service layer dan menampilkannya ke User, biasanya melalui rest API dengan menggunakan konsep Controller atau melalui graphqlAPI atau websocketAPI.
+
+
+3.3. Modularity
+
+
+Penerapan dari setiap layer tersebut kita bisa mulai dari Persistance Layer:
+- Include depencencies di pom xml
+- Masukkan konfigurasi di properties file mengenai koneksi ke database
+- Semua bean yang berkaitan akan dibuat secara otomatis
+- setelah itu fokus ke logic 
+
+
+
+4.1. Inversion of Control atau Dependency Injection
+
+udah ada penjelasan di atas
+
+
+
+4.2. Beans
+Menurut aku sendiri Bean ini semacam suatu anotasi yang menandakan method di bawahnya mampu dikenali oleh Spring secara otomatis. Biasanya Beans digunakan untuk menerapkan Dependency Injection, Spring akan melihat Bean dengan tipe data mana yang secara default dipilih, biasanya pakai Primary atau dinamain. Ketika suatu constructor yang menerima method dengan tipe yang sama dengan method Beans sebelumnya, maka Bean akan melakukan Dependency Injection menggunakn method itu.
+
+Tapi file yang mengandung Beans seharusnya menerapkan anotasi Configuration, supaya Spring dapat mengenalinya
+
+
+4.3. Components
+Components juga digunakan untuk menandakan suatu Class bahwa method yang dimiliki merupakan suatu Bean. Jadi bisa dibilang Bean digunakan untuk suatu method namun file tersebut harus memiliki anotasi Configuration. Sedangkan penggunaan Components pada awal class lebih simpel.
+
+4.4. Component Scanning
+Merupakan kemampuan Spring dalam mendeteksi suatu Bean dan melihat dimana Bean akan diterapkan secara otomatis ketika aplikasi dijalankan.
+
+Anotasi @ComponentScan itu sudah terkandung dalam anotasi @SpringBootApplication
+
+
+
+4.5. @SpringBootApplication
+
+memiliki beberapa hal mulai dari
+@SpringBootConfiguration
+@ComponantConfiguration
+@ComponentScan
+@EnableAutoConfiguration
+
+
+4.6. @AutoConfiguration
+Jadi anotaassi ini akan bekerja ketika Spring Boot berjalan yang akan memulai semua hal default dan membuat semua dependencies
+
+SpringBootStart merupakan Collection dari dependencies yang diurut untuk menyelesaikan permasalhaan.
+
+
+
+5.2. Environment Variables
+Jadi kita bisa setting kalau di Eclipse melaui menu Run > Run Configuration > Tab Environments.
+
+Atau bisa juga dari Command prompt, terus nanti di EXPORT, baru habis itu bisa kita Jar
+
+
+
+6.1. Database Layers:
+Untuk penerapan database layer itu ada beberapa:
+
+1. Database driver
+Database umum yang didukung oleh Spring seperti mysql atau postgre yang mampu menyediakan db khusus untuk java.
+
+2. JDBC (Java Database Connectivity)
+Merupakan level Load Data API yang bisa berinteraksi dengan database berdasarkan kueri SQL. Tapi kita harus Mapping dari dan menuju java object itu sendiri
+
+3. JPA (Java Persistance API)
+Jadi disini kita berinteraksi terhadap database menggunakan Java Objects (sama kayak ORM di Flask mungkin?, ORM adalah proses mapping dari SQL ke Java Objects dan kembali lagi). Tapi biasanya Spring menggunakan ini dengan istilah Hibernate.
+
+
+6.2. Connect to a H2 Database
+Jadi di spring initializr kita bisa langsung pilih H2 extension, lalu pakai objek DataSource di class utama. Magicnya adalah secara default database H2 udah otomatis terkoneksi. Jadi karena Auto Configures dalam Spring Boot sehingga kalau menemukan H2 di class path maka otomatis membuat Bean untuk koneksi.
+
+Kalau di .properties kita juga bisa setting:
+spring.application.name=database
+spring.datasource.url=jdbc:h2:mem:testdb
+spring.driverClassName=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=password
+
+h2 adalah tipe database, 'mem' in memory database, 'testdb' merupakan nama database
+Kita koneksi menggunakan driverClassName org.h2.Driver.
+
+
+6.3. Connect to PostgreSQL
+Kurang lebih sama, namun ketika initialize jangan lupa tambah dependencies Postgre, JDBC API, dan lombok. Nah untuk setting postgre kita bisa pakai docker compose lalu jangan lupa juga di properties:
+
+docker compose.yml:
+services:
+  db:
+    image: postgres
+    ports:
+      - "5432:5432"
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: passkord
+
+
+properties:
+spring.application.name=databasepostgre
+spring.datasource.url=jdbc:postgresql://localhost:5432/postgres
+spring.datasource.driver-class-name=org.postgresql.Driver
+spring.datasource.username=postgres
+spring.datasource.password=passkord
+
+
+6.4. Initialize DB Schema
+
+
+7.1. JDbcTemplate Setup
+Disini kita bikin setup Configuration mengandung metode Bean dengan tipe JdbcTemplate untuk melakukan kueri. Makannya kita butuh DAO
+
+7.2. What is DAO (Data Access Object)
+
+Lanjut besok aja karena materinya arah beda.
