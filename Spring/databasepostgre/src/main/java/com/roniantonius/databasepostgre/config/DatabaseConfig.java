@@ -8,9 +8,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 @Configuration
 public class DatabaseConfig {
-	
 	@Bean
-	public JdbcTemplate dataSource(final DataSource dataSource) {
+	public JdbcTemplate jdbcTemplate(final DataSource dataSource) {
 		return new JdbcTemplate(dataSource);
 	}
 }

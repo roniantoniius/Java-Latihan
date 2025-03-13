@@ -1016,4 +1016,27 @@ Disini kita bikin setup Configuration mengandung metode Bean dengan tipe JdbcTem
 
 7.2. What is DAO (Data Access Object)
 
-Lanjut besok aja karena materinya arah beda.
+DAO merupakan sebuah interface yang diterapkan pada suatu layer service untuk memahami bagaimana data diambil dari database melalui persistance layer, data tersebut didapat dari dan menuju kueri menggunakan SQL dengan java object. Caranya DAO akan mapping semacam bean ke persistance layer.
+
+
+7.3. Set Up DAOs
+Kurang lebih cara setupnya dengan menerapkan kerangka si Data nya melalui folder domain, and then set up interface dan implementasinya
+
+
+7.4. Create DAOs
+Disini kita menerapkan C pada CRUD. Caranya dengan untuk setiap interface kita bikin method Create yang menerima parameter tipe Data java object. Lalu dari fungsi implementasinya kita pakai jdbc template untuk create data dengan method update lalu kueri INSERT INTO, pastikan disini kita bikin opsi input (?, ?) untuk handle SQL Injection.
+
+7.5. Implement Read DAOs
+Jadi ada dua tip Read, yang pertama adalah findOne() untuk mencari satu data berdasarkan id serta findMany() untuk mencari beberapa data yang biasanya disimpan dalam List
+
+Kurang lebih penerapannya sama ketika Create, namun pada test kita menggunakan verify terhadap .query() dengan menerapakan Row Mapper dalam mengatasi konversi dari SQL dan menuju Java Objects
+
+7.6. Integration Test
+Disini kita bakal test dengan menjalankan sql query pada H2 Database in memory sql postgre
+
+
+7.7. Find Many
+kurang lebih sama, cuman ditampung dalam list, dan karena ada beberapa test case, sehingga ketika ada data yang sama. Kita harus clean dulu database setiap test yang berbeda dengan anotasi @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
+
+7.8. Full Update
+Nanti dulu, jadi ada untuk Update dan Delete

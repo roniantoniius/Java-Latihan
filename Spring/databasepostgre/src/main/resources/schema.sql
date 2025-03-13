@@ -1,11 +1,19 @@
-DROP TABLE IF EXISTS "widgets";
+DROP TABLE IF EXISTS "kapal";
+DROP TABLE IF EXISTS "ppn";
 
-DROP SEQUENCE IF EXISTS widgets_id_seq;
-CREATE SEQUENCE widgets_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1;
-
-CREATE TABLE "widgets" {
-	"id" bigint DEFAULT nextval('widgets_id_seq') NOT NULL,
+CREATE TABLE "ppn" (
+	"id" bigint DEFAULT nextval('ppn_id_seq') NOT NULL,
 	"name" text,
-	"purpose" text,
-	CONSTRAINT "widgets_pkey" PRIMARY KEY ("id")
+	"lokasi" text,
+	CONSTRAINT "ppn_key" PRIMARY KEY ("id")
+);
+
+CREATE TABLE "kapal" (
+	"idkapal" bigint DEFAULT nextval('kapal_id_seq') NOT NULL,
+	"namekapal" text,
+	"ukuran" text,
+	"ppnid" bigint,
+	CONSTRAINT "kapal_pkey" PRIMARY KEY ("idkapal"),
+	CONSTRAINT "fk_ppn" FOREIGN KEY (ppnid)
+	REFERENCES ppn(id)
 );
