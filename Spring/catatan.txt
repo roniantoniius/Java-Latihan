@@ -1039,4 +1039,121 @@ Disini kita bakal test dengan menjalankan sql query pada H2 Database in memory s
 kurang lebih sama, cuman ditampung dalam list, dan karena ada beberapa test case, sehingga ketika ada data yang sama. Kita harus clean dulu database setiap test yang berbeda dengan anotasi @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 
 7.8. Full Update
-Nanti dulu, jadi ada untuk Update dan Delete
+Jadi caranya sama aja sih, intinya kuerian, tapi untuk Update kita bikin method di interface yang menerima constructor id dan objek
+
+
+7.9. Delete
+Caranya juga sama method dengan parameter id dengan query DELETE bla bla blas
+
+
+8.1. Spring Data JPA Setup
+Jadi katanya ada cara yang lebih mudah dalam melakukan CRUD menggunakan JPA dan Hibernate
+
+8.2. Create Entities
+Untuk memulai CRUD dengan JPA kita harus bikin objek domain dengan entity. Pada class object dengan anotasi @Data kita tandai dengan anotasi @Entity yang menandakan bahwa kelas ini sebagai entitas yang akan digunakan oleh JPA.
+
+Jangan lupa tandain class itu dengan nama tabel yang benar melalui anotasi @Table(name = "namatabel"). Lalu untuk initiate variabel khususnyna id kita tandain dengan anotais @Id dan jika ingin otomatis nilainya (bertambah) maka tambah anotasi @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "namatabel_id_seq")
+
+*seq stands for sequence, and those Entity and Tabel anotation come from Jakarta package
+
+Kalau pada suatu tabel memiliki foreign key, maka variabel tersebut kita anotasi dengan relasinya seperti @ManyToOne(cascade = CascadeType.ALL) (artinya dari tabel tersebut Many ke tabel tujuan One), lalu dibawahnya kita sambungin dengan anotasi @JoinColumn(name = "namatabel_id")
+
+
+Jadi kan emang agak bingung kok disini kita hubungin variabel atau nama sequencenya tidak serupa dengan nama variabel. Nah disinilah peran dari Hibernate Auto DDL
+
+8.3. Hibernate Auto DDL
+Berguna untuk mensetup database schema dan caranya cukup straightforward. Caranya di properties tambahin `spring.jpa.hibernate.ddl-auto=update` biar hibernate bisa bikin schema 
+
+8.4. Create & Read One Using JPA and Hibernate
+
+Create
+Untuk fungsionalitas ini kita harus meng Extends class repository dengan CrudRepository<objekKelas, tipedataId>. Lalu menggunakan anotasi @Repository yang bertujuan serupa dengan @Component namun menandkan bahwa class ini merupakan repository. Artinya membuat Bean yang bisa diinject dimanapun
+
+Untuk Create khususnya pada test sebenarnya tidak terlalu perlu karena JPA suddah otomatis. Namun ketika ingin menambah suatu java objek ke suatu tabel di database kita cuman menggunakan method .save(Objek objek). Method ini diambil dari class sebelumnya melalui CrudRepository
+
+8.5. Implement Find All
+
+Sama tapi kita pakai method .findAll dan menyimpannya dalam variabel dengan tipe data Iterable<namaklas>
+
+8.6. Update
+Unntuk ini sama aja, jadi penggunaan method .save yang awalnya untuk membuat baru, itu juga bisa untuk update
+
+8.7. Delete
+Menggunakan method .deleteById(input.id()) atau method .delete(Objek)
+
+8.8. Custom Queries
+Kita bisa membuat kueri hanya dengan menamakan sbuah method di dalam repo
+
+
+8.9. HQL
+HQL stands for Hibernate Query Language, a query language that is used to retrieve and manipulate data from a database. It is similar to SQL (Structured Query Language), but is more object-oriented. 
+How does HQL work?
+HQL is used with Hibernate, an object-relational mapping framework in Java. 
+HQL allows developers to write portable queries that work across different databases. 
+HQL can be used to perform database operations such as selecting, inserting, updating, and deleting data. 
+HQL is a superset of JPQL, which is a subset of HQL
+
+Jadi pada interface dari method yang menerapkan CrudRepository<namakelas, long> di atas method tersebut kita terapkan HQL seperti ini:
+@Query("SELECT a FROM Ppn WHERE a.ppnYear > ?1") // artinya mengambil input dari parameter pertama
+
+
+
+---------------------------------------------------------------------------------
+Belajar RestAPI
+
+9.1. What is Jackson?
+Jackson merupakan library/package pada Spring Framework untuk berinteraksi dengan Json. Jackkson ada untuk mengambil Java Object dan mengubahnya menjadi Json melalui proses yang disebut dengan Marshalling dan melakukan sebaliknya, mengambil Json dan mengubah menjadi Java Object dengan proses Unmarshalling.
+
+9.2. Jackson & Spring Web, membuat API sederhana
+Caranya dengan membuat class dengan anotasi @Data dan @Builer lalu menginisiasikan setiap variabel. Setelah itu pada package Controllers kita bikin class menerapkan anotasi @RestController lalu membuat dua method Get dan Post melalui anotasi @GetMapping dan @PostMapping dengan path tertentu.
+
+Nah nanti pada method dengan anotasi @GetMapping kita bikin .builder() sebagai default data. Sedangkan untuk methode @PostMapping menerima parameter Java Objek dengan anotasi @RequestBody
+
+Setelah itu kita coba API nya di PostMan.
+
+Jadi intinya ketika dicoba di Postman, untuk GET maka bakal menerima Java Objek lalu mengconvertnya menjadi JSON.
+
+
+9.3. Java Objects to JSON
+Disini kita akan menggunakan Jackson Object Mapper, lalu untuk mengubah dari Java Object ke JSON Object kita bisa menginisasi object ObjectMapper lalu memanggilnya menggunakan method .writeValueasString(Object objek) dan simpan di variabel String.
+
+Sebaliknya kita perlu memanggil method .readValue(String hasilApi, Object.class)
+
+9.4. Renaming JSON properties
+Cara untuk handle ketika nama variabel di JSON berbeda dengan nama variabel di Jvaa Object adalah dengan menambah anotasi di atas variabel yang namanya berbeda tersebut dengan @JsonProperty("nama")
+
+
+9.6. JSON Ignore
+Jika ada suatu variabel pada JSon yang tidak ingin kita terima dan tidak didefinisikan pada class @Data, maka kita cukup tambahkan anotasi @JsonIgnoreProperties(ignoreUnknown = true) di awaal class
+
+
+
+10.1. RestAPI Design
+Jadi konsep fundamental dalam RestAPI itu dibangun dalam Resources, jadi semua struktur url itu tentang Resources.
+
+Jadi fun fact, kalau kita pakai POST itu biasanya ada variabel id yang di mana tergenerate secara otomatis. Sedangkan jika id merupakan hasil input, maka kita menggunakan PUT.
+
+Fun fact lagi kalau kita pakai PATCH itu fungsinya sama seperti PUT yaitu update atau bikin yang baru, namun PUT itu harus dilakukan secara keseluruhan, jadi semua variabel harus ada isinya. Namun untuk PATCH itu kita bisa menggunakaannya untuk mengubah secara parsial. Misalnya hanya ingin edit bagian 'nama'.
+
+
+Intinya tugas kita kali ini bikin beberapa endpoint untuuk tabel kapal dan ppn
+
+Endpoint Kapal:
+PUT	/kapal-kapal/{idkapal}	// bikin data baru
+GET	/kapal-kapal/{idkapal}
+GET	/kapal-kapal		// findAll() disimpan di Iterable<Object>
+PUT	/kapal-kapal/{idkapal}	// edit
+PATCH	/kapal-kapal/{idkapal}	// edit suatu variabel
+DELETE	/kapal-kapal/{idkapal}
+
+Endpoint Ppn
+POST	/ppn
+GET	/ppn/{id}
+GET	/ppn
+PUT	/ppn/{id}
+PATCH	/ppn/{id}
+DELETE	/ppn/{id}
+
+10.2. Ppn Create Endpoint
+
+Jadi kalau ada folder Controller itu merupakan layer Presentation
