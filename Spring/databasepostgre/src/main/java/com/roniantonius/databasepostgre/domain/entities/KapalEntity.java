@@ -1,4 +1,4 @@
-package com.roniantonius.databasepostgre.domain;
+package com.roniantonius.databasepostgre.domain.entities;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -20,16 +20,16 @@ import lombok.NoArgsConstructor;
 @Builder
 @Entity
 @Table(name = "kapal")
-public class Kapal {
+public class KapalEntity {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "kapal_id_seq") // kalau string adalah primary, cukup anotasi Id saja
-	@SequenceGenerator(name = "ppn_id_seq", sequenceName = "ppn_id_seq", allocationSize = 1)
+	@SequenceGenerator(name = "kapal_id_seq", sequenceName = "kapal_id_seq", allocationSize = 1)
 	private Long idkapal;
 	private String namekapal;
 	private Integer ukuran;
 	
 	@ManyToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "ppn_id")
-	private Ppn ppnid;
+	private PpnEntity ppnid;
 }

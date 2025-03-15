@@ -1139,7 +1139,7 @@ Fun fact lagi kalau kita pakai PATCH itu fungsinya sama seperti PUT yaitu update
 Intinya tugas kita kali ini bikin beberapa endpoint untuuk tabel kapal dan ppn
 
 Endpoint Kapal:
-PUT	/kapal-kapal/{idkapal}	// bikin data baru
+POST	/kapal-kapal
 GET	/kapal-kapal/{idkapal}
 GET	/kapal-kapal		// findAll() disimpan di Iterable<Object>
 PUT	/kapal-kapal/{idkapal}	// edit
@@ -1157,3 +1157,164 @@ DELETE	/ppn/{id}
 10.2. Ppn Create Endpoint
 
 Jadi kalau ada folder Controller itu merupakan layer Presentation
+
+[4:01:49] mulai bikin endpoint Ppn tapi lagi tambahiin layer Service ke Controller
+
+Jadi gini pada layer Presentation (folder Controller) ada yang namanya data transfer object. Merupakan sebuah objek yang membawa data dalam prosesnya. Jadi kita harus memisahkan data atau business logic yang ada pada Service layer (folder services atau interface suatu Objek) supaya tidak ditampilkan pada layer Presentation. Jadi DTO akan mapping data dari service layer, kemudian hasil dari DTO lah yang dikirim ke Presentation layer (Request Body, dll).
+
+Jadi caranya kita pakai module modelmapper yang bisa convert si DTO menjadi entities (ini yang kita gunakna di business logic)
+
+Jadi rutenya itu untuk menampilkan data dari Service Layer (yang berinteraksi dengan Persistance layer) menuju Presentation Layer. Kita harus mapp si entity yang ada di service dengan menggunakan ModelMapper menuju ke objek DTO.
+
+
+So to summarize each file purpose:
+Based on the Spring Boot log and the typical Spring application structure, here's a description of the key files and their roles in the Spring lifecycle, from persistence to presentation layer:
+
+## Persistence Layer
+
+1. **Entity Classes (e.g., PpnEntity.java, KapalEntity.java)**
+   - Define the data model
+   - Map Java objects to database tables using JPA annotations
+   - Represent the structure of database tables in Java code
+
+2. **Repository Interfaces (e.g., PpnRepository.java)**
+   - Define database operations
+   - Extend Spring Data interfaces (e.g., CrudRepository)
+   - Provide method declarations for custom queries
+
+## Service Layer
+
+3. **Service Interfaces (e.g., PpnService.java)**
+   - Define business logic operations
+   - Act as an abstraction layer between controllers and repositories
+
+4. **Service Implementations (e.g., PpnServiceImpl.java)**
+   - Implement service interfaces
+   - Contain the actual business logic, kayak Create, Find ALl, dll
+   - Interact with repositories to perform data operations
+
+## Presentation Layer
+
+5. **Controllers (e.g., PpnController.java)**
+   - Handle HTTP requests
+   - Map URLs to specific methods
+   - Use services to process requests and prepare responses
+   - Return data or views to the client
+
+## Configuration
+
+6. **Application Properties (application.properties or application.yml)**
+   - Configure database connection details
+   - Set various Spring Boot and application-specific properties
+
+7. **Main Application Class (DatabasepostgreApplication.java)**
+   - Entry point of the Spring Boot application
+   - Contains the main method to run the application
+   - Often includes additional configuration through annotations
+
+## Data Transfer
+
+8. **DTOs (Data Transfer Objects) (e.g., PpnDto.java)**
+   - Used to transfer data between layers
+   - Often used to shape the data sent to and received from the presentation layer
+
+## Mapping
+
+9. **Mappers (e.g., Mapper.java mentioned in PpnController)**
+   - Convert between entity objects and DTOs
+   - Help in separating database representation from API representation
+
+This structure follows the typical flow in a Spring application:
+1. HTTP request received by a Controller
+2. Controller calls appropriate Service method
+3. Service performs business logic, often using Repositories
+4. Repositories interact with the database through Entity classes
+5. Data flows back up the chain, often converted to DTOs before being sent to the client
+
+
+# Penjelasan Kode dalam Bahasa Indonesia
+
+Berikut penjelasan detail tentang kode yang diberikan dalam konteks Spring lifecycle dari Persistence Layer hingga Presentation Layer:
+
+## 1. Tujuan Keseluruhan Kode
+
+Kode ini merupakan implementasi aplikasi Spring Boot untuk mengelola data kapal dan PPN (Pelabuhan Perikanan Nusantara). Aplikasi ini memiliki kemampuan untuk:
+- Menyimpan data kapal beserta informasi PPN yang terkait dengannya
+- Mengambil dan menampilkan data kapal
+- Mengimplementasikan relasi Many-to-One antara kapal dan PPN
+
+## 2. Arsitektur dan Lapisan (Layers)
+
+Aplikasi ini menggunakan arsitektur berlapis (layered architecture) yang umum dalam Spring:
+
+### a. Persistence Layer (Lapisan Persistensi)
+- **Entity Classes**: `KapalEntity` dan `PpnEntity` yang merepresentasikan tabel dalam database
+- **Repository Interfaces**: `KapalRepository` dan `PpnRepository` untuk operasi CRUD namunn biasanya digunakan untuk custome Query
+
+### b. Service Layer (Lapisan Layanan)
+- **Service Interfaces**: `KapalService` dan `PpnService` merupakan sebuah interfaces yang mendefinisikan operasi bisnis
+- **Service Implementations**: `KapalServiceImpl` dan `PpnServiceImpl` yang mengimplementasikan operasi bisnis. Disini berisikan method untuk proses CRUD dan cara penggunaanya melaui Dependency Injection dengan Beans yang dipanggil.
+
+### c. Presentation Layer (Lapisan Presentasi)
+- **DTO Classes**: `KapalDto` untuk transfer data antara lapisan
+- **Mappers**: `KapalMapperImpl` untuk transformasi antara entity dan DTO
+- **Controllers**: `KapalController` untuk menangani HTTP requests dan responses
+
+## 3. Alur Kerja (Workflow) dalam Spring Lifecycle
+
+Berikut alur kerja aplikasi ketika menghandle request untuk membuat kapal baru:
+
+### a. Request Masuk ke Controller
+1. Request HTTP POST diterima oleh `KapalController` pada endpoint `/kapal-kapal`
+2. Controller menerima data JSON yang dikonversi menjadi objek `KapalDto`
+
+### b. Transformasi Data (DTO ke Entity)
+1. Controller memanggil `kapalMapper.mapFrom(kapal)` untuk mengubah `KapalDto` menjadi `KapalEntity`
+2. Dalam proses mapping, `KapalMapperImpl` mencari PPN berdasarkan ID dengan memanggil `ppnRepository.findById()`
+3. PPN yang ditemukan diset ke `KapalEntity` sebagai `ppnid`
+
+### c. Proses Bisnis di Service Layer
+1. Controller memanggil `kapalService.createKapal(kapalEntity)` untuk memproses data
+2. `KapalServiceImpl` menerima `KapalEntity` dan menjalankan operasi bisnis jika diperlukan
+3. Kemudian memanggil `kapalRepository.save(kapalEntity)` untuk menyimpan data
+
+### d. Persistence Layer Bekerja
+1. `KapalRepository` (extend dari `CrudRepository`) menangani operasi penyimpanan data
+2. Spring JPA mengkonversi entity menjadi SQL dan menjalankannya pada database
+3. Database PostgreSQL menyimpan data dan mengembalikan entity yang tersimpan dengan ID baru
+
+### e. Response Kembali ke Client
+1. Entity hasil disimpan kembali ke Service Layer
+2. Service Layer mengembalikan entity ke Controller
+3. Controller memanggil `kapalMapper.mapTo(hasilKapal)` untuk mengubah entity kembali menjadi DTO
+4. Controller mengembalikan `ResponseEntity` dengan status HTTP 201 (Created) dan DTO kapal yang baru dibuat
+
+## 4. Interaksi dengan Database
+
+- Aplikasi menggunakan Spring Data JPA untuk manipulasi database
+- Secara otomatis ada transaksi yang dikelola oleh Spring
+- Menggunakan strategi `GenerationType.SEQUENCE` untuk pembangkitan ID
+- Menggunakan `@ManyToOne` untuk relasi antara kapal dan PPN
+
+## 5. Penjelasan Perbaikan Kode Test
+
+Pada kode test yang diperbaiki:
+
+1. **Masalah asli**: Test mengirimkan `KapalEntity` langsung, padahal controller menerima `KapalDto`
+2. **Perbaikan**: 
+   - Membuat dan menyimpan `PpnEntity` terlebih dahulu sehingga memiliki ID valid
+   - Membuat `KapalDto` dengan ID PPN yang sudah disimpan
+   - Mengirim DTO ini ke controller, bukan entity
+3. **Alur kerja test yang benar**:
+   - Buat dan simpan PPN terlebih dahulu
+   - Buat KapalDto dengan ID PPN tersebut
+   - Kirim DTO ini ke endpoint controller
+   - Validasi response dengan JsonPath
+
+Perbaikan ini memastikan bahwa test mencerminkan alur kerja nyata aplikasi dan menggunakan tipe data yang tepat di setiap lapisan.
+
+
+10.5. Membuat Ppn List Endpoint
+Kita bikin endpoint dan method di implementasi dari Service untuk findAll lalu dipangil di Controller, dan untuk logikanya ada di MapperConfig
+
+4:52:00

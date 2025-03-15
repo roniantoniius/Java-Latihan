@@ -2,7 +2,6 @@ package com.roniantonius.databasepostgre.repositories;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
@@ -15,8 +14,8 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.roniantonius.databasepostgre.TestDataUtil;
-import com.roniantonius.databasepostgre.domain.Kapal;
-import com.roniantonius.databasepostgre.domain.Ppn;
+import com.roniantonius.databasepostgre.domain.entities.KapalEntity;
+import com.roniantonius.databasepostgre.domain.entities.PpnEntity;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -33,12 +32,12 @@ public class KapalRepositoryIntegrationTests {
 	
 	@Test
 	public void testThatKapalCanBeCreatedAndRecalled() {
-		Ppn ppn = TestDataUtil.createTestPpnA();
-		Kapal kapal = TestDataUtil.createTestKapalA(ppn);
-		underTest.save(kapal);
-		Optional<Kapal> hasil = underTest.findById(kapal.getIdkapal());
+		PpnEntity ppnEntity = TestDataUtil.createTestPpnA();
+		KapalEntity kapalEntity = TestDataUtil.createTestKapalA(ppnEntity);
+		underTest.save(kapalEntity);
+		Optional<KapalEntity> hasil = underTest.findById(kapalEntity.getIdkapal());
 		Assertions.assertThat(hasil).isPresent();
-		Assertions.assertThat(hasil.get()).isEqualTo(kapal);
+		Assertions.assertThat(hasil.get()).isEqualTo(kapalEntity);
 	}
 	
 //	@Test
@@ -60,29 +59,29 @@ public class KapalRepositoryIntegrationTests {
 	
 	@Test
 	public void testThatKapalCanBeUpdated() {
-		Ppn ppn = TestDataUtil.createTestPpnA();
+		PpnEntity ppnEntity = TestDataUtil.createTestPpnA();
 		
-		Kapal kapal = TestDataUtil.createTestKapalA(ppn);
-		underTest.save(kapal);
+		KapalEntity kapalEntity = TestDataUtil.createTestKapalA(ppnEntity);
+		underTest.save(kapalEntity);
 		
-		kapal.setNamekapal("UPDATED");
-		underTest.save(kapal);
+		kapalEntity.setNamekapal("UPDATED");
+		underTest.save(kapalEntity);
 		
-		Optional<Kapal> hasilOptional = underTest.findById(kapal.getIdkapal());
+		Optional<KapalEntity> hasilOptional = underTest.findById(kapalEntity.getIdkapal());
 		assertThat(hasilOptional).isPresent();
-		assertThat(hasilOptional.get()).isEqualTo(kapal);
+		assertThat(hasilOptional.get()).isEqualTo(kapalEntity);
 	}
 	
 	@Test
 	public void testThatKapalCanBeDeleted() {
-		Ppn ppn = TestDataUtil.createTestPpnA();
+		PpnEntity ppnEntity = TestDataUtil.createTestPpnA();
 		
-		Kapal kapal = TestDataUtil.createTestKapalA(ppn);
-		underTest.save(kapal);
+		KapalEntity kapalEntity = TestDataUtil.createTestKapalA(ppnEntity);
+		underTest.save(kapalEntity);
 		
-		underTest.deleteById(kapal.getIdkapal());
+		underTest.deleteById(kapalEntity.getIdkapal());
 		
-		Optional<Kapal> hasil = underTest.findById(kapal.getIdkapal());
+		Optional<KapalEntity> hasil = underTest.findById(kapalEntity.getIdkapal());
 		assertThat(hasil).isEmpty();
 	}
 }

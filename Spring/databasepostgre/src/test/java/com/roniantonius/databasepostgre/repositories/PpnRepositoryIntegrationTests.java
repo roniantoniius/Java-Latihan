@@ -1,6 +1,5 @@
 package com.roniantonius.databasepostgre.repositories;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -15,7 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.roniantonius.databasepostgre.TestDataUtil;
-import com.roniantonius.databasepostgre.domain.Ppn;
+import com.roniantonius.databasepostgre.domain.entities.PpnEntity;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -31,74 +30,74 @@ public class PpnRepositoryIntegrationTests {
     
     @Test
     public void testThatPpnCanBeCreatedAndRecalled() {
-        Ppn ppn = TestDataUtil.createTestPpnA();
-        underTest.save(ppn);
-        Optional<Ppn> hasil = underTest.findById(ppn.getId());
+        PpnEntity ppnEntity = TestDataUtil.createTestPpnA();
+        underTest.save(ppnEntity);
+        Optional<PpnEntity> hasil = underTest.findById(ppnEntity.getId());
         
         assertThat(hasil).isPresent();
-        assertThat(hasil.get()).isEqualTo(ppn);
+        assertThat(hasil.get()).isEqualTo(ppnEntity);
     }
     
     @Test
     public void testThatMultiplePpnCanBeCreatedAndRecalled() {
-        Ppn ppnA = TestDataUtil.createTestPpnA();
+        PpnEntity ppnA = TestDataUtil.createTestPpnA();
         underTest.save(ppnA);
-        Ppn ppnB = TestDataUtil.createTestPpnB();
+        PpnEntity ppnB = TestDataUtil.createTestPpnB();
         underTest.save(ppnB);
-        Ppn ppnC = TestDataUtil.createTestPpnC();
+        PpnEntity ppnC = TestDataUtil.createTestPpnC();
         underTest.save(ppnC);
         
-        Iterable<Ppn> daftars = underTest.findAll();
+        Iterable<PpnEntity> daftars = underTest.findAll();
         assertThat(daftars).hasSize(3).containsExactly(ppnA, ppnB, ppnC);
     }
     
     @Test
     public void testThatPpnCanBeUpdated() {
-        Ppn ppn = TestDataUtil.createTestPpnA();
-        underTest.save(ppn);
-        ppn.setName("UPDATED");
-        underTest.save(ppn);
-        Optional<Ppn> hasil = underTest.findById(ppn.getId());
+        PpnEntity ppnEntity = TestDataUtil.createTestPpnA();
+        underTest.save(ppnEntity);
+        ppnEntity.setName("UPDATED");
+        underTest.save(ppnEntity);
+        Optional<PpnEntity> hasil = underTest.findById(ppnEntity.getId());
         
         assertThat(hasil).isPresent();
-        assertThat(hasil.get().getId()).isEqualTo(ppn.getId());
-        assertThat(hasil.get().getName()).isEqualTo(ppn.getName());
-        assertThat(hasil.get().getLokasi()).isEqualTo(ppn.getLokasi());
-        assertThat(hasil.get().getPpnYear()).isEqualTo(ppn.getPpnYear());
+        assertThat(hasil.get().getId()).isEqualTo(ppnEntity.getId());
+        assertThat(hasil.get().getName()).isEqualTo(ppnEntity.getName());
+        assertThat(hasil.get().getLokasi()).isEqualTo(ppnEntity.getLokasi());
+        assertThat(hasil.get().getPpnYear()).isEqualTo(ppnEntity.getPpnYear());
     }
     
     @Test
     public void testThatPpnCanBeDeleted() {
-        Ppn ppn = TestDataUtil.createTestPpnA();
-        underTest.save(ppn);
-        underTest.deleteById(ppn.getId());
-        Optional<Ppn> hasil = underTest.findById(ppn.getId());
+        PpnEntity ppnEntity = TestDataUtil.createTestPpnA();
+        underTest.save(ppnEntity);
+        underTest.deleteById(ppnEntity.getId());
+        Optional<PpnEntity> hasil = underTest.findById(ppnEntity.getId());
         assertThat(hasil).isEmpty();
     }
     
     @Test
     public void testThatGetPpnWithYearLessThan() {
-        Ppn ppnA = TestDataUtil.createTestPpnA();
+        PpnEntity ppnA = TestDataUtil.createTestPpnA();
         underTest.save(ppnA);
-        Ppn ppnB = TestDataUtil.createTestPpnB();
+        PpnEntity ppnB = TestDataUtil.createTestPpnB();
         underTest.save(ppnB);
-        Ppn ppnC = TestDataUtil.createTestPpnC();
+        PpnEntity ppnC = TestDataUtil.createTestPpnC();
         underTest.save(ppnC);
         
-        Iterable<Ppn> hasil = underTest.ppnYearLessThan(1999);
+        Iterable<PpnEntity> hasil = underTest.ppnYearLessThan(1999);
         assertThat(hasil).containsExactly(ppnA, ppnB);
     }
     
     @Test
     public void testThatGetPpnWithYearGreaterThan() {
-    	Ppn ppnA = TestDataUtil.createTestPpnA();
+    	PpnEntity ppnA = TestDataUtil.createTestPpnA();
         underTest.save(ppnA);
-        Ppn ppnB = TestDataUtil.createTestPpnB();
+        PpnEntity ppnB = TestDataUtil.createTestPpnB();
         underTest.save(ppnB);
-        Ppn ppnC = TestDataUtil.createTestPpnC();
+        PpnEntity ppnC = TestDataUtil.createTestPpnC();
         underTest.save(ppnC);
         
-        Iterable<Ppn> hasil = underTest.findPpnWithYearGreaterThan(1999);
+        Iterable<PpnEntity> hasil = underTest.findPpnWithYearGreaterThan(1999);
         assertThat(hasil).containsExactly(ppnC);
     }
 }

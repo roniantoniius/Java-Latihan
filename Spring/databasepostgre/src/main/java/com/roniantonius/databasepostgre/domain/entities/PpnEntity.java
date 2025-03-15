@@ -1,4 +1,4 @@
-package com.roniantonius.databasepostgre.domain;
+package com.roniantonius.databasepostgre.domain.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,11 +19,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @Entity
 @Table(name = "ppn")
-public class Ppn {
+public class PpnEntity {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ppn_id_seq")
-	@SequenceGenerator(name = "kapal_id_seq", sequenceName = "kapal_id_seq", allocationSize = 1)
+	@SequenceGenerator(name = "ppn_id_seq", sequenceName = "ppn_id_seq", allocationSize = 1)
 	private Long id;
 	private String name;
 	private String lokasi;
