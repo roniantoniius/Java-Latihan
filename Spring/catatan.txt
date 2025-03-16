@@ -1317,4 +1317,12 @@ Perbaikan ini memastikan bahwa test mencerminkan alur kerja nyata aplikasi dan m
 10.5. Membuat Ppn List Endpoint
 Kita bikin endpoint dan method di implementasi dari Service untuk findAll lalu dipangil di Controller, dan untuk logikanya ada di MapperConfig
 
-4:52:00
+
+10.7 Mengambill satu Ppn dari Controller
+Caranya cukup simpel tinggal tambah controller path dengan tipe Get 'path/{id}' pada presentation layer. Lalu tambahkan method untuk findById (bisa diakses pada PersentationLayer) pada interface servis
+
+10.9. Ppn Full Update
+Kalau full update caranya di Controller (@PutMapping) kita set si id dari requestbody Dto adalah sesuai input dari endpoint api 'api/v1/{1}', setelah itu dari objek Dto kita ubah ke Entity dan save entity ke database menggunakan method .save (sebelumnya createPpn, karena fungsionalitasnya sama jadi disamain aja). Lalu dikirim kembali dalam bentuk Dto dengan conver menggunakan mapTo dari Mapper.
+
+10.11 Ppn Partial Update
+Nah disini pada kontroller @PatchMapping "/ppn/{id}". Kita masih sama pada parameter membutuhkan id dan objek Dto. Lalu kita nggak perlu set Id pada requesstbody objek Dto. Kita langsung ubah dulu menjadi entitas supaya bisa diolah di database (service), nah kita menggunakan method .partialUpdate(Long id, PpnEntity ppn) yang menerima id dan entitas. Intinya method ini akan menggunakna entitas dengan id tertentu, lalu mengedit suatu variabel dengan cara .map() terhadap ppnRepository (objek Crud) dengan mencari entitas menggunakan findById. Lalu dalam fungsi .map tersebut kita melakukan edit terhadap suatu variabel. Caranya menggunakan `Optional.ofNullable(ppnEntity.getName()).ifPresent(entityAda::setName)` artinya akan menjadi opsional (null atau berisi) untuk edit suatu variabel kalau variabel tersebut ada.
