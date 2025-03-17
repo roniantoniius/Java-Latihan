@@ -11,4 +11,5 @@ public interface PpnService {
 	Optional<PpnEntity> findOne(Long id);
 	boolean isExists(Long id);
 	PpnEntity partialUpdate(Long id, PpnEntity ppnEntity);
+	void delete(Long id);
 }

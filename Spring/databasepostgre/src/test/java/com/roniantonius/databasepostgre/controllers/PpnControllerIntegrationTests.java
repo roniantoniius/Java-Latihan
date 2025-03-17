@@ -189,5 +189,21 @@ public class PpnControllerIntegrationTests {
     	    	MockMvcResultMatchers.jsonPath("$.ppnYear").value(ppnDto.getPpnYear())	
     	);
     }
+    @Test
+    public void testThatDeletePpnReturnHttpStatus204ForNonExistingPpn() throws Exception {
+    	mockMvc.perform(
+    			MockMvcRequestBuilders.delete("/ppn/9242")
+    			.contentType(MediaType.APPLICATION_JSON)
+    	).andExpect(MockMvcResultMatchers.status().isNoContent());
+    }
     
+    @Test
+    public void testThatDeletePpnReturnHttpStatus204ForExistingPpn() throws Exception {
+    	PpnEntity ppnEntity = TestDataUtil.createTestPpnA();
+    	PpnEntity ppnEntitySaved = ppnService.save(ppnEntity);
+    	mockMvc.perform(
+    			MockMvcRequestBuilders.delete("/ppn/" + ppnEntitySaved.getId())
+    			.contentType(MediaType.APPLICATION_JSON)
+    	).andExpect(MockMvcResultMatchers.status().isNoContent());
+    }
 }

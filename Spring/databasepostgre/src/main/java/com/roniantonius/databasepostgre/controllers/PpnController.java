@@ -7,6 +7,7 @@ import org.modelmapper.internal.bytebuddy.asm.Advice.Return;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -76,5 +77,11 @@ public class PpnController {
 		PpnEntity ppnEntity = ppnMapper.mapFrom(ppnDto);
 		PpnEntity ppnEntitySimpan = ppnService.partialUpdate(id, ppnEntity); // disini service layer kita sekalian cari id
 		return new ResponseEntity<>(ppnMapper.mapTo(ppnEntitySimpan), HttpStatus.OK);
+	}
+	
+	@DeleteMapping(path = "/ppn/{id}")
+	public ResponseEntity deletePpn(@PathVariable("id") Long id) {
+		ppnService.delete(id);
+		return new ResponseEntity(HttpStatus.NO_CONTENT);
 	}
 }

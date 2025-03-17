@@ -226,8 +226,7 @@ AnnotationConfigApplicationContext untuk membuat Application Context
 /annotation/AnnotationConfigApplicationContext.html
 
 Singleton
-● Singleton adalah salah satu Design Patterns untuk pembuatan objek, dimana sebuah object hanya
-dibuat satu kali saja
+● Singleton adalah salah satu Design Patterns untuk pembuatan objek, dimana sebuah object hanya dibuat satu kali saja
 ● Dan ketika kita membutuhkan object tersebut, kita hanya akan menggunakan object yang sama
 ● https://refactoring.guru/design-patterns/singleton
 
@@ -1326,3 +1325,38 @@ Kalau full update caranya di Controller (@PutMapping) kita set si id dari reques
 
 10.11 Ppn Partial Update
 Nah disini pada kontroller @PatchMapping "/ppn/{id}". Kita masih sama pada parameter membutuhkan id dan objek Dto. Lalu kita nggak perlu set Id pada requesstbody objek Dto. Kita langsung ubah dulu menjadi entitas supaya bisa diolah di database (service), nah kita menggunakan method .partialUpdate(Long id, PpnEntity ppn) yang menerima id dan entitas. Intinya method ini akan menggunakna entitas dengan id tertentu, lalu mengedit suatu variabel dengan cara .map() terhadap ppnRepository (objek Crud) dengan mencari entitas menggunakan findById. Lalu dalam fungsi .map tersebut kita melakukan edit terhadap suatu variabel. Caranya menggunakan `Optional.ofNullable(ppnEntity.getName()).ifPresent(entityAda::setName)` artinya akan menjadi opsional (null atau berisi) untuk edit suatu variabel kalau variabel tersebut ada.
+
+[5:31:40]
+
+
+10.13. Ppn Delete
+Jadi caranya sama tapi di controller kita pakai anotasi @DeleteMapping, kita cukup panggil method .delete() yang bakal didefinisiin di layer Service menggunakan method .deleteById() dari method bawaah Crud Repository.
+
+
+10.15 Nested Objects
+Jadi ketika pada Dto dia menerima beberapa variabel dan salah satunya ada sebuah Entity, nah kita kan pengen simpel atau biar sekalian aja dibuat dalam satu response body membuat Kapal lalu membuat Ppn juga secar otomatis. Caranya menggunakan model mapper.
+
+ModelMapper modelMapper = new ModelMapper();
+modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
+return modelMapper;
+
+Jadi dengan menerapkan getConfiguration() dengan method setMatchingStrategy() dengan parameter MatchingStrategies LOOSE kita memberi tahu Spring Data JPA bahwa kita akan mengirim nested Objek dalam Dto response body. Kemudian dikonvert secara otomatis menjadi nested entity object.
+
+Syarat menerapkan hal ini adalah, pada Dto dari suatu entitas itu harus menerima tipe data si Foreign Keynya. Kalau projek aku hanya menerima Long id aja.
+
+
+10.16 Pagination
+Pagination sendiri digunakan ketika kita ingin membatasi jumlah data yang ingin ditampilkan atau diambil supaya tidak memakan banyak resource ketika mengembalikanya, disitulah peran Pagination yang dimiliki oleh Spring data JPA.
+
+Jadi caranyya kita implementasi suatu class menggunakan extends pada Object Repository (Persistance) yang awalnya punya CrudRepository<Entity, TipeId> aja, sekarang untuk Pagination kita tambahkan PagingAndSortingRepository dengan input parameter tipe yang sama.
+
+Lalu pada Service Layer kita tambahkan metode yang ada pada class PagingAndSortingRepository yaitu findAll() dengan tipe data Page<Entitas> yang merupakan sebuah list dan menerima constructor (Pageable pageable) yang akan dimanfaatkan melalui DI.
+
+Kemudian methode findAll() oleh Page tersebut cukup seperti mencari sebuah list yang berisikan semua isi data namun dengan input parameter Pageable pageable;
+
+Lalu pada Presentation Layer atau Controller kita modifikasi si GetMapping List menjadi tipe Page<Dto> yang menerima parameter constructor Pageable. Sehingga kita mengembalikkan list Page entity yang diconver menjadi Dto
+
+Sehingga cara memanfaatkannya di link api itu kita bisa GraphQL gitu:
+GET: http://localhost:8080/kapal-kapal?size=20&page=5
+
+Jadi dibatasi berapa data yang ditampilkan

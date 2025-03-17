@@ -4,9 +4,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -33,13 +37,19 @@ public class KapalController {
 		KapalEntity hasilKapal = kapalService.save(kapalEntity); // disini datanya disimpan dalam database
 		return new ResponseEntity<KapalDto>(kapalMapper.mapTo(hasilKapal), HttpStatus.CREATED);
 	}
-	
+	// cara mengambil list data tanpa pagination
+//	@GetMapping(path = "/kapal-kapal")
+//	public List<KapalDto> listKapal(){
+//		List<KapalEntity> kapalEntities = kapalService.findAll();
+//		return kapalEntities.stream()
+//				.map(kapalMapper::mapTo)
+//				.collect(Collectors.toList());
+//	}
+	// mengambil llist data dengan pagination
 	@GetMapping(path = "/kapal-kapal")
-	public List<KapalDto> listKapal(){
-		List<KapalEntity> kapalEntities = kapalService.findAll();
-		return kapalEntities.stream()
-				.map(kapalMapper::mapTo)
-				.collect(Collectors.toList());
+	public Page<KapalDto> listKapal(Pageable pageable){
+		Page<KapalEntity> kapalEntities = kapalService.findAll(pageable);
+		return kapalEntities.map(kapalMapper::mapTo);
 	}
 	
 	@GetMapping(path = "/kapal-kapal/{idkapal}")
@@ -60,5 +70,21 @@ public class KapalController {
 		KapalEntity kapalEntity = kapalMapper.mapFrom(kapal);
 		KapalEntity kapalSimpan = kapalService.save(kapalEntity);
 		return new ResponseEntity<>(kapalMapper.mapTo(kapalSimpan), HttpStatus.OK);
+	}
+	
+	@PatchMapping(path = "/kapal-kapal/{idkapal}")
+	public ResponseEntity<KapalDto> partialUpdate(@PathVariable("idkapal") Long id, @RequestBody final KapalDto kapalDto){
+		if (!kapalService.isExist(id)) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		KapalEntity kapalEntity = kapalMapper.mapFrom(kapalDto);
+		KapalEntity kapalEntitySimpan = kapalService.partialUpdate(id, kapalEntity);
+		return new ResponseEntity<>(kapalMapper.mapTo(kapalEntitySimpan), HttpStatus.OK);
+	}
+	
+	@DeleteMapping(path = "/kapal-kapal/{idkapal}")
+	public ResponseEntity deleteKapal(@PathVariable("idkapal") Long id) {
+		kapalService.delete(id);
+		return new ResponseEntity(HttpStatus.NO_CONTENT);
 	}
 }

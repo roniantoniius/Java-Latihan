@@ -8,6 +8,10 @@ import org.springframework.context.annotation.Configuration;
 public class MapperConfig {
 	@Bean
 	public ModelMapper modelMapper() {
+		// dengan menggunakan metode ini, kita bisa membuat nested Objek pada satu Dto Response Body
+//		ModelMapper modelMapper = new ModelMapper();
+//		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
+//		return modelMapper;
 		return new ModelMapper();
 	}
 }

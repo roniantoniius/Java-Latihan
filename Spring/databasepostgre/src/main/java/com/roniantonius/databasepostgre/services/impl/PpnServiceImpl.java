@@ -54,5 +54,10 @@ public class PpnServiceImpl implements PpnService{
 			return ppnRepository.save(entityAda);
 		}).orElseThrow(() -> new RuntimeException("Ppn tidak ditemukan"));
 	}
+	@Override
+	public void delete(Long id) {
+		// TODO Auto-generated method stub
+		ppnRepository.deleteById(id);
+	}
 	
 }
