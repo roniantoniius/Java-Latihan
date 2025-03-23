@@ -1,17 +1,22 @@
-Spring Tutor:
-https://www.youtube.com/watch?v=VM3rwdMBORY&list=PL-CtdCApEFH8bV3sla0QfmMnJQ4YX_wR1&index=1
+W Playlist of Java Spring Boot:
+https://youtu.be/oGhc5Z-WJSw?si=8UbvTBNVlMCJDo05
 
-Spring Boot:
-https://youtu.be/Nv2DERaMx-4?si=Rmi4NhoUhl4bNNLC
+Spring Certified Professional by Spring Academy, bayar kalau mau sertif $250:
+https://spring.academy/paths
 
-Next Spring Boot:
-https://youtu.be/HmRVrAT4uA0?si=N1I04vMdMCZkLHm3
+Good Udemy Spring Boot Microservices & Cloud (23 hr):
+https://www.udemy.com/course/microservices-with-spring-boot-and-spring-cloud/
 
-Slide: https://docs.google.com/presentation/d/1I50ccViLOjUh9oMipLfPpsWWqKuoszhN4tDJ4xBJw5U/edit#slide=id.p
+Ecommerce microservice spring boot (6 hr):
+https://youtu.be/jdeSV0GRvwI?si=9AB_8tWKPVMEwFMo
+- idk but theres no spring security, plus this guy using MongoRepository as JpaRepository crud functionality.
 
-Source Code: https://github.com/ProgrammerZamanNow/belajar-spring-dasar
+Spring Boot Microservices Job Platform, with efficient stack:
+https://github.com/devxsb/spring-boot-microservices?tab=readme-ov-file#register
+- Later gonna learn it, but spring boot foundation is necessery
 
-ctr+f = ['Setting', 'Pertama', 'siap-siap']
+
+
 
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -1360,3 +1365,586 @@ Sehingga cara memanfaatkannya di link api itu kita bisa GraphQL gitu:
 GET: http://localhost:8080/kapal-kapal?size=20&page=5
 
 Jadi dibatasi berapa data yang ditampilkan
+
+
+
+===================================================================================
+Project Task Tracker
+
+1. Set up dev env
+2. analysis project brief
+3. design app
+4. start and connect db
+5. create app entity dan domain (relasi)
+6. create Dtos
+7. create mappers
+8. create repositories jpa
+9. implement rest api  & error handling
+10. database transaction
+
+
+Jadi disini kita bikin front end dan backend. Untuk segala kondisi MVP (Minimum Viable Product) yang artinya aplikasi kita yang penting mencapai tujuan.
+
+Jadi aplikasi sederhana untuk mengurutkan daftar tugas paling penting. Satu daftar tugas, memiliki banyak tugass yang bisa diurutkan berdasarkan kepentingannya.
+
+Jadi dari front end akan berkomunikasi dengan interface RestAPI terhadap backend. Lalu dari backend akan berkomunikasi melalui persistance layer menggunakan JPA terhadap database postgre.
+
+Untuk api yang dibutuhkan yaitu:
+1. GET		/task-lists
+2. POST		/task-lists
+3. GET		/task-lists/{task_list_id}
+4. PUT		/task-lists/{task_list_id}
+5. DELETE	/task-lists/{task_list_id}
+
+6. GET		/task-lists/{task_list_id}/tasks
+7. POST		/task-lists/{task_list_id}/tasks
+
+8. GET		/task-lists/{task_list_id}/tasks/{task_id}
+9. POST		/task-lists/{task_list_id}/tasks/{task_id}
+10. DELETE	/task-lists/{task_list_id}/tasks/{task_id}
+
+[40:00]
+
+
+5. create app entity dan domain (relasi)
+
+Kita membuat class Enum yang akan digunakan ketika suatu Entity memiliki variabel dengan tipe data bertingka seperti ordinal. 
+
+Kita bikin dua entity yang setiap entitas mengandung instance variabel.
+
+Kita bikin Domain atau relationship antar Entity. Jadi anggap aja kelas TugasDaftar memiliki list dari beberapa kelas Tugas. Sehingga relasinya adalah OneToMany dari kelas TugasDaftar. Pada kelas tersebut kita tambah anotasi @OneToMany dengan parameter khusus `mappedBy = "namavariabel"` berisi nilai nama variabel dari foreignkey di kelas Tugas.
+
+Untuk menyambungkan foreign key, kelas Tugas harus menambah variabel dengan tipe kelas TugasDaftar dengan nama var yang serupa dengan nama mappedBy sebelumnya. Baru tambah anotasi @ManyToOne, dan hubungkan foreign key dengan anotasi @JoinColumn dengan parameter name = "" dengan isi nama variabel di tabel foreign key.
+
+
+6. create Dtos
+Kita bikin Dto nya untuk setiap tabel yang ingin di crud (termasuk read biasa). Dalam file bertipe Record yang bertujuan supaya data class bersifat immutable. Jadi file Record akan secara otomatis memiliki getter method (bukan setter, karena bersifat immutable).
+
+Jadi kalau misalkan di Dto itu nggak harus berisi semua instance variabel pada Entity, cukup yang perlu kita gunakan di API aja. Maka dari itu sangat memungkinkan unuk variabel baru di Dto muncul dengan nilai dari hasil perhitungan suatu variabel di entitas.
+
+
+7. create mappers
+Implementasi Task Mapper
+Disini logika gimana cara convert dari atau menuju Domain entities dengan Dto. Disini memungkinkan ada beberapa logika untuk mendapatkan nilai dari variabel di entitas kemudian dimasukkan ke variabel baru yang bisa diakses pada Dto. Walaupun logika kayak gini bisa juga di Service, tapi kita punya advantage dari logika ynag ada di mapper. yaitu:
+- logika mapping terisolasi dan reusable
+- transformasi konsisten pada aplikasi kita
+- lebih rapih kodenya ketika di service dan controller
+
+
+
+8. create repositories jpa
+Implementasi Tugas Daftar Repository
+Jadi tujuan dari Repository dengan anotasi @Repository adalah menyediakan fungsionalitas Crud, nah untuk Spring JPA sendiri sudah menyediakan secara otomatis yaitu exends JpaRepository<Entity, Id>. Kita bikin Repository (interface)
+
+
+9. implement rest api  & error handling
+
+GET List dari TugasDaftar
+Kita bikiin Service Layer (interface) dan berisi fungsionalitas yang diharapkan, contohnya listGetTugasDaftar() yang mengambil setiap data dari Entity. Kemudian pada Controller (class) kita gunakan si method dari service layer tersebut kemudian kita convert jadi Dto.
+
+
+
+Get one id of TugasDaftar
+Cara nya sih sama kita bikin method getTugasDaftar berdasarkan id, namun disimpan dalam tipe Optional<TugasDaftar>
+
+Update TugasDaftar
+Caranya serupa sebagaimana tahapan untuk menambahkan service layer kemudian mempresentasikannya, nanti fungsi service layer disimpan dalam Entity dengan menerima UUID dan Entity. Pastikan validasi, lalu cari si Entity dengan method findById() melalui repository, lalu gunakan setNama, setDeskripsi.
+
+Setelah itu panggil di controller dan ubah dulu dari Dto ke entity, and then return from entity into dto.
+
+Delete Tugas Daftar:
+Hapus satu TugasDaftar artinya menghapus semua Tugas yang ada.
+
+Thats it Crud in TugasDaftar are done, next we move into Tugas that can be listed in TugasDaftar.
+
+
+
+Crud functionality for Tugas:
+
+Get daftar atau List dari Tugas dalam suatu TugasDaftar
+
+
+Create Tugas:
+Jadi caranya biasa okay dari Interface Service Layer then implement the method on Service Layer Impl, then implement the functionality on Controller.
+
+Untuk bikin Tugas baru pada suatu TugasDaftar, artinya kita perlu tahu id dari TugasDaftar. Since membuat objek Tugas yang baru kita perlu membuat atau memanggil entity objek dari TugasDaftar melalui repository TugasDaftar.
+
+Untuk variabel lainnya kita bisa menerapkan Optional terhadap variabel yang Enum atau bersifat ordinal, seperti prioritas dan status.
+
+
+Get Tugas by Id, ini tujuannya untuk mengambil detail dari Tugas pada suatu TugasDaftar:
+Untuk metode ini sebenarnya kita lebih baik menerapkan Query otomatis yang dieksekusi oleh Hibernate JPA secara otomatis. Jadi pada repository (yang mengextends Crud functionality) kita membuat metode Optional<Entity> dengan nama method:
+
+findByTugasDaftarIdAndId(UUID tugasDaftarId, UUID id);
+
+nanti hibernate akan mencari kombinasi query yang tepat dan come up with sebuah data dari suatu Tugas yang dimiliki oleh suatu TugasDaftar.
+
+
+
+Update Tugas:
+Caranya kita bikin method update, si method ini awalnya bakal ngambil Entity Tugas (dari id TugasDaftar dan id Tugas) menggunakan method query yang ada di repository yang mengambil Tugas dari TugasDaftar.
+
+Kemudian seperti Put endpoint biasa, kita akan setVariabel lalu disimpan dalam repository.
+
+
+Delete Tugas:
+Disini kita menerapkan pendekatan baru dalam Delete suatu data yaitu menggunakan `transactions`. 
+
+Pendekatan lama itu kita bisa hapus suatu TUgas berdasarkan method bawaan dari repository yaitu .deleteById, nah tapi method itu tidak memeriksa atau validasi si data yang mau dihapusnya.
+
+Jadi penerapannya yaitu dengan menambah anotasi @Transactional di atas penerapan dari method deleteTugas. Kenapa? Karena deleteTugas berinteraksi dengan method deleteTugasDaftar yang secara default merupakan sebuah @Transactional juga dan selain itu ada beberapa calls ke arah Repository yang menjadi BERESIKO, maka dari itu method deleteTugas harus disamakan dengan menambah @Transactional.
+
+Kenapa harus @Transactional di method delete? Anotasi Transactional memastikan proses delete itu terjadi dalam transaksi database, jadi ketika proses delete tersebut gagal, maka semua bagian aplikasi melakukkan rolled back.
+
+Hal ini juga berlaku pada method lain pada TugasDaftar yang melakukan multiple call ke arah Repository, hal ini beresiko karena beberapa kali akses terbuka ke repository.
+
+
+
+===================================================================================
+Java Project with Spring Security:
+
+1. Adding JWT authentication using Spring Security
+2. Using Project Lombok
+3. Using Mapstruct (Pengganti ObjekMapper?)
+
+
+MapStruct adalah sebuah generator kode Java yang dirancang untuk mempermudah pembuatan pemetaan (mapping) antara objek Java bean. MapStruct adalah prosesor anotasi Java yang menghasilkan kode pemetaan antara kelas Java bean secara otomatis. Ini memungkinkan pengembang untuk mendefinisikan antarmuka pemetaan sederhana, dan MapStruct akan menghasilkan implementasi konkret pada saat kompilasi.
+
+MapStruct sering digunakan dalam aplikasi multi-layer untuk memetakan objek antara berbagai lapisan, seperti:
+
+- Memetakan entitas JPA ke DTO (Data Transfer Objects) dan sebaliknya.
+- Mengkonversi objek antara lapisan persisten, lapisan service, dan lapisan presentasi.
+- Menyederhanakan transformasi data dalam aplikasi Spring Boot.
+
+
+Start Project:
+1. Design Implementation (Plan about database diagram, logic, etc)
+2. Create JPA Entities dan Dto (Domain)
+3. Create JPA Repositories dan Services, sekaligus Mapper
+4. Implement Category endpoints (Start Controller)
+5. Add Spring Security
+6. Configuring Security to use User
+7. Adding a JWT authentication endpoint
+8. Add JWT Auth filter
+9. Implement Tag, then Post endpoints
+
+
+
+1. Design Implementation
+Lihat dua gambar domain dan tabel diagram tabel sebelumnya. Overall kita punya 5 Tabel. Pertama itu ada tabel User, user mampu memiliki beberapa Post sehingga relasinya one to many. Lalu ada tabel Post, tabel Post harus memiliki satu informasi mengenai tabel Kategori dengan relasi one to one. Tabel post juga bisa memiliki beberapa Tag atau Label sehingga relasinyna Many to Many. Terakhir, tabel Post memiliki relasi Many to Many terhadap tabel Enum Status (Draft atau Publish).
+
+Jadi untuk tabel User, Post, Category, dan Tag memiliki id unik dengan tipe data UUID.
+
+API:
+Untuk api jika ada rute atau path yang menerapkan 'v1'. Artinya itu semacam versi dari pengembangan API, jadi mungkin next ada v2, etc.
+
+
+
+Create User Entity (Pengguna):
+Seperti biasa kita bikin entitas dari User dengan menggunakan fitur JPA Hibernate supaya membuat getter dan setter dan equal hashCode otomatis. Sebenarnya ini bisa otomatis dengan menggunakan @Data, namun karena kita menggunakan Mapstruct di entitas User kita harus bikin manual method equal( ) dan hashCode().
+
+Hal unik:
+Kita bisa tentuin nilai dari suatu instance variabel secara default jika mendapat null. Contohnya:
+	@PrePersist
+	protected void onCreate() {
+		this.createAt = LocalDateTime.now();
+	}
+
+Method yang ada pada class Entitas tersebut menandakan bahwa variable createAt jika bernilai null, maka akan diset secara otomatis waktu yaitu sekarang.
+
+
+[53:19] Create Post Entity
+
+
+Kurang lebih sama, tapi jika ada instance variabel yang berasal dari Enum class, tolong panggil anotasi Enumerator dengan spesifik apa tipenya, karena biasanya kalau Enum itu dijadiin integer.
+
+
+User Post relationship (one to many)
+
+
+Dalam entitas Post, harus memiliki satu User, sehingga hubungannya Many to One:
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "author_id", nullable = false)
+	private User author;
+
+
+Kemudian dalam entitas yang menerima relasinya yaitu User,dengan relasi One to Many:
+
+@OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+private List<Post> posts = new ArrayList<>();
+
+cascade ALL dan orphan removal tersebut artinya, memberikan akses untuk menghapus semua data pada foreign key Post jika suatu User dihapus.
+
+
+Jika ada relasi Many to Many, contohnya di Post itu berupa Set (tidak boleh duplikat):
+
+	@ManyToMany
+	@JoinTable(name = "post_tags", joinColumns = @JoinColumn(name="post_id"), inverseJoinColumns = @JoinColumn(name="tag_id"))
+	private Set<Tag> tags = new HashSet<>();
+
+nama adalah nama variabel yang akan digenerate oleh Hibernate JPA, kemudian joinColumns itu asal dan inverseJoinColumns itu tujuan.
+
+
+
+Persistance Layer untuk Crud functionality;
+Create User Repository untuk autentikasi, manajemen User
+
+Bikin Repository untuk Kategori
+
+Kurang lebih untuk Repository kita pakai JpaRepository, karena dengan ini kita bisa akses HibernateJPA supaya secara otomatis bisa bikin fungsionalitas.
+
+
+List Kategori Endpoint
+Well cara bikin sebuah Controller sebenarnya dimulai dari membuat @Repository, setelah itu kita bisa bikin Service layer (interface dan class impl) untuk suatu entity. Service bertujuan untuk fungsionalitas dalam mengambil data dari Repository (persistance) dengan output berupa Entities.
+
+Kemudian service layer dipanggil pada Controller (Presentation layer / @RestController) untuk menggunakan fungsionalitasnya dalam mengambil data dalam bentuk Entities. Tapi setiap fungsionalitas dalam controller harus dalam bentuk DTO (Data Transfer Object), maka dri itu kita harus membuat Mapper (dalam interface) untuk conver Entity  ><  DTO.
+
+Untungnya ada library MapStruct yang mempermudah proses convert dari Entity ke Dto atau sebaliknya. Panggil anotasi @Mapper:
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+
+Kemudian method fungsionalitas untuk convert harus ditandai dengan anotasi @Mapping:
+
+@Mapping(target = "jumlahPost", source = "posts", qualifiedByName = "calculateJumlahPost")
+KategoriDto toDto(Kategori kategori);
+
+	@Named("calculateJumlahPost")
+	default Long calculateJumlahPost(List<Post> posts) {
+		if (posts == null) {
+			return (long) 0;
+		}
+		
+		return posts.stream()
+				.filter(post -> PostStatus.PUBLISHED.equals(post.getStatus()))
+				.count();
+	}
+
+Jadi pada method itu, ada variabel dalam Dto yang ingin numpang dalam mengambil informasi secara otomatis. Makannya pada parameter @Mapping kita masukkan nama methodnya untuk mengambil jumlah pada List Post yang merupakan relasional antara tabel Post. Makannnya method yang numpang harus dianotasi @Named untuk menandainya.
+
+[1:26:23]
+
+Create Kategori endpoint
+
+Disini cukup unik cara membuat sebuah Dto kemudian disimpan dalam entity di database melalui Repository. Jadi tujuan kita itu ingin memvalidasi input yang dimasukkan dalam form atau string 'nama' pada tabel Kategori, caranya pada controller kita harus memasukkan parameter:
+@Valid @RequestBody CreateKategoriRequest createKategoriRequest
+
+Anotasi @Valid harus memastikan objek parameter harus dalam tipe tersebut. Objek CreateKategoriRequest fungsinya sama kayak KategoriDto namun dia hanya digunakan untuk satu variabel yaitu 'nama':
+
+	@NotBlank(message = "Kategori tidak boleh kosong.")
+	@Size(min = 2, max = 50, message = "Kategori harus memiliki minimal {min} dan maksimal {max} huruf.")
+	@Pattern(regexp = "^[\\w\\s-]+$", message = "Kategori harus mengandung huruf, angka , spasi, dan hyphens")
+	private String nama;
+
+
+Intinya anotasi tersebut bertujuan untuk memvalidasi isi dari 'name' yang akan diinput pada presentation layer (controller). Kemudian CreateKategoriRequest harus diconvert menjadi Entity di Mapper.
+
+
+Delete Category Endpoint:
+
+
+Add Spring Security;
+
+Jadi cara menambahkan Spring Security yang salah satunya:
+
+1.**memberikan akses JWT authentication pada suatu endpoint**. 
+
+Maka dari itu kita setting pom.xml kemudian bikin folder config untuk file SecurityConfig dengan anotasi @Congiguration.
+
+Dalam file tersebut kita membuat @Bean method yang return objek SecurityFilterChain dengan input parameter HttpSecurity. Dari parameter tersebut kita akan memberi akses JWT ke beberapa endpoint seperti di bawah ini:
+
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+		http
+				.authorizeHttpRequests(auth -> auth
+						.requestMatchers(HttpMethod.GET, "/api/v1/posts/**").permitAll()
+						.requestMatchers(HttpMethod.GET, "/api/v1/categories/**").permitAll()
+						.requestMatchers(HttpMethod.GET, "/api/v1/tags/**").permitAll()
+						.anyRequest().authenticated()
+						)
+				.csrf(csrf -> csrf.disable())
+				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+		
+		return http.build();
+	}
+
+Selain dari http yang diauthorize permit all, maka itu memerlukan autentikasi.
+
+2. **Melakukan encode(merubah) terhadap password**:
+Caranya dengan membuat @Bean yang return PasswordEncoder melalui class PasswordEncoderFactories dengan method createDelegatingPasswordEncoder().
+
+3. Melakukan Autentikasi:
+Caranya dengan membuat Bean yang return AuthenticationManager dengan input parameter AuthenticationConfiguration config, lalu melakukan return config.getAuthenticationManager();.
+
+Cara mereka saling berkomunikasi itu dikarenakan anotasi @Configuration dan @Bean ok
+
+Jadi dengan mengkonfigurasi 3 hal tersebut menggunakan Spring Security kita bisa membatasi beberapa endpoint yang mana yang bisa diakses tanpa authentication.
+
+[1:53:06]
+
+
+Loading Users:
+Functionality untuk mengaktifkan autentikasi berdasarkan entiti user yang ada. Implementasi ini akan menjembatani komunikasi antara spring security user managameent dan modul domain.
+
+Cara untuk memberikan beberapa fungsionalitas mengenai akses User dalam autentikasi kita bisa menerapkan interface UserDetails (dari Spring security) terhadap class "BarangUserDetails", lalu disini kita override setiap method. Untuk method `Collection<? extends GrantedAuthority> getAuthorities()` kita berikan role USER. Dan method lainnya seperti getPassword, getUsername (email), dll.
+
+Pertanyaannya adalah bagaimana cara kita mengetahui si User melalui email? Caranya adalah dengan menambahkan method Hibernate Jpa pada Repository untuk mengembalikan Optional<User> dengan method findByEmail dengan input String email. Sehingga kita punya method untuk mencari data User berdasarkan email.
+
+Setelah membuat method untuk mencari User entity berdasarkan email. Kita memanfaatkannya dengan menerapkan interface UserDetailsService melalui method `UserDetails loadUserByUsername(String email)` untuk melakukan load User. Ketika entitas User sudah ditemukan berdasarkan email, kita return menjadi UserDetails menggunakan class sebelumnya yang berperan dalam fungsionalitas autentikasi yaitu "BarangUserDetails".
+
+
+Authenticate Endpoint Part 1:
+Endpoint yang bertujuan untuk mengobtain JWT's, endpoint ini bakal validate user credential dan return JWT yang akan digunakan oleh client di beberapa request endpoint api.
+
+
+Proses Autentikasi supaya bisa benar-benar berhasil memerlukan beberapa Dto untuk handle login request dan response. Disini kita bikin Dto untuk LoginRequest yang menampung instance variabel email dan passworrd, lalu Dto AuthResponse yang mengandung token dan expiresIn (Long waktu).
+
+Setelah ada Dto, selanjutnya kita buat fungsionalitas proses autentikasi ke database (persistance) dengan membuat interface Service untuk Authentication. Interface tersebut berisi method untuk mengambil UserDetails (yang sudah divalidasi melalui UserRepository) dan method untuk mengembalikan token dengan input parameter UserDetails. 
+
+*UserDetails adalah class bawaan dari Spring Security, yang sudah kita konfigurasi beberapa fungsionalitas supaya dapat mencari entitas User dari database kita.
+
+[2:06:56]
+
+
+Authenticate Endpoint Part 2:
+Di sini kita menerapkan interface dari Service autentikasi pada class Impl kita. Kita mendefinisikan kunci jwt secret 	
+
+# Penjelasan Konsep Autentikasi JWT dalam Kode
+
+Kode yang Anda tunjukkan merupakan implementasi layanan autentikasi menggunakan JWT (JSON Web Token) dalam aplikasi Spring Boot. Mari saya jelaskan konsep-konsep utamanya:
+
+## Proses Autentikasi
+
+1. **Autentikasi Pengguna**: 
+   - Metode `authenticate()` menerima email dan password
+   - Menggunakan `AuthenticationManager` untuk memverifikasi kredensial tersebut
+   - Jika berhasil, data pengguna diambil melalui `UserDetailsService`
+
+2. **Pembuatan Token JWT**:
+   - Setelah autentikasi berhasil, `generateToken()` membuat token akses
+   - Token ini berisi informasi penting tentang pengguna dan masa berlakunya
+
+## Mengapa Menggunakan JWT Secret Key
+
+JWT secret key sangat penting karena beberapa alasan:
+
+1. **Keamanan Token**: 
+   - Secret key digunakan untuk "menandatangani" token
+   - Ini memastikan bahwa token hanya dapat dibuat atau diverifikasi oleh aplikasi yang memiliki kunci tersebut
+
+2. **Integritas Data**:
+   - Mencegah modifikasi token oleh pihak luar
+   - Jika token diubah, verifikasi tanda tangan akan gagal
+
+3. **Kepercayaan**:
+   - Server dapat memastikan bahwa token yang diterima benar-benar dikeluarkan oleh sistem yang sama
+
+## Konsep Security Key
+
+Kode menggunakan `Keys.hmacShaKeyFor()` untuk menghasilkan kunci keamanan karena:
+
+1. **Standar Industri**:
+   - HMAC-SHA256 adalah algoritma kriptografi standar yang aman
+   - Memberikan keseimbangan antara keamanan dan kinerja
+
+2. **Stateless Authentication**:
+   - Memungkinkan server memverifikasi pengguna tanpa menyimpan sesi
+   - Server cukup memverifikasi tanda tangan token untuk memvalidasi pengguna
+
+## Struktur Token JWT
+
+Token yang dihasilkan berisi:
+
+1. **Claims** (klaim) - informasi tentang subjek token
+2. **Subject** - identitas pengguna (username/email)
+3. **Issued At** - waktu token dibuat
+4. **Expiration** - waktu kedaluwarsa token (dikonfigurasi 24 jam atau 86400000 milidetik)
+
+## Keuntungan Pendekatan Ini
+
+1. **Skalabilitas**: Server tidak perlu menyimpan informasi sesi
+2. **Keamanan**: Token ditandatangani secara kriptografis
+3. **Efisiensi**: Verifikasi cepat tanpa perlu query database
+4. **Fleksibilitas**: Token dapat digunakan di berbagai layanan (microservices)
+
+Secara keseluruhan, implementasi ini mengikuti praktik terbaik untuk autentikasi berbasis token di aplikasi modern, dengan penekanan pada keamanan dan efisiensi.
+
+
+
+JWT Authentication filter part 1:
+Disini kita letak filenya di package security. Jadi JwtAuthenticationFilter adalah komponen kunci dalam arsitektur keamanan Spring yang:
+
+1. Memproses Setiap Request:
+- Extends OncePerRequestFilter sehingga dijalankan tepat satu kali untuk setiap permintaan HTTP
+- Ini penting untuk konsistensi dalam autentikasi
+
+2. Posisi dalam Filter Chain:
+- Filter ini berada dalam rantai filter Spring Security
+- Dijalankan sebelum request mencapai controller atau endpoint lainnya
+
+
+Proses Validasi Token
+Saat permintaan masuk, filter melakukan beberapa langkah penting:
+
+1. Ekstraksi Token:
+- Memeriksa header HTTP Authorization untuk pola "Bearer [token]"
+- Mengekstrak token JWT dengan menghapus prefix "Bearer "
+
+2. Validasi dan Autentikasi:
+- Memanggil authenticationService.validateToken() untuk memverifikasi token
+- Jika valid, mendapatkan objek UserDetails yang berisi informasi pengguna
+
+3. Keamanan Konteks:
+- Membuat objek autentikasi UsernamePasswordAuthenticationToken
+- Menyimpannya di SecurityContextHolder sehingga seluruh aplikasi dapat mengakses informasi pengguna yang terautentikasi
+
+
+Penanganan User Context
+Filter ini juga memperkaya request dengan informasi tambahan:
+
+- Jika user details adalah instance dari BarangUserDetails, ID pengguna ditambahkan ke request attributes (awalnya hanya email sebagai username)
+- Ini memungkinkan controller atau layer lain mengakses ID pengguna tanpa parsing token lagi
+
+
+JWT Authentication filter part 2:
+# Penjelasan Konfigurasi Keamanan Spring Security
+
+Kode yang Anda tunjukkan adalah konfigurasi keamanan Spring Security untuk aplikasi Anda. Dibandingkan dengan kode sebelumnya, ini menunjukkan kerangka lengkap bagaimana JWT filter diintegrasikan ke dalam aplikasi.
+
+## Perbedaan Utama dan Konteksnya
+
+Kode ini berbeda dari sebelumnya karena:
+
+1. **Konfigurasi Lengkap Security**: 
+   - Ini adalah kelas konfigurasi (`@Configuration`) yang mendefinisikan seluruh setup keamanan aplikasi
+   - Kode sebelumnya hanya menunjukkan implementasi filter JWT dan layanan autentikasi
+
+2. **Dependency Injection**: 
+   - Kode ini mendeklarasikan semua komponen keamanan sebagai bean Spring
+   - Menunjukkan bagaimana komponen-komponen security saling terhubung
+
+3. **Filter Chain Configuration**:
+   - Menentukan aturan lengkap untuk endpoint mana yang memerlukan autentikasi
+   - Mengkonfigurasi bagaimana filter JWT diintegrasikan ke dalam pipeline pemrosesan request
+
+## Komponen Utama dan Konteksnya
+
+1. **UserDetailsService Bean**:
+   - Membuat layanan yang bertanggung jawab untuk memuat data pengguna
+   - Membuat pengguna test otomatis jika tidak ada di database
+   - Memungkinkan aplikasi mengautentikasi pengguna berdasarkan data dari repository
+
+2. **SecurityFilterChain**:
+   - Mendefinisikan aturan autentikasi dan otorisasi
+   - Mengizinkan akses publik ke endpoint login dan beberapa endpoint GET
+   - Mengharuskan autentikasi untuk semua request lainnya
+   - Menonaktifkan CSRF untuk API stateless
+   - Mengkonfigurasi manajemen sesi sebagai STATELESS (menghindari penggunaan session cookies)
+
+3. **PasswordEncoder**:
+   - Mendefinisikan encoder untuk mengamankan password
+   - Menggunakan DelegatingPasswordEncoder yang mendukung berbagai algoritma encoding
+
+4. **AuthenticationManager**:
+   - Komponen inti yang menangani proses autentikasi
+   - Digunakan oleh AuthenticationService untuk memverifikasi kredensial pengguna
+
+5. **JwtAuthenticationFilter**:
+   - Menghubungkan filter JWT yang kita lihat sebelumnya ke dalam pipeline keamanan
+   - Mendefinisikan urutan filter (dijalankan sebelum UsernamePasswordAuthenticationToken)
+
+## Konteks Keseluruhan
+
+Kode ini menunjukkan implementasi lengkap sistem autentikasi berbasis token:
+
+1. **API Stateless**: 
+   - Aplikasi didesain untuk bekerja tanpa state server (tanpa session)
+   - Setiap request diautentikasi secara individual menggunakan token JWT
+
+2. **Keamanan Berlapis**:
+   - Kombinasi antara password encryption, JWT signed tokens, dan filter autentikasi
+   - Endpoint publik ditentukan secara eksplisit, semua endpoint lainnya terlindungi
+
+3. **Testing Support**:
+   - Pembuatan pengguna test otomatis memudahkan pengembangan dan pengujian
+   - Memastikan ada setidaknya satu pengguna yang dapat digunakan untuk testing
+
+Secara keseluruhan, konfigurasi ini menghubungkan semua komponen keamanan yang telah kita bahas sebelumnya ke dalam satu arsitektur keamanan yang komprehensif dan modern untuk aplikasi Spring Boot.
+
+2:31:07
+
+-----------------------------------------------------------------------------------
+Proses JWT Autentikasi secara keseluruhan:
+
+Dalam pengembangan web modern, autentikasi pengguna adalah komponen penting untuk memastikan keamanan aplikasi. Dua metode yang sering digunakan adalah Session dan JSON Web Token (JWT). Meskipun tujuan keduanya sama—yaitu mengidentifikasi dan mengautentikasi pengguna—mereka bekerja secara berbeda dan memiliki kelebihan serta tantangan masing-masing. Video ByteByteGo ini mengupas secara mendalam mengenai perbedaan yang mungkin tidak Anda ketahui di antara kedua pendekatan tersebut.
+
+2. Apa itu Session?
+Session merupakan mekanisme berbasis server untuk menyimpan data autentikasi pengguna. Berikut adalah beberapa poin utama:
+
+- Penyimpanan Server-side: Ketika pengguna berhasil login, server membuat session yang menyimpan data penting (seperti ID pengguna, peran, dan informasi lainnya) di sisi server (bisa dalam memori, database, atau store seperti Redis).
+- Session ID di Cookie: Server mengirimkan session ID ke klien melalui cookie. Pada setiap permintaan berikutnya, browser mengirimkan cookie ini agar server dapat mengenali session yang telah dibuat.
+- Stateful: Karena data autentikasi disimpan di server, sistem menjadi stateful. Artinya, server harus memelihara dan mengelola setiap session pengguna.
+- Kemudahan Revoke: Karena data disimpan di server, server dapat dengan cepat menghapus atau memvalidasi ulang session—misalnya saat logout atau jika terjadi kompromi keamanan.
+
+
+3. Apa itu JWT?
+JSON Web Token (JWT) adalah standar token yang bersifat self-contained dan stateless. Beberapa karakteristiknya antara lain:
+
+- Token Mandiri (Self-contained): JWT menyimpan semua klaim (data) yang dibutuhkan di dalam token itu sendiri, yang kemudian dikodekan dan ditandatangani secara digital. Ini memungkinkan server untuk memverifikasi keabsahan token tanpa menyimpan data sesi secara terpusat.
+- Penyimpanan Client-side: JWT biasanya disimpan di localStorage, sessionStorage, atau sebagai cookie. Karena token ini berisi informasi penting, keamanan penyimpanannya perlu diperhatikan.
+- Stateless: Server tidak perlu menyimpan data autentikasi karena semua informasi ada dalam token. Hal ini memberikan keuntungan skalabilitas terutama pada arsitektur microservices atau sistem terdistribusi.
+- Tantangan Revocation: Karena JWT bersifat stateless, mencabut akses (misalnya saat logout) tidak bisa dilakukan secara instan kecuali jika diterapkan mekanisme tambahan seperti blacklist atau pengaturan waktu kedaluwarsa yang pendek.
+
+
+
+
+-----------------------------------------------------------------------------------
+
+
+List Tag Endpoint
+
+Create Tag Endpoint
+
+
+Uniknya untuk kedua fungsionalitas tersebut kita punya Dto nya masing-masing. Untuk List all Tag kita pakai TagResponse, dan CreateTagRequest
+
+Jika ada Dto yang namanya Request artinya kita mengirim Dto ke server., disini hanya yang diperlukan input field saja. Jika id tidak perlu ok. karena Dto request hanya digunakan pada @RequestBody. Namun tetap dari service methodnya hanya menerima nama tag baru saja.
+
+Delete Tag Endpoint
+
+Lagi-lagi karena Tag merupakan sebuah set dan memiliki instance variabel dari Posts. Sehingga kita harus memanggil repository dari tag dan memeriksa apakah getPost kosong atua tidak, jika tidak kita throw exception, jika memang kosong maka kita bisa hapus tag menggunakan method deleteById;
+
+
+List All Post Endpoint:
+Di sini caranya seperti biasa, namun ketika service implementaion kita menggunakan method yang dibantu oleh hibernate JPA dalam mengambil data. Karena post itu bisa beberapa versi seperti list post jika menampilkan kategori saja, atau tag saja, atau keduanya, atau semuanya. SEhingga ktia bikin beberapa method hibernate jpa di Repository post.
+
+Lalu pada Mapper post, jangan lupa kaitkan bahwa method convert toDto itu juga @Mapping melalui tabel kategori, tag, dan author.
+
+Author adalah dto baru sebagai sinonim dari User, supaya data user tidak tersebar,
+
+
+List Draft Posts Endpoint:
+Caranya sama namun controllernya menerima input id dari user yang logged in. Lalu untuk penerapannya di impl service kita bisa menggunakan method hibernate hql dalam post repository untuk mengambill list dari posts berdasarkan User dan PostStatus.
+
+
+Create Post Endpoints;
+Disini memang ada beberapa kriteria supaya ketika post suatu Post (artikel) maka mengambil informasi foreign key dari beberapa table.
+
+1. Karena entity Post memerlukan objek seperti Kategori, User, dll. Kita perlu membuat Dto sebagai @RequestBody yang hanya menerima UUID saja. Dto ini hanya digunakan untuk komunikasi dengan presentation layer aja. Pada class ini pastikan ada batasan untuk validasi, seperti maksimal 50 kata, dll
+2. Lalu untuk Dto yang berkomunikasi dengan service layer, kita bikin Dto baru dengan tipe dan instance variabel yang serupa.
+3. Untuk beberapa Service pada kelas seperti User, Tag, dan Kategori usahakan ada method yang mengambil entity objek melalui uuid yang disimpan oleh Dto post service layer. 
+4. Pada implementasi dari Service layer Post, disini kita membuat method createPost yang return entity Post dengan parameter request Post (dto untuk service layer) dan entity User.
+
+
+Update post endpoints
+
+Kurang lebih hampir sama metodenya dengan ketika membuat Post Endpoint, kita bikin Dto baru untuk presentatin dan service layer. Then ambil dulu Post yang ingin diupdate berdasarkan UUid
+
+
+Get Post Endpoint
+Untuk mengambil a single informasi Entity melalui sebuah Dto. Kurang lebih sama intinya kita menggunakan method findById dengn input parameter UUID.
+
+
+Delete Post Endpoint
+
+
+
+====================================================================================
